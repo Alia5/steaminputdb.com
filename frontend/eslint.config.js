@@ -1,15 +1,9 @@
-import { FlatCompat } from "@eslint/eslintrc";
 import stylistic from '@stylistic/eslint-plugin';
-import path from "path";
+import { defineConfig } from "eslint/config";
 import { fileURLToPath } from "url";
 
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname
-});
 
 import js from "@eslint/js";
 import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
@@ -19,13 +13,22 @@ import svelteEslintParser from 'svelte-eslint-parser';
 import tseslint from 'typescript-eslint';
 
 
-export default tseslint.config(
+export default defineConfig(
     eslintPluginPrettier,
     js.configs.recommended,
     ...tseslint.configs.recommended,
     ...eslintPluginSvelte.configs['flat/recommended'],
     {
-        ignores: ['*.cjs', '*.html', 'postcss.config.js', 'svelte.config.js', 'eslint.config.js', ".svelte-kit/**/*", "build/**/*"],
+        ignores: [
+            '*.cjs',
+            '*.html',
+            'postcss.config.js',
+            'svelte.config.js',
+            'eslint.config.js',
+            ".svelte-kit/**/*",
+            "build/**/*",
+            "**/*/openapi.d.ts"
+        ],
     },
     {
         files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -47,7 +50,6 @@ export default tseslint.config(
                 sourceType: 'module',
                 ecmaVersion: 2020,
                 project: './tsconfig.json',
-                extraFileExtensions: ['.svelte'],
             },
         },
         rules: {

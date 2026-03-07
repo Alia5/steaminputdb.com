@@ -25,7 +25,8 @@ export default defineConfig({
             includePaths: [
                 './src/static/',
                 './src/lib/assets/',
-                './src/lib/components/layout_preview/controllers/'
+                './src/lib/components/layout_preview/controllers/',
+                './src/lib/components/layout_preview/glyphs/'
             ]
         }),
         Icons({

@@ -2,6 +2,7 @@
 import { browser } from '$app/environment';
 import { page } from '$app/state';
 import type { components } from '$lib/api/openapi';
+import LayoutPreview from '$lib/components/layout_preview/LayoutPreview.svelte';
 import { assetUrlBase, storePageBackgroundBase } from '$lib/steamapi/const';
 import { sectionHead } from './sectionHead.svelte';
 import { sectionInfo } from './sectionInfo.svelte';
@@ -78,6 +79,7 @@ if (browser) {
 	<div>
 		{@render sectionHead({ fileInfo, appInfo, isMobileBrowser })}
 		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}
+		<LayoutPreview vdfLink={fileInfo.file_url || undefined} />
 	</div>
 </main>
 
