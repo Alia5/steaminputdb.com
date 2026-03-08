@@ -22,7 +22,11 @@ export default defineConfig({
         enhancedImages(),
         sveltekit(),
         svg({
-            includePaths: ['./src/lib/assets/', './src/static/']
+            includePaths: [
+                './src/static/',
+                './src/lib/assets/',
+                './src/lib/components/layout_preview/controllers/'
+            ]
         }),
         Icons({
             compiler: 'svelte',
