@@ -4,6 +4,7 @@ import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
 import { parse } from 'vdf-parser';
+import Spinner from '../Spinner.svelte';
 import type {
 	Action,
 	ActionLayer,
@@ -27,6 +28,7 @@ let vdfPromise = $state<Promise<LayoutFile | undefined>>();
 let parsedVdf = $derived(await vdfPromise);
 onMount(() => {
 	vdfPromise = (async () => {
+		// await new Promise((resolve) => setTimeout(resolve, 5000));
 		if (!vdfLink) {
 			return;
 		}
@@ -489,8 +491,9 @@ const findModeShiftTriggers = (source: string): string[] => {
 			<label for="controller-type">
 				<span>Controller-Type:</span>
 				<select id="controller-type" name="controller-type" bind:value={selectedController}>
-					<option value="controller_steamcontroller_gordon">Steam Controller (2015)</option>
 					<option value="controller_neptune">Steam Deck</option>
+					<option value="controller_triton">Steam Controller</option>
+					<option value="controller_steamcontroller_gordon">Steam Controller (2015)</option>
 					<option value="controller_ps5">DualSense / DualSense Edge</option>
 					<option value="controller_ps4">DualShock 4</option>
 					<option value="controller_switch_pro">Switch Pro / 8BitDo</option>
@@ -512,15 +515,25 @@ const findModeShiftTriggers = (source: string): string[] => {
 				{#if selectedPreset}
 					{@render presetPreview()}
 				{:else}
-					<p>No Layout selected or found</p>
+					<div class="no-preview">
+						<p>No Layout selected or found</p>
+					</div>
 				{/if}
+			{:else}
+				<div class="no-preview">
+					<Spinner size="min(75dvw, 12em)" />
+				</div>
 			{/if}
 			{#snippet pending()}
-				<p>loading...</p>
+				<div class="no-preview">
+					<Spinner size="min(75dvw, 12em)" />
+				</div>
 			{/snippet}
 			{#snippet failed()}
-				<p>Whoops, seems we were not able to parse the config file...</p>
-				<!-- <p>{error}</p> -->
+				<div class="no-preview">
+					<p>Whoops, seems we were not able to parse the config file...</p>
+					<!-- <p>{error}</p> -->
+				</div>
 			{/snippet}
 		</svelte:boundary>
 	</div>
@@ -934,5 +947,14 @@ label[for='controller-type'] {
 		background-size: contain;
 		pointer-events: none;
 	}
+}
+
+.no-preview {
+	display: grid;
+	padding: 2em 1em;
+	place-items: center;
+	width: 100%;
+	overflow: hidden;
+	grid-row: 2;
 }
 </style>

@@ -72,6 +72,8 @@ export const gyroButtonFlags: Record<number, string> = {
     41: 'button_back_left_upper',
     42: 'button_back_right_upper',
     43: 'button_back_left',
+    44: 'Grip Touch (Left?)',
+    45: 'Grip Touch (Right?)',
     47: 'button_back_right'
 };
 

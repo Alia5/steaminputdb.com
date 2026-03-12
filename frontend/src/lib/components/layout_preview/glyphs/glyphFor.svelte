@@ -269,6 +269,9 @@ glyphMaps.fallback = {
 	...glyphMaps.controller_steamcontroller_gordon,
 	...glyphMaps.fallback
 };
+glyphMaps.controller_triton = {
+	...glyphMaps.controller_neptune
+};
 glyphMaps.controller_ps5_edge = {
 	...glyphMaps.controller_ps5
 };
