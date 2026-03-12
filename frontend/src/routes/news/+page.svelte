@@ -69,8 +69,9 @@ main {
 
 	& a {
 		position: relative;
-		padding: 0 1em 2em 1em;
+		padding: 2em 1em 2em 1em;
 		color: var(--text-color);
+		background: rgb(128 128 128 / 0.1);
 		&:hover,
 		&:focus-visible {
 			color: var(--color-primary);
@@ -115,14 +116,25 @@ main {
 	}
 
 	& > :first-child {
-		flex: 1 1 calc(66% - 1em);
+		& :global(picture),
+		& :global(img) {
+			grid-row: 1 / span 1;
+			grid-column: 1 / span 2;
+		}
+		flex: 1 1 calc(60% - 1em);
 	}
 	& > :nth-child(2) {
-		flex: 1 1 calc(33% - 1em);
+		& :global(picture),
+		& :global(img) {
+			grid-row: 1 / span 1;
+			grid-column: 1 / span 2;
+		}
+		flex: 1 1 calc(45% - 1em);
 	}
 	& > :nth-child(1n + 3) {
 		flex: 1 1 calc(20% - 1em);
-		& :global(picture) {
+		& :global(picture),
+		& :global(img) {
 			grid-row: 1 / span 1;
 			grid-column: 1 / span 2;
 		}

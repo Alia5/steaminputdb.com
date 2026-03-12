@@ -1,0 +1,84 @@
+---
+title: Layout Preview
+date: 2026-03-12
+hero: /hero_images/layout_preview.png?enhanced&w=600
+---
+
+<script>
+
+import Author from '$lib/components/author.svelte';
+const ogimgSrc = "/hero_images/layout_preview.png";
+const lead = "SteamInputDB now features a preview of the controller layouts, right in your browser! No need to open Steam to preview community layouts anymore!";
+</script>
+
+<svelte:head>
+<title>{title}</title>
+    <meta property="og:title" content={title} />
+    <meta name="description" content={lead} />
+    <meta property="og:description" content={lead} />
+    <meta property="og:image" content={ogimgSrc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={lead} />
+    <meta name="twitter:image" content={ogimgSrc} />
+ <meta name="twitter:image:alt" content={title} />
+</svelte:head>
+
+# {title}
+
+---
+
+<Author date={new Date(date)} />
+
+<div class="hero">
+    <img src="/hero_images/layout_preview.gif" alt="A gif displaying the new layout preview feature" />
+</div>
+
+One of the most requested (and much needed) features for SteamInputDB has been the ability to preview controller layouts without having to open Steam.  
+Today, I'm happy to announce that this feature is now live!  
+
+From now on you can see a preview of any controller layout right in your browser, without needing to open Steam.  
+SteamInputDB's layout preview closely mimics the one found in Steam, with one important distinction:   
+Steam can _clip_ the layout preview if any input-device has too many bindings/actions assigned, and you have to go through yet another screen.  
+SteamInputDB's layout preview, on the other hand, will show you the entire layout, no matter how many bindings or actions it has.  
+If your screen is too small, everything is scrollable.  
+
+Due to SteamInput being relatively complex, and me churning out the code rather "fast and loose", I'd call this a "_Beta_" version (for lack of a better term).  
+This means that while the feature is fully functional, there may be some edge cases where the preview doesn't look exactly like the one in Steam.  
+If you find any such edge cases, please report them [on GitHub](https://github.com/Alia5/SteamInputDB.com/issues).
+
+That said, I threw some of [RambleCan](https://www.steaminputdb.com/user/76561197972837049)'s configs against my implementation and it seems to handle every case I've found so far.  
+
+## What's next? 
+
+Next up is one of two things:  
+
+- Better/Direct integration into Steam itself  
+  Similar to a Decky plugin,  
+  but a solution that works on **all** platforms and regular Desktop as well as Big Picture mode  
+- Adding more community features and personal preferences.  
+  Comments, default sorting/filter options, etc.
+
+Feel free to join on [Discord](https://discord.gg/hs34MtcHJY) and let me know which one you'd like to see first, or if you have any other suggestions!     
+
+<style>
+    strong {
+        color: var(--highlight-color);
+    }
+    em {
+        color: var(--highlight-color);
+        opacity: 0.96;
+    }
+
+    .hero {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        margin-bottom: 2em;
+    }
+a {
+    color: var(--color-primary);
+}
+
+</style>
