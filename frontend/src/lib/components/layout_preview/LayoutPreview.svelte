@@ -657,9 +657,15 @@ section {
 	/* --vertical-space: 0.4em; */
 	--vertical-space: 0;
 	min-width: 850px;
+	max-height: 90dvh;
 	@media (orientation: portrait) {
 		grid-template-columns: 1fr minmax(10%, 20%) 1fr;
 		min-width: 542px;
+		grid-template-rows:
+			repeat(5, min-content)
+			minmax(6em, 1fr)
+			fit-content;
+		max-height: unset;
 	}
 
 	& > * {
@@ -671,8 +677,6 @@ section {
 	& > :last-child {
 		padding-bottom: 0;
 	}
-
-	max-height: 90dvh;
 
 	place-items: center;
 	& > *:not(:last-child) {
@@ -855,6 +859,7 @@ section {
 			grid-auto-flow: row;
 			grid-auto-rows: min-content;
 			overflow: auto;
+			max-height: unset;
 		}
 		& > * {
 			display: grid;
