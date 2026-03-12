@@ -227,6 +227,35 @@ const findModeShiftTriggers = (source: string): string[] => {
 	}
 	return [...triggers];
 };
+
+const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
+	controller_steamcontroller_gordon: {
+		trackpads: true,
+		'right-stick': false,
+		dpad: false
+	},
+	controller_ps4: {
+		trackpads: true
+	},
+	controller_ps5: {
+		trackpads: true
+	},
+	controller_triton: {
+		trackpads: true
+	},
+	controller_neptune: {
+		trackpads: true
+	},
+	controller_xboxone: {
+		gyro: false
+	},
+	controller_xboxelite: {
+		gyro: false
+	},
+	controller_xbox360: {
+		gyro: false
+	}
+};
 </script>
 
 {#snippet LayersAndSets(
@@ -460,14 +489,25 @@ const findModeShiftTriggers = (source: string): string[] => {
 		{@render mappingPreview('switch', 'button_back_right_upper', 'r4')}
 		{@render mappingPreview('switch', 'button_back_right', 'r5')}
 		{@render mappingPreview('switch', 'button_menu', 'select')}
-		{@render sourcePreview('left_trackpad', 'lpad')}
-		{@render sourcePreview('right_trackpad', 'rpad')}
+		{#if optionalDevices[selectedController]?.trackpads === true}
+			{@render sourcePreview('left_trackpad', 'lpad')}
+			{@render sourcePreview('right_trackpad', 'rpad')}
+		{:else}
+			<div class="lpad"></div>
+			<div class="rpad"></div>
+		{/if}
 		{@render mappingPreview('switch', 'button_escape', 'start')}
 		<div>
-			{@render sourcePreview('dpad', 'dpad')}
+			{#if optionalDevices[selectedController]?.dpad !== false}
+				{@render sourcePreview('dpad', 'dpad')}
+			{/if}
 			{@render sourcePreview('joystick', 'lstick')}
-			{@render sourcePreview('gyro', 'gyro')}
-			{@render sourcePreview('right_joystick', 'rstick')}
+			{#if optionalDevices[selectedController]?.gyro !== false}
+				{@render sourcePreview('gyro', 'gyro')}
+			{/if}
+			{#if optionalDevices[selectedController]?.['right-stick'] !== false}
+				{@render sourcePreview('right_joystick', 'rstick')}
+			{/if}
 			{@render sourcePreview('button_diamond', 'buttons')}
 		</div>
 	</div>
