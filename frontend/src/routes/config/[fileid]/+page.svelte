@@ -79,7 +79,15 @@ if (browser) {
 	<div>
 		{@render sectionHead({ fileInfo, appInfo, isMobileBrowser })}
 		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}
-		<LayoutPreview vdfLink={fileInfo.file_url || undefined} />
+		{#if fileInfo.file_url}
+			<LayoutPreview vdfLink={fileInfo.file_url || undefined} />
+		{:else}
+			<div class="legacy">
+				<div class="card glass">
+					<p>Preview not possible for legacy configurations 🫤</p>
+				</div>
+			</div>
+		{/if}
 	</div>
 </main>
 
@@ -121,5 +129,13 @@ div {
 	:global(> :first-child) {
 		width: 100%;
 	}
+}
+
+.legacy {
+	width: 100%;
+	padding: 0 1em;
+	display: grid;
+	place-items: center;
+	text-align: center;
 }
 </style>
