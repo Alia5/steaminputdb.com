@@ -14,10 +14,18 @@ export const niceInputName = (input?: string) => {
             )
     );
 
+    const keyLabel = (niceInputMap as Record<string, string>)[key] ?? strippedKey;
+
+
     const buttons = [
-        (niceInputMap as Record<string, string>)[key] ?? strippedKey,
+        keyLabel,
         (niceInputMap as Record<string, string>)[type] ?? type
     ].join(' ');
+
+    if (type === 'xinput_button') {
+        const isABXY = ['A', 'B', 'X', 'Y'].includes(key.toUpperCase());
+        return isABXY ? `${keyLabel} Button` : keyLabel;
+    }
 
     return buttons;
 };

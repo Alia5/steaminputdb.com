@@ -1,16 +1,16 @@
 export const niceInputMap = {
     'key_press': 'Key',
-    'xinput_button': 'Button',
+    'xinput_button': '',
     'mouse_button': 'Mouse Click',
     'mouse_wheel': 'Mouse Wheel',
     'mode_shift': 'Mode Shift',
     'controller_action': 'Action Set',
-    'SHOULDER_LEFT': 'LB',
-    'SHOULDER_RIGHT': 'RB',
-    'JOYSTICK_RIGHT': 'Right Stick Click',
-    'JOYSTICK_LEFT': 'Left Stick Click',
-    'TRIGGER_LEFT': 'Left Trigger',
-    'TRIGGER_RIGHT': 'Right Trigger',
+    'shoulder_left': 'Left Bumper',
+    'shoulder_right': 'Right Bumper',
+    'joystick_right': 'Right Stick Click',
+    'joystick_left': 'Left Stick Click',
+    'trigger_left': 'Left Trigger',
+    'trigger_right': 'Right Trigger',
     'button_diamond': 'Face Buttons',
     'left_trackpad': 'Left Trackpad',
     'right_trackpad': 'Right Trackpad',
@@ -30,14 +30,21 @@ export const niceInputMap = {
     'dpad': 'Directional Pad',
     'radial_menu': 'Radial Menu',
     'touch_menu': 'Touch Menu',
-
     '2dscroll': 'Directional Swipe',
     'scrollwheel': 'Scroll Wheel',
     'single_button': 'Single Button',
     'four_buttons': 'Button Pad',
     'trigger': 'Trigger',
     'switches': 'Switches',
-    'hold_layer': 'Hold'
+    'hold_layer': 'Hold',
+    'dpad_up': 'D-Pad Up',
+    'dpad_down': 'D-Pad Down',
+    'dpad_left': 'D-Pad Left',
+    'dpad_right': 'D-Pad Right',
+    'dpadUp': 'D-Pad Up',
+    'dpadDown': 'D-Pad Down',
+    'dpadLeft': 'D-Pad Left',
+    'dpadRight': 'D-Pad Right'
 } as const;
 
 // best guesses
