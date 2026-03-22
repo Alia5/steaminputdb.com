@@ -1,0 +1,81 @@
+set windows-shell := ["powershell.exe", "-NoProfile", "-Command"]
+
+binary_name := "steaminputdb-buddy"
+main_pkg := "./cmd/steaminputdb-buddy"
+dist_dir := "./dist/"
+target_goos := env_var_or_default("GOOS", if os_family() == "windows" { "windows" } else { "linux" })
+target_goarch := env_var_or_default("GOARCH", if os_family() == "windows" { "amd64" } else { "amd64" })
+exe_ext := if target_goos == "windows" { ".exe" } else { "" }
+mkdir_p := if os_family() == "windows" { "New-Item -ItemType Directory -Force" } else { "mkdir -p" }
+rm_rf := if os_family() == "windows" { "Remove-Item -Recurse -Force -ErrorAction 0" } else { "rm -rf" }
+is_windows_wsl_unc := if os_family() == "windows" {
+    shell("if ($PWD.ProviderPath -like '\\\\wsl.localhost\\*') { 'true' } else { 'false' } #")
+} else {
+    "false"
+}
+
+version := env_var_or_default("VERSION", "dev")
+commit := if os_family() == "windows" {
+    shell("if ($g = git rev-parse --short HEAD 2>$null) { $g } else { 'unknown' } #")
+} else {
+    shell("git rev-parse --short HEAD 2>/dev/null || echo unknown")
+}
+build_time := if os_family() == "windows" {
+    shell("if ($t = Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ') { $t } else { 'unknown' } #")
+} else {
+    shell("date -u '+%Y-%m-%dT%H:%M:%SZ'")
+}
+ldflags := "-X github.com/Alia5/steaminputdb.com/buddy-app/version.Version=" + version + " -X github.com/Alia5/steaminputdb.com/buddy-app/version.Commit=" + commit + " -X github.com/Alia5/steaminputdb.com/buddy-app/version.BuildTime=" + build_time
+build_path := join(dist_dir, binary_name + exe_ext)
+run_built_cmd := if os_family() == "windows" { "& '" + build_path + "'" } else { "'" + build_path + "'" }
+win_resource_cmd := if os_family() == "windows" {
+    if is_windows_wsl_unc == "true" {
+        "wsl.exe go run github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest -64 -o cmd/steaminputdb-buddy/resource.syso versioninfo.json"
+    } else {
+        "go run github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest -64 -o cmd/steaminputdb-buddy/resource.syso versioninfo.json"
+    }
+} else {
+    "go run github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest -64 -o cmd/steaminputdb-buddy/resource.syso versioninfo.json"
+}
+prepare_windows_resource_cmd := if target_goos == "windows" { "just win-resource" } else { "true" }
+build_backend_cmd := if os_family() == "windows" {
+    if is_windows_wsl_unc == "true" {
+        "wsl.exe GOOS=" + target_goos + " GOARCH=" + target_goarch + " go build -ldflags \"" + ldflags + "\" -o " + build_path + " " + main_pkg
+    } else {
+        "$env:GOOS='" + target_goos + "'; $env:GOARCH='" + target_goarch + "'; go build -ldflags \"" + ldflags + "\" -o " + build_path + " " + main_pkg
+    }
+} else {
+    "GOOS=" + target_goos + " GOARCH=" + target_goarch + " go build -ldflags \"" + ldflags + "\" -o " + build_path + " " + main_pkg
+}
+
+run:
+    go run {{ main_pkg }}
+
+run-built:
+    {{ run_built_cmd }}
+
+dev:
+    air
+
+win-resource:
+    {{ win_resource_cmd }}
+
+build-buddy:
+    {{ prepare_windows_resource_cmd }}
+    {{ mkdir_p }} {{ dist_dir }}
+    {{ build_backend_cmd }}
+
+build: build-buddy
+
+clean:
+    -{{ rm_rf }} {{ dist_dir }}
+    go clean
+
+test:
+    go test -v ./...
+
+fmt:
+    go fmt ./...
+
+lint:
+    go vet ./...

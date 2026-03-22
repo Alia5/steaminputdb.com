@@ -3,6 +3,7 @@ package configs
 import (
 	"time"
 
+	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 )
 
@@ -42,23 +43,23 @@ type Request struct {
 }
 
 type ConfigItem struct {
-	Title                    *string         `json:"title" example:"My Awesome Config"`
-	Description              *string         `json:"description" example:"An awesome configuration for an awesome game"`
-	AppID                    *uint32         `json:"app_id,omitempty,omitzero" example:"420"`
-	AppIDString              *string         `json:"app_id_string" example:"420" doc:"AppID as string or name for Non-Steam Games"`
-	FileID                   *uint64         `json:"file_id" example:"1234567890"`
-	FileName                 *string         `json:"file_name" example:"controllerconfig.vdf"`
-	FileURL                  *string         `json:"file_url" example:"https://cdn.steamusercontent.com/ugc/UGCID/HASH"`
-	FileSize                 *uint64         `json:"file_size" example:"2048" doc:"File size in bytes"`
-	CreatorID                string          `json:"creator_id" example:"76561198000000000" doc:"Steam User ID of the configuration creator"`
-	ControllerType           *ControllerType `json:"controller_type,omitempty,omitzero" example:"controller_steamcontroller_gordon" doc:"Type of controller this configuration is designed for"`
-	ControllerTypeNice       string          `json:"controller_type_nice,omitempty,omitzero" example:"Steam Controller (2015)" doc:"Human-friendly name of the controller type"`
-	ControllerNative         bool            `json:"controller_native,omitempty,omitzero" example:"true" doc:"Unsure"`
-	TimeCreated              time.Time       `json:"time_created"`
-	TimeUpdated              time.Time       `json:"time_updated"`
-	LifetimePlaytimeSeconds  *uint64         `json:"lifetime_playtime_seconds" example:"4474585092" doc:"Total playtime in seconds"`
-	LifetimePlaytimeSessions *uint64         `json:"lifetime_playtime_sessions" example:"1234" doc:"Total number of playtime sessions"`
-	Subscriptions            *uint32         `json:"subscriptions" example:"1500" doc:"Total number of Downloads"`
+	Title                    *string                    `json:"title" example:"My Awesome Config"`
+	Description              *string                    `json:"description" example:"An awesome configuration for an awesome game"`
+	AppID                    *uint32                    `json:"app_id,omitempty,omitzero" example:"420"`
+	AppIDString              *string                    `json:"app_id_string" example:"420" doc:"AppID as string or name for Non-Steam Games"`
+	FileID                   *uint64                    `json:"file_id" example:"1234567890"`
+	FileName                 *string                    `json:"file_name" example:"controllerconfig.vdf"`
+	FileURL                  *string                    `json:"file_url" example:"https://cdn.steamusercontent.com/ugc/UGCID/HASH"`
+	FileSize                 *uint64                    `json:"file_size" example:"2048" doc:"File size in bytes"`
+	CreatorID                string                     `json:"creator_id" example:"76561198000000000" doc:"Steam User ID of the configuration creator"`
+	ControllerType           *steamtypes.ControllerType `json:"controller_type,omitempty,omitzero" example:"controller_steamcontroller_gordon" doc:"Type of controller this configuration is designed for"`
+	ControllerTypeNice       string                     `json:"controller_type_nice,omitempty,omitzero" example:"Steam Controller (2015)" doc:"Human-friendly name of the controller type"`
+	ControllerNative         bool                       `json:"controller_native,omitempty,omitzero" example:"true" doc:"Unsure"`
+	TimeCreated              time.Time                  `json:"time_created"`
+	TimeUpdated              time.Time                  `json:"time_updated"`
+	LifetimePlaytimeSeconds  *uint64                    `json:"lifetime_playtime_seconds" example:"4474585092" doc:"Total playtime in seconds"`
+	LifetimePlaytimeSessions *uint64                    `json:"lifetime_playtime_sessions" example:"1234" doc:"Total number of playtime sessions"`
+	Subscriptions            *uint32                    `json:"subscriptions" example:"1500" doc:"Total number of Downloads"`
 
 	Votes struct {
 		Score *float32 `json:"score" example:"4.5" doc:"Average vote score"`

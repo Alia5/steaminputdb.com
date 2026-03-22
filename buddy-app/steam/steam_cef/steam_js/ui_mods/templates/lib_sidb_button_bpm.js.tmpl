@@ -1,0 +1,220 @@
+(() => {
+    let override = {{ .Override }};
+    if (window.__sidbOpenButtonObserver) {
+        if (override) {
+            window.__sidbOpenButtonObserver.disconnect();
+        } else {
+            return;
+        }
+    }
+
+    const ATTR = 'data-sidb-open-button-injected';
+
+    const wpChunk = window.webpackChunksteamui ?? window.opener?.webpackChunksteamui;
+    if (!wpChunk) {
+        console.error('webpackChunksteamui not found');
+        return;
+    }
+
+    const modules = new Map();
+    let wpRequire;
+    wpChunk.push([[Symbol('sidb')], {}, (r) => { wpRequire = r; }]);
+    Object.keys(wpRequire.m).forEach((mid) => {
+        try {
+            const m = wpRequire(mid);
+            if (m) {
+                modules.set(mid, m);
+            }
+        } catch (e) {}
+    });
+
+    const findModule = (filter) => {
+        let found;
+        modules.forEach((m) => {
+            if (found) {
+                return;
+            }
+            if (m.default && filter(m.default)) {
+                found = m.default;
+            } else if (filter(m)) {
+                found = m;
+            }
+        });
+        return found;
+    };
+
+    const findModuleExport = (filter) => {
+        let found;
+        modules.forEach((m) => {
+            if (found) {
+                return;
+            }
+            [m.default, m].forEach((mod) => {
+                if (found || typeof mod !== 'object' || !mod) {
+                    return;
+                }
+                Object.keys(mod).forEach((key) => {
+                    if (found) {
+                        return;
+                    }
+                    try {
+                        if (mod[key] && filter(mod[key])) {
+                            found = mod[key];
+                        }
+                    } catch (e) {}
+                });
+            });
+        });
+        return found;
+    };
+
+    let injectRunning = false;
+    const inject = () => {
+        if (injectRunning) {
+            return;
+        }
+        injectRunning = true;
+
+        const containers = [
+            ...(
+                [...document.querySelectorAll('.SVGIcon_BigPicture')]
+                .map(el => el.closest('[role="button"]')?.parentElement?.parentElement)
+                ??
+                [...document.querySelectorAll('path[d^="M33 20.38V15.62"]')]
+                .map(el => el.closest('[role="button"]')?.parentElement?.parentElement)
+            ),
+        ].filter(Boolean);
+
+        containers.forEach((container) => {
+            if (container.querySelector(`[${ATTR}]`)) {
+                if (override) {
+                    container.querySelector(`[${ATTR}]`).remove();
+                } else {
+                    return;
+                }
+            }
+
+            const React = findModule((m) => m.createElement && m.Fragment && m.Component);
+            if (!React) {
+                console.error('React not found');
+                return;
+            }
+
+            const Focusable = findModuleExport((e) => {
+                const str = (typeof e === 'function' ? e?.toString?.() : e?.render?.toString?.()) ?? '';
+                return /flow-children/.test(str) && /onActivate/.test(str) && /focusClassName/.test(str);
+            });
+            if (!Focusable) {
+                console.error('Focusable not found');
+                return;
+            }
+
+            const getFiber = (el) => el?.[Object.keys(el).find((k) => k.startsWith('__reactFiber'))];
+
+            const rerender = (fiber) => {
+                let sf = fiber?.return;
+                while (sf && !sf.memoizedState?.queue?.dispatch) {
+                    sf = sf.return;
+                }
+                sf?.memoizedState?.queue?.dispatch?.((x) => x);
+            };
+
+            const patchFiber = (parentEl, childElement, insertIdx) => {
+                let fiber = getFiber(parentEl);
+                while (fiber && typeof fiber.type !== 'function') {
+                    fiber = fiber.return;
+                }
+                if (!fiber) {
+                    return null;
+                }
+                const orig = fiber.type;
+                fiber.type = function (...args) {
+                    const ret = orig.apply(this, args);
+                    try {
+                        const children = Array.isArray(ret?.props?.children)
+                            ? [...ret.props.children]
+                            : [ret?.props?.children];
+                        children.splice(insertIdx, 0, childElement);
+                        return { ...ret, props: { ...ret.props, children } };
+                    } catch (e) {
+                        return ret;
+                    }
+                };
+                Object.assign(fiber.type, orig);
+                fiber.type.toString = () => orig.toString();
+                if (fiber.alternate) {
+                    fiber.alternate.type = fiber.type;
+                }
+                rerender(fiber);
+                return () => {
+                    fiber.type = orig;
+                    if (fiber.alternate) {
+                        fiber.alternate.type = orig;
+                    }
+                    rerender(fiber);
+                };
+            };
+
+            const existingBtn = container.querySelector('[role="button"]');
+            const btnClassName = existingBtn?.className ?? '';
+
+            const openSidb = () => {
+                try {
+                    const appIdPath = window.opener.SteamUIStore.ActiveWindowInstance.m_locationPathname;
+                    const appId = Number.parseInt(
+                        appIdPath.split("/").find((p) => Number.isInteger(Number.parseInt(p, 10))) ?? "0",
+                        10
+                    );
+                    const displayName = (
+                        window.opener.appDetailsStore.m_mapAppData?.get(appId)?.details?.strDisplayName
+                    );
+                    const isNonSteam = (
+                        !!window.opener.appDetailsStore.m_mapAppData?.get(appId)?.details?.strShortcutExe
+                    );
+                    if (isNonSteam) {
+                        window.opener.open(`https://steaminputdb.com/app/${encodeURIComponent(displayName)}?buddy-app=enabled`);
+                        return;
+                    }
+                    window.opener.open(`https://steaminputdb.com/app/${appId}?buddy-app=enabled`);
+                } catch (e) {
+                    console.error(e);
+                    window.opener.open("https://steaminputdb.com/config/search?buddy-app=enabled");
+                }
+            };
+
+            const panel = React.createElement('div', {
+                className: 'Panel',
+                [ATTR]: '1',
+                key: '__sidb',
+            },
+                React.createElement(Focusable, {
+                    className: btnClassName,
+                    onClick: openSidb,
+                    onActivate: openSidb,
+                    'aria-label': 'SteamInputDB',
+                },
+                    React.createElement('span', {
+                        dangerouslySetInnerHTML: { __html: `{{.Logo}}` },
+                    })
+                )
+            );
+
+            patchFiber(container, panel, 1);
+        });
+        override = false;
+        setTimeout(() => { injectRunning = false; }, 200);
+    };
+
+    inject();
+
+    const observer = new MutationObserver(() => {
+        setTimeout(inject, 50);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    window.__sidbOpenButtonObserver = observer;
+    window.__sidbCleanup = (window.__sidbCleanup || []).concat(() => {
+        observer.disconnect();
+        document.querySelectorAll(`[${ATTR}]`)?.forEach(el => el.remove());
+    });
+})();

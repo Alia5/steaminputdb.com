@@ -214,6 +214,12 @@ export default defineConfig(
                 "proseWrap": "preserve",
                 "plugins": ["prettier-plugin-svelte"],
             }],
+            '@typescript-eslint/no-unused-vars': ['error', {
+                varsIgnorePattern: '^_',
+                argsIgnorePattern: '^_',
+                caughtErrorsIgnorePattern: '^_',
+
+            }],
         }
     },
     {

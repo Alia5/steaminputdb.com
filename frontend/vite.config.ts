@@ -12,9 +12,10 @@ import { defineConfig } from 'vitest/config';
 const chromiumPath = (() =>existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined
 )();
 
+let svgoPrefixIdsCount = 0;
 export default defineConfig({
     server: {
-        allowedHosts: ['host.docker.internal', '*']
+        allowedHosts: ['host.docker.internal','steaminputdb.local','dev.local', '*']
     },
     plugins: [
         devtoolsJson(),
@@ -27,7 +28,20 @@ export default defineConfig({
                 './src/lib/assets/',
                 './src/lib/components/layout_preview/controllers/',
                 './src/lib/components/layout_preview/glyphs/'
-            ]
+            ],
+            svgoOptions: {
+                plugins: [
+                    'preset-default',
+                    {
+                        name: 'prefixIds',
+                        params: {
+                            delim: '',
+                            prefix: () => svgoPrefixIdsCount++
+                        }
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as any
+                ]
+            }
         }),
         Icons({
             compiler: 'svelte',

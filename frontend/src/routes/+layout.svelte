@@ -4,7 +4,13 @@ import favicon from '$lib/assets/favicon.svg?url';
 import Footer from '$lib/components/Footer.svelte';
 import Header from '$lib/components/header/Header.svelte';
 
+import { browser } from '$app/environment';
 import { page } from '$app/state';
+import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
+import { toast } from '$lib/toaster/toaster.svelte';
+import { onMount, type Snippet } from 'svelte';
+import { quadIn, quadOut } from 'svelte/easing';
+import { slide } from 'svelte/transition';
 import 'unfonts.css';
 import { links } from 'unplugin-fonts/head';
 import '../css/main.pcss';
@@ -28,7 +34,31 @@ onNavigate((navigation) => {
 		});
 	});
 });
+
+onMount(() => {
+	if (browser && page.data.buddyAppEnabled && !page.route.id?.includes('(buddy-app)')) {
+		BuddyState.pingBuddy(fetch).then((reachable) => {
+			if (!reachable) {
+				toast({
+					snippet: failedToReachBuddy as Snippet,
+					color: 'firebrick'
+				});
+			}
+		});
+	}
+});
 </script>
+
+{#snippet failedToReachBuddy({ color }: { color: string })}
+	<div
+		role="alert"
+		style="--color: {color}"
+		in:slide|global={{ duration: 196, delay: 196, easing: quadOut }}
+		out:slide|global={{ duration: 196, easing: quadIn }}>
+		<strong style="font-size: 1.4em; margin-bottom: 0.5em;">Failed to reach SteamInputDB-Buddy</strong>
+		<p>Is SteamInputDB-Buddy running and your browser allowed to make requests to "localhost"?</p>
+	</div>
+{/snippet}
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
@@ -54,6 +84,14 @@ onNavigate((navigation) => {
 		title="SteamInputDB" />
 	<meta property="og:url" content={page.url.toString()} />
 	<meta property="og:site_name" content="SteamInputDB" />
+	<style>
+	body,
+	main,
+	header,
+	footer {
+		transition: all var(--transition-duration) var(--default-ease);
+	}
+	</style>
 </svelte:head>
 
 <Header />
@@ -64,7 +102,7 @@ onNavigate((navigation) => {
 :global(body) {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
-	min-height: 100dvh;
+	min-height: 100svh;
 	max-width: 100dvw;
 }
 

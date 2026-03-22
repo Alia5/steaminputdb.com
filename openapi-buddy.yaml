@@ -1,0 +1,836 @@
+components:
+  schemas:
+    AppInfo:
+      additionalProperties: false
+      properties:
+        app_type:
+          format: int64
+          type: integer
+        appid:
+          format: int32
+          minimum: 0
+          type: integer
+        bitfield_supported_languages:
+          type: string
+        canonicalAppType:
+          format: int64
+          type: integer
+        display_name:
+          type: string
+        display_name_elanguage:
+          format: int64
+          type: integer
+        header_filename:
+          type: string
+        icon_hash:
+          type: string
+        library_capsule_filename:
+          type: string
+        local_cache_version:
+          format: int64
+          type: integer
+        metacritic_score:
+          format: int64
+          type: integer
+        minutes_playtime_forever:
+          format: int64
+          type: integer
+        minutes_playtime_last_two_weeks:
+          format: int64
+          type: integer
+        most_available_clientid:
+          type: string
+        number_of_copies:
+          format: int64
+          type: integer
+        per_client_data:
+          items:
+            $ref: "#/components/schemas/PerClientData"
+          type:
+            - array
+            - "null"
+        review_percentage_with_bombs:
+          format: int64
+          type: integer
+        review_percentage_without_bombs:
+          format: int64
+          type: integer
+        review_score_with_bombs:
+          format: int64
+          type: integer
+        review_score_without_bombs:
+          format: int64
+          type: integer
+        rt_last_time_played:
+          format: int64
+          type: integer
+        rt_last_time_played_or_installed:
+          format: int64
+          type: integer
+        rt_original_release_date:
+          format: int64
+          type: integer
+        rt_purchased_time:
+          format: int64
+          type: integer
+        rt_recent_activity_time:
+          format: int64
+          type: integer
+        rt_steam_release_date:
+          format: int64
+          type: integer
+        rt_store_asset_mtime:
+          format: int64
+          type: integer
+        selected_clientid:
+          type: string
+        sort_as:
+          type: string
+        steam_hw_compat_category_packed:
+          format: int64
+          type: integer
+        subscribed_to:
+          type: boolean
+        visible_in_game_list:
+          type: boolean
+      required:
+        - app_type
+        - appid
+        - bitfield_supported_languages
+        - canonicalAppType
+        - display_name
+        - display_name_elanguage
+        - header_filename
+        - icon_hash
+        - library_capsule_filename
+        - local_cache_version
+        - metacritic_score
+        - minutes_playtime_forever
+        - minutes_playtime_last_two_weeks
+        - most_available_clientid
+        - number_of_copies
+        - per_client_data
+        - review_percentage_with_bombs
+        - review_percentage_without_bombs
+        - review_score_with_bombs
+        - review_score_without_bombs
+        - rt_last_time_played
+        - rt_last_time_played_or_installed
+        - rt_original_release_date
+        - rt_purchased_time
+        - rt_recent_activity_time
+        - rt_steam_release_date
+        - rt_store_asset_mtime
+        - selected_clientid
+        - sort_as
+        - steam_hw_compat_category_packed
+        - subscribed_to
+        - visible_in_game_list
+      type: object
+    AppResponse:
+      additionalProperties: false
+      properties:
+        appid:
+          examples:
+            - 250900
+          format: int32
+          minimum: 0
+          type: integer
+        installed:
+          type: boolean
+        isNonSteam:
+          type: boolean
+        name:
+          examples:
+            - "The Binding of Isaac: Rebirth"
+          type: string
+      required:
+        - appid
+        - name
+        - installed
+        - isNonSteam
+      type: object
+    ApplyConfigArgs:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/ApplyConfigArgs.json
+          format: uri
+          readOnly: true
+          type: string
+        appId:
+          format: int32
+          minimum: 0
+          type: integer
+        controllerIndex:
+          format: int64
+          type: integer
+        workshopItemId:
+          type: string
+      required:
+        - appId
+        - controllerIndex
+        - workshopItemId
+      type: object
+    CEFStatusResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/CEFStatusResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        cefDebugEnableFilePresent:
+          type: boolean
+        cefRemoteDebugReachable:
+          type: boolean
+        steamPath:
+          type: string
+        steamRunning:
+          type: boolean
+      required:
+        - steamRunning
+        - steamPath
+        - cefDebugEnableFilePresent
+        - cefRemoteDebugReachable
+      type: object
+    ControllerInfo:
+      additionalProperties: false
+      properties:
+        bBluetooth:
+          type: boolean
+        bCharging:
+          type: boolean
+        bHaptics:
+          type: boolean
+        bHasTouchscreen:
+          type: boolean
+        bIMUOneEuroFilter:
+          type: boolean
+        bLeftStickTouchDisablesLeftTrackPad:
+          type: boolean
+        bNintendoLayout:
+          type: boolean
+        bRemoteDevice:
+          type: boolean
+        bRightStickTouchDisablesRightTrackPad:
+          type: boolean
+        bSWAntiDrift:
+          type: boolean
+        bUseReversedLayout:
+          type: boolean
+        bUseUniversalFaceButtonGlyphs:
+          type: boolean
+        bWireless:
+          type: boolean
+        eControllerStyle:
+          format: int64
+          type: integer
+        eControllerType:
+          format: int64
+          type: integer
+        ePlayerSlotLEDSetting:
+          format: int64
+          type: integer
+        eRumblePreference:
+          format: int64
+          type: integer
+        flAccelerometerStationaryTolerance:
+          format: double
+          type: number
+        flGyroStationaryTolerance:
+          format: double
+          type: number
+        flLEDBrightness:
+          format: int64
+          type: integer
+        flLEDSaturation:
+          format: int64
+          type: integer
+        flLPadPressureCurve:
+          format: int64
+          type: integer
+        flRPadPressureCurve:
+          format: int64
+          type: integer
+        nAuxCapSenseHysteresis:
+          format: int64
+          type: integer
+        nAuxCapSenseThreshold:
+          format: int64
+          type: integer
+        nControllerIndex:
+          format: int64
+          type: integer
+        nLEDColorB:
+          format: int32
+          minimum: 0
+          type: integer
+        nLEDColorG:
+          format: int32
+          minimum: 0
+          type: integer
+        nLEDColorR:
+          format: int32
+          minimum: 0
+          type: integer
+        nLHapticStrength:
+          format: int64
+          type: integer
+        nLStickDeadzone:
+          format: int64
+          type: integer
+        nRHapticStrength:
+          format: int64
+          type: integer
+        nRStickDeadzone:
+          format: int64
+          type: integer
+        nTurnOffSound:
+          format: int64
+          type: integer
+        nTurnOnSound:
+          format: int64
+          type: integer
+        nXInputIndex:
+          format: int64
+          type: integer
+        strChipID:
+          type: string
+        strFirmwareBuildTime:
+          type: string
+        strName:
+          type: string
+        strSerialNumber:
+          type: string
+        ucBatteryLevel:
+          format: int32
+          minimum: 0
+          type: integer
+        unCapabilities:
+          type: string
+        unProductID:
+          format: int32
+          minimum: 0
+          type: integer
+        unVendorID:
+          format: int32
+          minimum: 0
+          type: integer
+        vecMacAddrs:
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+      required:
+        - strName
+        - eControllerType
+        - eControllerStyle
+        - nXInputIndex
+        - nControllerIndex
+        - eRumblePreference
+        - bWireless
+        - unVendorID
+        - unProductID
+        - unCapabilities
+        - strFirmwareBuildTime
+        - strSerialNumber
+        - strChipID
+        - flLEDBrightness
+        - flLEDSaturation
+        - nTurnOnSound
+        - nTurnOffSound
+        - nLEDColorR
+        - nLEDColorG
+        - nLEDColorB
+        - nLStickDeadzone
+        - nRStickDeadzone
+        - bHaptics
+        - bSWAntiDrift
+        - bIMUOneEuroFilter
+        - nLHapticStrength
+        - nRHapticStrength
+        - flLPadPressureCurve
+        - flRPadPressureCurve
+        - bLeftStickTouchDisablesLeftTrackPad
+        - bRightStickTouchDisablesRightTrackPad
+        - ePlayerSlotLEDSetting
+        - bNintendoLayout
+        - bUseReversedLayout
+        - bUseUniversalFaceButtonGlyphs
+        - flGyroStationaryTolerance
+        - flAccelerometerStationaryTolerance
+        - nAuxCapSenseThreshold
+        - nAuxCapSenseHysteresis
+        - bRemoteDevice
+        - bBluetooth
+        - vecMacAddrs
+        - ucBatteryLevel
+        - bCharging
+        - bHasTouchscreen
+      type: object
+    ControllerResponse:
+      additionalProperties: false
+      properties:
+        index:
+          format: int64
+          type: integer
+        name:
+          examples:
+            - Owl Controller
+          type: string
+        type:
+          examples:
+            - controller_steamcontroller_gordon
+          type: string
+        typeId:
+          examples:
+            - 2
+          format: int64
+          type: integer
+        typeNice:
+          examples:
+            - Steam Controller (2015)
+          type: string
+      required:
+        - name
+        - typeId
+        - type
+        - typeNice
+        - index
+      type: object
+    ErrorDetail:
+      additionalProperties: false
+      properties:
+        location:
+          description: Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
+          type: string
+        message:
+          description: Error message text
+          type: string
+        value:
+          description: The value at the given location
+      type: object
+    ErrorModel:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/ErrorModel.json
+          format: uri
+          readOnly: true
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          examples:
+            - Property foo is required but is missing.
+          type: string
+        errors:
+          description: Optional list of individual error details
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+          type:
+            - array
+            - "null"
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem.
+          examples:
+            - https://example.com/error-log/abc123
+          format: uri
+          type: string
+        status:
+          description: HTTP status code
+          examples:
+            - 400
+          format: int64
+          type: integer
+        title:
+          description: A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+          examples:
+            - Bad Request
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference to human-readable documentation for the error.
+          examples:
+            - https://example.com/errors/example
+          format: uri
+          type: string
+      type: object
+    OpenConfiguratorArgs:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/OpenConfiguratorArgs.json
+          format: uri
+          readOnly: true
+          type: string
+        appId:
+          format: int32
+          minimum: 0
+          type: integer
+      required:
+        - appId
+      type: object
+    PerClientData:
+      additionalProperties: false
+      properties:
+        client_name:
+          type: string
+        clientid:
+          type: string
+        display_status:
+          format: int64
+          type: integer
+        installed:
+          type: boolean
+        is_available_on_current_platform:
+          type: boolean
+        status_percentage:
+          format: int64
+          type: integer
+      required:
+        - clientid
+        - client_name
+        - display_status
+        - is_available_on_current_platform
+      type: object
+    Ping:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/Ping.json
+          format: uri
+          readOnly: true
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+      required:
+        - service
+        - version
+      type: object
+    SettingsBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/SettingsBody.json
+          format: uri
+          readOnly: true
+          type: string
+        addBigPictureUIEntries:
+          type: boolean
+        addDesktopUIEntries:
+          type: boolean
+        autoStart:
+          type: boolean
+        desktopUseSteamBrowser:
+          type: boolean
+        steamWaitTimeout:
+          format: duration
+          type: string
+      type: object
+info:
+  title: SteamInputDB Buddy API
+  version: dev
+openapi: 3.1.0
+paths:
+  /v1/ping:
+    get:
+      description: Health check and basic information
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ping"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Ping
+      tags:
+        - meta
+  /v1/settings:
+    get:
+      description: Get the current application settings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettingsBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get Settings
+      tags:
+        - settings
+    put:
+      description: Update application settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              properties:
+                $schema:
+                  description: A URL to the JSON Schema for this object.
+                  examples:
+                    - http://localhost:5119/schemas/SettingsBody.json
+                  format: uri
+                  readOnly: true
+                  type: string
+                addBigPictureUIEntries:
+                  type: boolean
+                addDesktopUIEntries:
+                  type: boolean
+                autoStart:
+                  type: boolean
+                desktopUseSteamBrowser:
+                  type: boolean
+                steamWaitTimeout:
+                  format: duration
+                  type: string
+              type: object
+        description: Settings to update
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettingsBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Update Settings
+      tags:
+        - settings
+  /v1/settings/reset:
+    post:
+      description: Reset application settings to defaults
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettingsBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Reset Settings
+      tags:
+        - settings
+  /v1/steam/apply_config:
+    post:
+      description: Apply a workshop controller configuration for a given app and controller
+      parameters:
+        - explode: false
+          in: query
+          name: openConfigurator
+          schema:
+            default: false
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyConfigArgs"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Apply Controller Config
+      tags:
+        - steam
+  /v1/steam/apps:
+    get:
+      description: Retrieve information about Steam apps
+      parameters:
+        - explode: false
+          in: query
+          name: nonSteamOnly
+          schema:
+            default: false
+            type: boolean
+        - explode: false
+          in: query
+          name: installedOnly
+          schema:
+            default: false
+            type: boolean
+        - explode: false
+          in: query
+          name: raw
+          schema:
+            default: false
+            type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - items:
+                      $ref: "#/components/schemas/AppResponse"
+                    type:
+                      - array
+                      - "null"
+                  - items:
+                      $ref: "#/components/schemas/AppInfo"
+                    type:
+                      - array
+                      - "null"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get Steam Apps
+      tags:
+        - steam
+  /v1/steam/controllers:
+    get:
+      description: Retrieve information about connected Steam Controllers
+      parameters:
+        - explode: false
+          in: query
+          name: raw
+          schema:
+            default: false
+            type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - items:
+                      $ref: "#/components/schemas/ControllerResponse"
+                    type:
+                      - array
+                      - "null"
+                  - items:
+                      $ref: "#/components/schemas/ControllerInfo"
+                    type:
+                      - array
+                      - "null"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get Steam Controllers
+      tags:
+        - steam
+  /v1/steam/execute_js:
+    post:
+      description: Execute JavaScript code in the context of the Steam Client
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              contentMediaType: application/octet-stream
+              format: binary
+              type: string
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type:
+                  - string
+                  - "null"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Execute JavaScript in Steam Client
+      tags:
+        - steam
+  /v1/steam/open_configurator:
+    post:
+      description: Open the Steam Controller Configurator for a given app
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenConfiguratorArgs"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Open Controller Configurator
+      tags:
+        - steam
+  /v1/steam/status:
+    get:
+      description: Steam Client information and connection status to CEF Remote Debugging
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CEFStatusResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Steam Client connection status
+      tags:
+        - steam
+servers:
+  - description: Local API
+    url: http://localhost:5119

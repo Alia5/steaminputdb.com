@@ -1,0 +1,56 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  enable:
+  - errcheck
+  - govet
+  - ineffassign
+  - staticcheck
+  - unused
+  - misspell
+  - revive
+  - unconvert
+  - unparam
+
+  settings:
+    errcheck:
+      check-blank: false
+      check-type-assertions: false
+
+    staticcheck:
+      checks:
+      - all
+      - -SA1029
+      - -ST1000
+
+    revive:
+      rules:
+      - name: package-comments
+        disabled: true
+      - name: exported
+        disabled: true
+
+  exclusions:
+    presets: []
+    rules:
+    - path: _test\.go
+      linters:
+      - errcheck
+      - staticcheck
+
+formatters:
+  enable:
+  - gofmt
+
+  settings:
+    gofmt:
+      simplify: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

@@ -94,7 +94,6 @@ if (browser) {
 <style lang="postcss">
 main {
 	position: relative;
-	isolation: isolate;
 	display: grid;
 	padding: 1em 0;
 
@@ -124,7 +123,6 @@ div {
 	min-width: 50%;
 	--max-width: 1440px;
 	max-width: min(100%, var(--max-width));
-	isolation: isolate;
 	/* container: main / inline-size;*/
 	:global(> :first-child) {
 		width: 100%;

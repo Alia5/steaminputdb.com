@@ -1,0 +1,5 @@
+{
+    "go.lintFlags": [
+			"-c", ".golangci.yml"
+    ]
+}

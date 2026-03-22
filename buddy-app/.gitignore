@@ -1,0 +1,15 @@
+.DS_Store
+*.exe
+*.dylib
+*.so
+*.swp
+*.swo
+*~
+.vscode/
+dist/
+*.db
+*.log
+
+# Windows version info resources
+resource.syso
+versioninfo.tmp.json

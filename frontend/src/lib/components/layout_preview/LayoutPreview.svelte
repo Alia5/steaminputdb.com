@@ -18,6 +18,8 @@ import { controllerForType } from './controllers/controllerForType.svelte';
 import { glyphFor } from './glyphs/glyphFor.svelte';
 import { decodeGyroButtons, mergeLayerInputs, niceInputName } from './helper';
 
+import IconHelp from '~icons/material-symbols/help-outline';
+
 const {
 	vdfLink
 }: {
@@ -526,7 +528,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 					arrowFollowCursor: true
 				})}>
 				<em>Beta</em>
-				<Icon icon="material-symbols:help-outline" width="1.6em" />
+				<IconHelp style="width: 1.6em; height: 1.6em;" />
 			</p>
 			<label for="controller-type">
 				<span>Controller-Type:</span>

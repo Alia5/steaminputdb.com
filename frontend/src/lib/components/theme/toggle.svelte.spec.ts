@@ -151,7 +151,7 @@ describe('ThemeToggle', () => {
             }
 
 
-            unmount();
+            await unmount();
             vi.unstubAllGlobals();
             vi.restoreAllMocks();
         });

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Alia5/steaminputdb.com/api/search/configs"
 	"github.com/Alia5/steaminputdb.com/api/steam/filedetails"
+	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2/humatest"
 	"github.com/stretchr/testify/assert"
@@ -48,7 +48,7 @@ func TestFileDetails(t *testing.T) {
 							VotesDown: new(uint32(5)),
 						},
 						Tags: []*steamapi.PublishedFileDetails_Tag{
-							{Tag: new(string(configs.ControllerTypeXboxOne))},
+							{Tag: new(string(steamtypes.ControllerTypeXboxOne))},
 							{Tag: new("controller_native")},
 						},
 						Kvtags: []*steamapi.PublishedFileDetails_KVTag{

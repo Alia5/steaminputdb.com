@@ -1,0 +1,3 @@
+window.ControllerStore.m_controllerList.map((c) =>
+    JSON.parse(JSON.stringify(c, (_, val) => typeof val === 'bigint' ? val.toString() : val))
+);

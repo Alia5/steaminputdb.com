@@ -25,7 +25,6 @@ jobs:
             mode: release
             tag_name: ${{ github.ref_name }}
 
-
     create-release:
         name: Create Release
         needs: [build, generate-changelog]
@@ -35,6 +34,35 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
+
+            - name: Download all artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  path: artifacts
+
+            - name: Collect buddy-app release files
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  mkdir -p release_files
+                  for dir in artifacts/*; do
+                      if [ -d "$dir" ]; then
+                          base="$(basename "$dir")"
+                          if [[ "$base" == Buddy-* ]]; then
+                              for file in "$dir"/*; do
+                                  if [ -f "$file" ]; then
+                                      cp "$file" "release_files/$(basename "$file")"
+                                  fi
+                              done
+                          fi
+                      fi
+                  done
+                  if [ -z "$(ls -A release_files)" ]; then
+                      echo "ERROR: No buddy-app artifacts found for release" >&2
+                      ls -la artifacts || true
+                      exit 1
+                  fi
+                  ls -la release_files
 
             - name: Extract build info
               id: build_info
@@ -47,8 +75,8 @@ jobs:
                   echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
                   GIT_VERSION=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always || echo "")
                   if [[ ! $GIT_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-                    COMMIT_COUNT=$(git rev-list --count HEAD)
-                    GIT_VERSION="v0.0.0-${COMMIT_COUNT}-${GITHUB_SHA:0:7}"
+                      COMMIT_COUNT=$(git rev-list --count HEAD)
+                      GIT_VERSION="v0.0.0-${COMMIT_COUNT}-${GITHUB_SHA:0:7}"
                   fi
                   echo "version=$GIT_VERSION" >> $GITHUB_OUTPUT
                   echo "Version from git: $GIT_VERSION"
@@ -58,7 +86,7 @@ jobs:
               uses: softprops/action-gh-release@v1
               with:
                   tag_name: ${{ steps.build_info.outputs.tag_name }}
-                  name: "steaminputdb.com ${{ steps.build_info.outputs.version }}"
+                  name: "SteamInputDB Buddy ${{ steps.build_info.outputs.version }}"
                   body: |
                       ${{ needs.generate-changelog.outputs.changelog }}
                   files: release_files/*

@@ -3,14 +3,22 @@ export { sectionHead };
 </script>
 
 <script lang="ts">
+import { browser } from '$app/environment';
+
 import { resolve } from '$app/paths';
 
 import type { components } from '$lib/api/openapi';
 import { tooltip } from '$lib/attachments/tooltip.svelte';
+import { client } from '$lib/buddy-api/client';
+import type { components as buddyComponents } from '$lib/buddy-api/openapi';
+import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
 import { assetUrlBase, communityUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
 import { fade, slide } from 'svelte/transition';
+import IconDownload from '~icons/mdi/download';
+import IconSteam from '~icons/mdi/steam';
+import BuddyApplyButton from './BuddyApplyButton.svelte';
 </script>
 
 {#snippet sectionHead({
@@ -86,33 +94,68 @@ import { fade, slide } from 'svelte/transition';
 							</p>
 						{:else}
 							<b>You must own the game</b>
-							<em>Please note that Steam often bugs out when using this feature...</em>
-							<p>In the worst case, you must restart Steam</p>
 						{/if}
+						<em>Please note that Steam often bugs out when using this feature...</em>
+						<p>In the worst case, you must restart Steam</p>
+						<br />
+						<strong
+							>Alternatively, you should consider installing the
+							<a href="https://steaminputdb.com/buddy-app/install">SteamInputDB Buddy App</a>
+							for better and direct Steam integration</strong>
+						<br />
 						<code
 							>steam://controllerconfig/{encodeURI(
 								fileInfo.app_id_string ?? ''
 							)}/{fileInfo.file_id}</code>
 					</div>
 				{/snippet}
-				<a
-					href={`steam://controllerconfig/${encodeURI(fileInfo.app_id_string ?? '')}/${fileInfo.file_id}`}
-					class="button blue"
-					{@attach tooltip({
-						snippet: tooltipContent,
-						snippetInDefaultBackground: true,
-						outDelay: 200,
-						arrow: true,
-						arrowFollowCursor: true
-					})}>
-					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
-					<span>Preview | Apply</span>
-				</a>
+				{#snippet defaultPreviewLinkButton()}
+					<a
+						href={`steam://controllerconfig/${encodeURI(fileInfo.app_id_string ?? '')}/${fileInfo.file_id}`}
+						class="button blue"
+						{@attach tooltip({
+							snippet: tooltipContent,
+							snippetInDefaultBackground: true,
+							outDelay: 200,
+							arrow: true,
+							arrowFollowCursor: true
+						})}>
+						<IconSteam style="width: 1.4em; height: 1.4em;" />
+						<span>Preview | Apply</span>
+					</a>
+				{/snippet}
+				{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
+					<svelte:boundary pending={defaultPreviewLinkButton} failed={defaultPreviewLinkButton}>
+						{@const controllers = (
+							await client.GET('/v1/steam/controllers').then((r) => {
+								if (r.error) {
+									throw r.error;
+								}
+								return r;
+							})
+						).data as buddyComponents['schemas']['ControllerResponse'][]}
+						{@const apps = (
+							await client.GET('/v1/steam/apps').then((r) => {
+								if (r.error) {
+									throw r.error;
+								}
+								return r;
+							})
+						).data as buddyComponents['schemas']['AppResponse'][]}
+						<BuddyApplyButton
+							fileInfo={fileInfo}
+							appInfo={appInfo}
+							controllers={controllers}
+							apps={apps} />
+					</svelte:boundary>
+				{:else}
+					{@render defaultPreviewLinkButton()}
+				{/if}
 			{/if}
 
-			{#if fileInfo.file_url}
+			{#if fileInfo.file_url && !(browser && navigator?.userAgent?.includes('Steam Gamepad'))}
 				<a href={fileInfo.file_url} class="button" rel="external">
-					<Icon icon="mdi:download" width="1.4em" height="1.4em" />
+					<IconDownload style="width: 1.4em; height: 1.4em;" />
 					<span>Download .vdf</span>
 				</a>
 			{/if}

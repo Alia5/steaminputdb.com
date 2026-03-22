@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Alia5/steaminputdb.com/api/search/configs"
 	"github.com/Alia5/steaminputdb.com/api/steam/filedetails"
+	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2/humatest"
 )
@@ -58,7 +58,7 @@ func BenchmarkFileDetailsInfo(b *testing.B) {
 								VotesDown: new(uint32(5)),
 							},
 							Tags: []*steamapi.PublishedFileDetails_Tag{
-								{Tag: new(string(configs.ControllerTypeXboxOne))},
+								{Tag: new(string(steamtypes.ControllerTypeXboxOne))},
 								{Tag: new("controller_native")},
 							},
 							Kvtags: []*steamapi.PublishedFileDetails_KVTag{

@@ -7,6 +7,7 @@ import { cubicInOut } from 'svelte/easing';
 import type { HTMLFormAttributes } from 'svelte/elements';
 import { fade, slide } from 'svelte/transition';
 
+import { browser } from '$app/environment';
 import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
 import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
@@ -15,6 +16,14 @@ import Gordon from '$lib/assets/steam_controller_type_svgs/steam.svg?component';
 import SwitchPro from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
 import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component';
 import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
+import { client } from '$lib/buddy-api/client';
+import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
+import IconXboxOne from '~icons/fluent/xbox-controller-24-filled';
+import IconGameIconsSpartanHelmet from '~icons/game-icons/spartan-helmet';
+import IconMdiCellPhone from '~icons/mdi/cellphone';
+import IconMdiGamepad from '~icons/mdi/gamepad';
+import IconSimpleIconsRepublicOfGamers from '~icons/simple-icons/republicofgamers';
+import IconSD from '~icons/simple-icons/steamdeck';
 
 let {
 	showAdvancedFilters = true,
@@ -43,6 +52,111 @@ let {
 	showTotalCount?: boolean | number;
 	enhanceParams?: Parameters<typeof enhance>[1];
 } & HTMLFormAttributes = $props();
+
+const CONTROLLER_LIST = [
+	{
+		type: 'controller_triton',
+		icon: Triton,
+		niceName: 'Steam Controller'
+	},
+	{
+		type: 'controller_steamcontroller_gordon',
+		icon: Gordon,
+		niceName: 'Steam Controller (2015)'
+	},
+	{
+		type: 'controller_neptune',
+		icon: IconSD,
+		niceName: 'Steam Deck'
+	},
+	{
+		type: 'controller_ps5',
+		icon: PS5,
+		niceName: 'DualSense'
+	},
+	{
+		type: 'controller_ps4',
+		icon: PS4,
+		niceName: 'DualShock 4'
+	},
+	{
+		type: 'controller_xbox360',
+		icon: XBox,
+		niceName: 'Xbox 360'
+	},
+	{
+		type: 'controller_xboxone',
+		icon: IconXboxOne,
+		niceName: 'Xbox One'
+	},
+	{
+		type: 'controller_xboxelite',
+		icon: IconXboxOne,
+		niceName: 'Xbox Elite'
+	},
+	{
+		type: 'controller_switch_pro',
+		icon: SwitchPro,
+		niceName: 'Switch Pro'
+	},
+	{
+		type: 'controller_8bitdo',
+		icon: EightBitDo,
+		niceName: '8BitDo'
+	},
+	{
+		type: 'controller_generic',
+		icon: IconMdiGamepad,
+		niceName: 'Generic'
+	},
+	{
+		type: 'controller_steamcontroller_headcrab',
+		icon: Gordon,
+		niceName: 'Steam Controller (Headcrab)'
+	},
+	{
+		type: 'controller_ps5_edge',
+		icon: PS5,
+		niceName: 'DualSense Edge'
+	},
+	{
+		type: 'controller_ps3',
+		icon: IconMdiGamepad,
+		niceName: 'DualShock 3'
+	},
+	{
+		type: 'controller_hori_steam',
+		icon: Hori,
+		niceName: 'HoriPad Steam'
+	},
+	{
+		type: 'controller_mobile_touch',
+		icon: IconMdiCellPhone,
+		niceName: 'Mobile Touch'
+	},
+	{
+		type: 'controller_rog_ally',
+		icon: IconSimpleIconsRepublicOfGamers,
+		niceName: 'ASUS ROG Ally'
+	},
+	{
+		type: 'controller_legion_go_s',
+		icon: IconGameIconsSpartanHelmet,
+		niceName: 'Lenovo Legion Go S'
+	}
+] as const;
+
+// const connectedControllersPromise = $derived(
+// 	browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable
+// 		? client.GET('/v1/steam/controllers').then((r) => {
+// 				toast({
+// 					message: 'Prefiltered connected controllers',
+// 					color: 'var(--card-color)'
+// 				});
+// 				return r;
+// 			})
+// 		: undefined
+// );
 
 const changeSubmitHandler = () => {
 	if (submitOnChange) {
@@ -140,131 +254,46 @@ let showMoreControllers = $state(false);
 			disabled={disabled}>
 			<legend><span>Controller Type</span></legend>
 
-			<label for="controller_triton">
-				<input
-					type="radio"
-					id="controller_triton"
-					name="controller_type"
-					value="controller_triton"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Triton width="1.2em" />
-				<span> Steam Controller </span>
-			</label>
-			<label for="controller_steamcontroller_gordon">
-				<input
-					type="radio"
-					id="controller_steamcontroller_gordon"
-					name="controller_type"
-					value="controller_steamcontroller_gordon"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Gordon width="1.2em" />
-				<span> Steam Controller (2015) </span>
-			</label>
+			{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
+				<svelte:boundary pending={defaultControllerList} failed={defaultControllerList}>
+					{@const connectedControllers = (await client.GET('/v1/steam/controllers')) as {
+						data: {
+							type: string;
+						}[];
+					}}
+					{#if connectedControllers.data?.length}
+						{@render controllerList({
+							filter: connectedControllers.data.map(
+								(c) =>
+									CONTROLLER_LIST.find((cl) => cl.type === c.type)?.type ??
+									'controller_generic'
+							),
+							type: 'include'
+						})}
+					{:else}
+						{@render defaultControllerList()}
+					{/if}
+				</svelte:boundary>
+			{:else}
+				{@render defaultControllerList()}
+			{/if}
 
-			<label for="controller_neptune">
-				<input
-					type="radio"
-					id="controller_neptune"
-					name="controller_type"
-					value="controller_neptune"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="simple-icons:steamdeck" width="1.2em" />
-				<span> Steam Deck </span>
-			</label>
+			{#snippet defaultControllerList()}
+				{@render controllerList({
+					filter: [
+						'controller_mobile_touch',
+						'controller_rog_ally',
+						'controller_legion_go_s',
+						'controller_steamcontroller_headcrab',
+						'controller_hori_steam',
+						'controller_xboxelite',
+						'controller_ps5_edge',
+						'controller_ps3'
+					],
+					type: 'exclude'
+				})}
+			{/snippet}
 
-			<label for="controller_ps5">
-				<input
-					type="radio"
-					id="controller_ps5"
-					name="controller_type"
-					value="controller_ps5"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<PS5 width="1.2em" />
-				<span> DualSense </span>
-			</label>
-
-			<label for="controller_ps4">
-				<input
-					type="radio"
-					id="controller_ps4"
-					name="controller_type"
-					value="controller_ps4"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<PS4 width="1.2em" />
-				<span> DualShock 4 </span>
-			</label>
-			<label for="controller_xbox360">
-				<input
-					type="radio"
-					id="controller_xbox360"
-					name="controller_type"
-					value="controller_xbox360"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<XBox width="1.2em" />
-				<span> Xbox 360 </span>
-			</label>
-			<label for="controller_xboxone">
-				<input
-					type="radio"
-					id="controller_xboxone"
-					name="controller_type"
-					value="controller_xboxone"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
-				<span> Xbox One </span>
-			</label>
-			<label for="controller_xboxelite">
-				<input
-					type="radio"
-					id="controller_xboxelite"
-					name="controller_type"
-					value="controller_xboxelite"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
-				<span> Xbox Elite </span>
-			</label>
-			<label for="controller_switch_pro">
-				<input
-					type="radio"
-					id="controller_switch_pro"
-					name="controller_type"
-					value="controller_switch_pro"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<SwitchPro width="1.2em" />
-				<span> Switch Pro </span>
-			</label>
-			<label for="controller_8bitdo">
-				<input
-					type="radio"
-					id="controller_8bitdo"
-					name="controller_type"
-					value="controller_8bitdo"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<EightBitDo width="1.2em" />
-				<span> 8BitDo </span>
-			</label>
-
-			<label for="controller_generic">
-				<input
-					type="radio"
-					id="controller_generic"
-					name="controller_type"
-					value="controller_generic"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:gamepad" height="1.2em" />
-				<span> Generic </span>
-			</label>
 			<div class="show-more">
 				<button type="button" onclick={() => (showMoreControllers = !showMoreControllers)}>
 					<span class="show-more-text">{showMoreControllers ? 'Show Less' : 'Show More'}</span>
@@ -276,95 +305,45 @@ let showMoreControllers = $state(false);
 				</button>
 			</div>
 			{#if showMoreControllers}
-				<label
-					for="controller_steamcontroller_headcrab"
-					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_steamcontroller_headcrab"
-						name="controller_type"
-						value="controller_steamcontroller_headcrab"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<Gordon width="1.2em" />
-					<span> Steam Controller (Headcrab) </span>
-				</label>
-				<label
-					for="controller_ps5_edge"
-					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_ps5_edge"
-						name="controller_type"
-						value="controller_ps5_edge"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<PS5 width="1.2em" />
-					<span> DualSense Edge </span>
-				</label>
-				<label for="controller_ps3" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_ps3"
-						name="controller_type"
-						value="controller_ps3"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<Icon icon="iconoir:gamepad" width="1.2em" />
-					<span> DualShock 3 </span>
-				</label>
-				<label
-					for="controller_hori_steam"
-					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_hori_steam"
-						name="controller_type"
-						value="controller_hori_steam"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<Hori width="1.2em" />
-					<span> HoriPad Steam </span>
-				</label>
-				<label
-					for="controller_mobile_touch"
-					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_mobile_touch"
-						name="controller_type"
-						value="controller_mobile_touch"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<Icon icon="mdi:cellphone" width="1.2em" />
-					<span> Mobile Touch </span>
-				</label>
-				<label
-					for="controller_rog_ally"
-					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_rog_ally"
-						name="controller_type"
-						value="controller_rog_ally"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<Icon icon="simple-icons:republicofgamers" width="1.2em" />
-					<span> ASUS ROG Ally </span>
-				</label>
-				<label
-					for="controller_legion_go_s"
-					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<input
-						type="radio"
-						id="controller_legion_go_s"
-						name="controller_type"
-						value="controller_legion_go_s"
-						bind:group={values['controller_type'] as string}
-						onchange={changeSubmitHandler} />
-					<Icon icon="game-icons:spartan-helmet" width="1.2em" />
-					<span> Lenovo Legion Go S </span>
-				</label>
+				{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
+					<svelte:boundary pending={defaultControllerList} failed={defaultControllerList}>
+						{@const connectedControllers = (await client.GET('/v1/steam/controllers')) as {
+							data: {
+								type: string;
+							}[];
+						}}
+						{#if connectedControllers.data?.length}
+							{@render controllerList({
+								filter: connectedControllers.data.map(
+									(c) =>
+										CONTROLLER_LIST.find((cl) => cl.type === c.type)?.type ??
+										'controller_generic'
+								),
+								type: 'exclude'
+							})}
+						{:else}
+							{@render defaultMoreControllerList()}
+						{/if}
+					</svelte:boundary>
+				{:else}
+					{@render defaultMoreControllerList()}
+				{/if}
+
+				{#snippet defaultMoreControllerList()}
+					{@render controllerList({
+						filter: [
+							'controller_mobile_touch',
+							'controller_rog_ally',
+							'controller_legion_go_s',
+							'controller_steamcontroller_headcrab',
+							'controller_hori_steam',
+							'controller_xboxelite',
+							'controller_ps5_edge',
+							'controller_ps3'
+						],
+						type: 'include'
+					})}
+				{/snippet}
 			{/if}
 		</fieldset>
 	{/if}
@@ -413,6 +392,30 @@ let showMoreControllers = $state(false);
 			{/if}
 		</fieldset>
 	{/if}
+{/snippet}
+
+{#snippet controllerList({
+	filter,
+	type
+}: {
+	filter: `${(typeof CONTROLLER_LIST)[number]['type']}`[];
+	type: 'include' | 'exclude';
+})}
+	{#each CONTROLLER_LIST.filter((c) => {
+		return type === 'include' ? filter.includes(c.type) : !filter.includes(c.type);
+	}) as controller (controller.type)}
+		<label for={controller.type} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+			<input
+				type="radio"
+				id={controller.type}
+				name="controller_type"
+				value={controller.type}
+				bind:group={values['controller_type'] as string}
+				onchange={changeSubmitHandler} />
+			<controller.icon style="width: 1.2em; height: 1.2em;" />
+			<span> {controller.niceName} </span>
+		</label>
+	{/each}
 {/snippet}
 
 {#snippet featurefilters(bindMap: Record<string, unknown>, prefix = '')}

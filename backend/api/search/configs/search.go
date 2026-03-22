@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -189,7 +190,7 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 				if *tag.Tag == "controller_native" {
 					resultItems[i].ControllerNative = true
 				} else if strings.HasPrefix(*tag.Tag, "controller_") {
-					resultItems[i].ControllerType = (*ControllerType)(tag.Tag)
+					resultItems[i].ControllerType = (*steamtypes.ControllerType)(tag.Tag)
 				}
 			}
 		}

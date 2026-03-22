@@ -7,6 +7,9 @@
             "path": "backend"
         },
         {
+            "path": "buddy-app"
+        },
+        {
             "name": "root",
             "path": "."
         }

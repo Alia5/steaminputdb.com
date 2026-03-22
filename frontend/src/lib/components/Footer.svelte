@@ -1,6 +1,7 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
-import Icon from '@iconify/svelte';
+import IconDiscord from '~icons/simple-icons/discord';
+import IconGithub from '~icons/simple-icons/github';
 </script>
 
 <footer>
@@ -11,10 +12,12 @@ import Icon from '@iconify/svelte';
 	</div>
 	<div id="links">
 		<a href={resolve('/faq')}>FAQ</a>
-		<a href="https://discord.gg/hs34MtcHJY" target="_blank" rel="external"
-			><Icon icon="simple-icons:discord" height="2.4em" /></a>
-		<a href="https://github.com/Alia5/steaminputdb.com" target="_blank" rel="external"
-			><Icon icon="simple-icons:github" height="2.4em" /></a>
+		<a href="https://discord.gg/hs34MtcHJY" target="_blank" rel="external">
+			<IconDiscord style="font-size: 2.4em;" />
+		</a>
+		<a href="https://github.com/Alia5/steaminputdb.com" target="_blank" rel="external">
+			<IconGithub style="font-size: 2.4em;" />
+		</a>
 	</div>
 	<div>
 		<span class="c"
@@ -39,6 +42,7 @@ footer {
 	width: 100%;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: auto auto;
+	isolation: isolate;
 
 	& > :first-child {
 		display: grid;

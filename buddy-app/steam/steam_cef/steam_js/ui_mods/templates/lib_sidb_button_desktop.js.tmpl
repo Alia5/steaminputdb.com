@@ -1,0 +1,79 @@
+(() => {
+    let override = {{ .Override }};
+    if (window.__sidbOpenButtonObserver) {
+        if (override) {
+            window.__sidbOpenButtonObserver.disconnect();
+        } else {
+            return;
+        }
+    }
+    const ATTR = 'data-sidb-open-button-injected';
+
+    const openUrl = (url) => {
+        {{ if .UseSteamBrowser }}
+        window.opener.SteamUIStore.ActiveWindowInstance.m_Navigator.SteamWebTab(url)
+        {{ else }}
+        open(url);
+        {{ end }}
+    };
+
+    const inject = () => {
+        document.querySelectorAll('.SVGIcon_Settings').forEach((el) => {
+            const container = el.parentElement.parentElement.parentElement;
+            if (container.querySelector(`[${ATTR}]`)) {
+                if (override) {
+                    container.querySelector(`[${ATTR}]`).remove();
+                } else {
+                    return;
+                }
+            }
+            const node = container.children[1].cloneNode();
+            node.setAttribute(ATTR, '1');
+            node.ariaLabel = "SteamInputDB";
+            node.innerHTML = `{{.Logo}}`;
+            node.children[0].style.opacity = "0.6";
+            node.onmouseover = () => {
+                node.children[0].style.opacity = "1";
+            };
+            node.onmouseleave = () => {
+                node.children[0].style.opacity = "0.6";
+            };
+            node.onclick = () => {
+                try {
+                    const appIdPath = window.opener.SteamUIStore.ActiveWindowInstance.m_locationPathname;
+                    const appId = Number.parseInt(
+                        appIdPath.split("/").find((p) => Number.isInteger(Number.parseInt(p, 10))) ?? "0",
+                        10
+                    );
+                    const displayName = (
+                        window.opener.appDetailsStore.m_mapAppData?.get(appId)?.details?.strDisplayName
+                    );
+                    const isNonSteam = (
+                        !!window.opener.appDetailsStore.m_mapAppData?.get(appId)?.details?.strShortcutExe
+                    );
+                    if (isNonSteam) {
+                        openUrl(`https://steaminputdb.com/app/${encodeURIComponent(displayName)}?buddy-app=enabled`);
+                        return
+                    }
+                    openUrl(`https://steaminputdb.com/app/${appId}?buddy-app=enabled`);
+                } catch (e) {
+                    open("https://steaminputdb.com/config/search?buddy-app=enabled");
+                }
+            };
+            const insertIdx = container.children.length >= 4 ? 2 : 1;
+            container.insertBefore(node, container.children[insertIdx] ?? null);
+        });
+        override = false;
+    };
+
+    inject();
+
+    const observer = new MutationObserver(inject);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    window.__sidbOpenButtonObserver = observer;
+    window.__sidbCleanup = (window.__sidbCleanup || []).concat(() => {
+        observer.disconnect();
+        document.querySelectorAll(`[${ATTR}]`).forEach(el => el.remove());
+    });
+})();

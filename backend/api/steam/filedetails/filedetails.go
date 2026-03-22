@@ -13,6 +13,7 @@ import (
 
 	"github.com/Alia5/steaminputdb.com/api/memcache"
 	"github.com/Alia5/steaminputdb.com/api/search/configs"
+	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -183,7 +184,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 					if *tag.Tag == "controller_native" {
 						resultInfo.ControllerNative = true
 					} else if strings.HasPrefix(*tag.Tag, "controller_") {
-						resultInfo.ControllerType = (*configs.ControllerType)(tag.Tag)
+						resultInfo.ControllerType = (*steamtypes.ControllerType)(tag.Tag)
 					}
 				}
 				resultInfo.Tags = &tags

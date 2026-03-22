@@ -2,11 +2,19 @@ import { log } from '$lib/log';
 import type { LayoutServerLoad } from './$types';
 
 
-export const load: LayoutServerLoad = async ({ cookies }) => {
+export const load: LayoutServerLoad = async ({ cookies, url }) => {
     const res = {
-        theme: cookies.get('theme')
+        theme: cookies.get('theme'),
+        buddyAppEnabled: false
     };
 
+    if (url.toString().includes('buddy-app=enabled')) {
+        cookies.set('buddy-app', 'enabled', { path: '/', httpOnly: false });
+    }
+    if (url.toString().includes('buddy-app=disabled')) {
+        cookies.delete('buddy-app', { path: '/' });
+    }
+    res.buddyAppEnabled = cookies.get('buddy-app') === 'enabled';
 
     const token = cookies.get('token');
     if (!token) {

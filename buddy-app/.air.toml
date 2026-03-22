@@ -1,0 +1,58 @@
+#:schema https://json.schemastore.org/any.json
+
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "dist"
+env_files = [".env"]
+
+[build]
+args_bin = []
+bin = ""
+full_bin = "dist/steaminputdb-buddy"
+cmd = "just build"
+delay = 1000
+entrypoint = ["go", "run", "./cmd/steaminputdb-buddy"]
+exclude_dir = ["assets", "dist", "vendor", "testdata"]
+exclude_file = []
+exclude_regex = ["_test.go"]
+exclude_unchanged = false
+follow_symlink = false
+ignore_dangerous_root_dir = false
+include_dir = []
+include_ext = ["go", "tpl", "tmpl", "html"]
+include_file = []
+kill_delay = "0s"
+log = "build-errors.log"
+poll = true
+poll_interval = 500
+post_cmd = []
+pre_cmd = []
+rerun = false
+rerun_delay = 500
+send_interrupt = false
+stop_on_error = true
+
+[color]
+app = ""
+build = "yellow"
+main = "magenta"
+runner = "green"
+watcher = "cyan"
+
+[log]
+main_only = false
+silent = false
+time = true
+
+[misc]
+clean_on_exit = false
+
+[proxy]
+app_port = 0
+app_start_timeout = 0
+enabled = false
+proxy_port = 0
+
+[screen]
+clear_on_rebuild = false
+keep_scroll = true

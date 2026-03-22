@@ -39,6 +39,15 @@ export function swipeend(e: CustomEvent<SwipeEndEventDetail>) {
 	}
 }
 
+const onkeydown = (event: KeyboardEvent) => {
+	if (!open) {
+		return;
+	}
+	if (event.code === 'Escape') {
+		open = !open;
+	}
+};
+
 export function setScrimOpacityMulti(multi: number) {
 	scrim_opa_multi = multi;
 }
@@ -49,7 +58,7 @@ beforeNavigate(async () => {
 let HTMLDialog = $state<HTMLDialogElement>()!;
 </script>
 
-<svelte:window onkeypress={onkeypress} />
+<svelte:window onkeydown={onkeydown} />
 
 {#if open}
 	<dialog
@@ -72,6 +81,7 @@ dialog[open] {
 	height: 100%;
 	border: none;
 	background: transparent;
+	isolation: unset;
 	&::after {
 		content: '';
 		transition: none;

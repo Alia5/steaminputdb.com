@@ -1,11 +1,10 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
-import SC2 from '$lib/assets/SC2_Alt.svg?component';
+import Logo from '$lib/assets/logo.svg?component';
 import { intersectionObserver } from '$lib/attachments/intersectionObserver.svelte';
 import { setStylePropertyCallback } from '$lib/attachments/setStylePropertyCallback.svelte';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
-import Icon from '@iconify/svelte';
 import { swipeable } from '@svelte-put/swipeable';
 import { cubicIn, cubicOut } from 'svelte/easing';
 import { fly } from 'svelte/transition';
@@ -24,6 +23,12 @@ const SHOW_THRESHOLD_PX = 72;
 const HIDE_THRESHOLD_PX = 72;
 
 let searchShowsResults = $state(false);
+
+import IconNews from '~icons/material-symbols/news-rounded';
+import IconAccount from '~icons/mdi/account';
+import IconLogout from '~icons/mdi/logout';
+import IconSearch from '~icons/mdi/magnify';
+import IconMenu from '~icons/mdi/menu';
 </script>
 
 <svelte:window
@@ -69,7 +74,7 @@ let searchShowsResults = $state(false);
 		true
 	)}>
 	<a class="home" href={resolve('/')}>
-		<SC2 height="1.6em" />
+		<Logo height="1.6em" />
 		<span>SteamInputDB</span>
 	</a>
 	<button
@@ -79,7 +84,7 @@ let searchShowsResults = $state(false);
 			modal.toggle();
 		}}
 		aria-label="Menu">
-		<Icon icon="mdi:menu" width="100%" height="100%" />
+		<IconMenu style="width: 100%; height: 100%;" />
 		{#if page.url.pathname.endsWith('/search')}
 			<span>SteamInputDB</span>
 		{/if}
@@ -123,7 +128,7 @@ let searchShowsResults = $state(false);
 		onswipeend={modal.swipeend}>
 		<div>
 			<a class="home" href={resolve('/')}>
-				<SC2 height="1.6em" />
+				<Logo height="1.6em" width="1.6em" />
 				<span>SteamInputDB</span>
 			</a>
 			<Themetoggle />
@@ -133,11 +138,11 @@ let searchShowsResults = $state(false);
 			{#if page.data.steamId}
 				<div class="separator"></div>
 				<a href={resolve(`/user/${page.data.steamId}`)}>
-					<Icon icon="mdi:account" width="1.4em" height="1.4em" />
+					<IconAccount style="width: 1.4em; height: 1.4em;" />
 					<span>My Profile</span>
 				</a>
 				<a href={resolve(`/logout`)}>
-					<Icon icon="mdi:logout" width="1.4em" height="1.4em" />
+					<IconLogout style="width: 1.4em; height: 1.4em;" />
 					<span>Logout</span>
 				</a>
 			{/if}
@@ -147,11 +152,11 @@ let searchShowsResults = $state(false);
 
 {#snippet navcontent()}
 	<a href={resolve('/news')} onclick={() => modal.close()}>
-		<Icon icon="material-symbols:news-rounded" width="1.4em" />
+		<IconNews style="font-size: 1.4em;" />
 		<span>News</span>
 	</a>
 	<a href={resolve('/config/search')} onclick={() => modal.close()}>
-		<Icon icon="mdi:magnify" width="1.4em" />
+		<IconSearch style="font-size: 1.4em;" />
 		<span>Advanced Search</span>
 	</a>
 {/snippet}
@@ -253,6 +258,13 @@ header {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		width: 100%;
+	}
+
+	&:hover,
+	&:focus-visible {
+		:global(path) {
+			fill: var(--color-primary) !important;
+		}
 	}
 }
 

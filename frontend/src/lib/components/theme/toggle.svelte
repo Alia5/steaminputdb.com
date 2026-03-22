@@ -6,8 +6,10 @@ export const themeSelection = $state({
 
 <script lang="ts">
 import { page } from '$app/state';
-import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
+
+import PhMoon from '~icons/ph/moon';
+import PhSun from '~icons/ph/sun';
 
 if (themeSelection.darkMode === undefined) {
 	themeSelection.darkMode = page.data.theme === 'dark';
@@ -71,9 +73,11 @@ onMount(() => {
 		aria-label="Theme Toggle" />
 	<div class="icon {themeSelection.darkMode ? 'checked' : ''}">
 		{#if themeSelection.darkMode}
-			<Icon icon="ph:moon" width="1.2em" height="1.2em" />
+			<!-- <Icon icon="ph:moon" width="1.2em" height="1.2em" /> -->
+			<PhMoon />
 		{:else}
-			<Icon icon="ph:sun" width="1.2em" height="1.2em" />
+			<!-- <Icon icon="ph:sun" width="1.2em" height="1.2em" /> -->
+			<PhSun />
 		{/if}
 	</div>
 </div>
