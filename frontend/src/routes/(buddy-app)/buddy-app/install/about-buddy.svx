@@ -6,7 +6,8 @@ With SteamInputDB-Buddy, you can:
 
 - Directly apply configurations to a specific controller
 - Apply configurations to different games than the original configuration  
-<sup style="margin-top: 0.25em;"><em>(Think of Applying configurations from [GAME part 1] to [Game part <strong style="color: var(--highlight-color);">2</strong>] <strong>or</strong> non-Steam games)</em></sup>
+<sup style="margin-top: 0.25em;"><em>(Think of Applying configurations from [GAME part 1] to [Game part <strong style="color: var(--highlight-color);">2</strong>] <strong>or</strong> non-Steam games)</em></sup>  
+<enhanced:img src="$lib/assets/buddy-app/advanced-apply.png?w=1280;640;400" alt="Advanced apply dialog" style="margin-top: 0.25em; margin-bottom: 0.25em;" />  
 
 - Integrated buttons in your Steam library, (Steam Desktop **and** Big Picture mode) to directly browse configurations   
 <enhanced:img src="$lib/assets/buddy-app/desktop-button.png" alt="Library Button" style="margin-top: 0.25em; margin-bottom: 0.25em;" />  
