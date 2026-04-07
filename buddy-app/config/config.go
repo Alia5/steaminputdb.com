@@ -14,7 +14,7 @@ type Config struct {
 
 type API struct {
 	ListenAddress string `help:"API server listen address" default:"localhost:5119" env:"STEAMINPUTDB_BUDDY_LISTEN_ADDRESS"`
-	CORSOrigins   string `help:"CORS allowed origins" default:"https://steaminputdb.com" env:"STEAMINPUTDB_BUDDY_CORS_ORIGINS"`
+	CORSOrigins   string `help:"CORS allowed origins" default:"https://steaminputdb.com,https://www.steaminputdb.com" env:"STEAMINPUTDB_BUDDY_CORS_ORIGINS"`
 }
 
 type Steam struct {
