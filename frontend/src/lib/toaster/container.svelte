@@ -23,7 +23,7 @@ export const TOAST_POSITIONS = [
 
 <style lang="postcss">
 [data-toast-container] {
-	position: absolute;
+	position: fixed;
 	inset: 0;
 	pointer-events: none;
 	display: grid;
