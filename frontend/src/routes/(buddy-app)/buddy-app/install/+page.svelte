@@ -118,10 +118,10 @@ const fetchReleases = async () => {
 				{@attach selectAllHandler()}
 				style="border: none; box-shadow: none; outline: none; user-select: all; background: transparent; width: 100%; display: block; font-size: 1.2em; padding: 0.5em 1em;">
 				{#if isWindows}
-					irm https://www.steaminputdb.com/buddy-app/install/install.ps1 | iex
+					irm https://www.steaminputdb.com/buddy-app/install.ps1 | iex
 				{/if}
 				{#if isLinux}
-					curl -L https://www.steaminputdb.com/buddy-app/install/install.sh | sh
+					curl -L https://www.steaminputdb.com/buddy-app/install.sh | sh
 				{/if}
 			</code>
 		</div>
