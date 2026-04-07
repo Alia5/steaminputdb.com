@@ -10,6 +10,7 @@ import { browser } from '$app/environment';
 import IcoAlert from '~icons/mdi/alert';
 import IcoGitHub from '~icons/mdi/github';
 import IcoLinux from '~icons/mdi/linux';
+import IcoSteam from '~icons/mdi/steam';
 import IcoWindows from '~icons/mdi/windows';
 
 interface GitHubRelease {
@@ -87,6 +88,15 @@ const fetchReleases = async () => {
 	<section id="about-buddy">
 		<AboutBuddy />
 	</section>
+	<p class="box alert card glass">
+		<strong class="card glass"><IcoSteam /> Steam<em>Beta</em>Update required!</strong>
+		<span>
+			The <em>Steam <strong>Beta</strong> Update</em> is required in order for SteamUnitDB-Buddy to be
+			functional.
+			<br />
+			You can opt-into the beta in your Steam Client settings under <em>Interface</em>.
+		</span>
+	</p>
 	<section id="install">
 		<h2>Downloads | Installation</h2>
 		{#if isLinux}
@@ -103,7 +113,6 @@ const fetchReleases = async () => {
 				? 'Powershell'
 				: 'your terminal'}.
 		</p>
-		<br />
 		<div class="box card glass">
 			<strong class="card glass">
 				{#if isWindows}
@@ -125,7 +134,7 @@ const fetchReleases = async () => {
 				{/if}
 			</code>
 		</div>
-		<h3>Downloads</h3>
+		<h3>Direct Downloads</h3>
 
 		<div class="stacked">
 			<svelte:boundary pending={spinner}>
@@ -239,6 +248,7 @@ main {
 	display: grid;
 	place-items: center;
 	gap: 1em;
+	width: 100%;
 	& p {
 		margin-bottom: 0.25em;
 	}
@@ -256,6 +266,9 @@ main {
 	--heading-color: color(from var(--color-primary) srgb r g b / 0.33);
 	border: 1px solid var(--box-color);
 	overflow: hidden;
+	white-space: normal;
+	width: min(100%, 80ch);
+	justify-self: center;
 
 	& > :first-child {
 		background-color: var(--heading-color);
@@ -268,6 +281,11 @@ main {
 		& :global(svg) {
 			color: var(--box-color);
 		}
+		width: 100%;
+	}
+	display: grid;
+	& code {
+		text-align: center;
 	}
 	& > :last-child {
 		padding: 1em;
