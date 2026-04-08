@@ -8,22 +8,10 @@ import type { HTMLFormAttributes } from 'svelte/elements';
 import { fade, slide } from 'svelte/transition';
 
 import { browser } from '$app/environment';
-import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
-import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
-import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
-import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
-import Gordon from '$lib/assets/steam_controller_type_svgs/steam.svg?component';
-import SwitchPro from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
-import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component';
-import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
-import { client } from '$lib/buddy-api/client';
+import { goto } from '$app/navigation';
+import { page } from '$app/state';
 import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
-import IconXboxOne from '~icons/fluent/xbox-controller-24-filled';
-import IconGameIconsSpartanHelmet from '~icons/game-icons/spartan-helmet';
-import IconMdiCellPhone from '~icons/mdi/cellphone';
-import IconMdiGamepad from '~icons/mdi/gamepad';
-import IconSimpleIconsRepublicOfGamers from '~icons/simple-icons/republicofgamers';
-import IconSD from '~icons/simple-icons/steamdeck';
+import { CONTROLLER_LIST } from './controllerlist.svelte';
 
 let {
 	showAdvancedFilters = true,
@@ -53,117 +41,40 @@ let {
 	enhanceParams?: Parameters<typeof enhance>[1];
 } & HTMLFormAttributes = $props();
 
-const CONTROLLER_LIST = [
-	{
-		type: 'controller_triton',
-		icon: Triton,
-		niceName: 'Steam Controller'
-	},
-	{
-		type: 'controller_steamcontroller_gordon',
-		icon: Gordon,
-		niceName: 'Steam Controller (2015)'
-	},
-	{
-		type: 'controller_neptune',
-		icon: IconSD,
-		niceName: 'Steam Deck'
-	},
-	{
-		type: 'controller_ps5',
-		icon: PS5,
-		niceName: 'DualSense'
-	},
-	{
-		type: 'controller_ps4',
-		icon: PS4,
-		niceName: 'DualShock 4'
-	},
-	{
-		type: 'controller_xbox360',
-		icon: XBox,
-		niceName: 'Xbox 360'
-	},
-	{
-		type: 'controller_xboxone',
-		icon: IconXboxOne,
-		niceName: 'Xbox One'
-	},
-	{
-		type: 'controller_xboxelite',
-		icon: IconXboxOne,
-		niceName: 'Xbox Elite'
-	},
-	{
-		type: 'controller_switch_pro',
-		icon: SwitchPro,
-		niceName: 'Switch Pro'
-	},
-	{
-		type: 'controller_8bitdo',
-		icon: EightBitDo,
-		niceName: '8BitDo'
-	},
-	{
-		type: 'controller_generic',
-		icon: IconMdiGamepad,
-		niceName: 'Generic'
-	},
-	{
-		type: 'controller_steamcontroller_headcrab',
-		icon: Gordon,
-		niceName: 'Steam Controller (Headcrab)'
-	},
-	{
-		type: 'controller_ps5_edge',
-		icon: PS5,
-		niceName: 'DualSense Edge'
-	},
-	{
-		type: 'controller_ps3',
-		icon: IconMdiGamepad,
-		niceName: 'DualShock 3'
-	},
-	{
-		type: 'controller_hori_steam',
-		icon: Hori,
-		niceName: 'HoriPad Steam'
-	},
-	{
-		type: 'controller_mobile_touch',
-		icon: IconMdiCellPhone,
-		niceName: 'Mobile Touch'
-	},
-	{
-		type: 'controller_rog_ally',
-		icon: IconSimpleIconsRepublicOfGamers,
-		niceName: 'ASUS ROG Ally'
-	},
-	{
-		type: 'controller_legion_go_s',
-		icon: IconGameIconsSpartanHelmet,
-		niceName: 'Lenovo Legion Go S'
-	}
-] as const;
-
-// const connectedControllersPromise = $derived(
-// 	browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable
-// 		? client.GET('/v1/steam/controllers').then((r) => {
-// 				toast({
-// 					message: 'Prefiltered connected controllers',
-// 					color: 'var(--card-color)'
-// 				});
-// 				return r;
-// 			})
-// 		: undefined
-// );
-
 const changeSubmitHandler = () => {
 	if (submitOnChange) {
 		form!.requestSubmit();
 	}
 };
-
+$effect(() => {
+	if (!browser) {
+		return;
+	}
+	if (
+		BuddyState.connectedControllersChanged &&
+		!values['controller_type'] &&
+		BuddyState.connectedControllers?.length
+	) {
+		tick().then(() => {
+			if (values['controller_type']) {
+				return;
+			}
+			values['controller_type'] = BuddyState.connectedControllers?.[0]?.type;
+			tick().then(() => {
+				if (values['controller_type']) {
+					page.url.searchParams.set('controller_type', values['controller_type'] as string);
+					// form?.requestSubmit();
+					// eslint-disable-next-line svelte/no-navigation-without-resolve
+					goto(page.url, {
+						replaceState: true,
+						noScroll: true,
+						invalidate: [page.url]
+					});
+				}
+			});
+		});
+	}
+});
 let showMoreControllers = $state(false);
 </script>
 
@@ -213,7 +124,7 @@ let showMoreControllers = $state(false);
 	</div>
 	{#if typeof showTotalCount === 'number'}
 		<dl transition:fade={{ duration: 196, easing: cubicInOut }}>
-			<dt>Total</dt>
+			<dt>Total matching criteria</dt>
 			<dd>{showTotalCount ?? 0}</dd>
 		</dl>
 	{/if}
@@ -256,7 +167,7 @@ let showMoreControllers = $state(false);
 
 			{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
 				<svelte:boundary pending={defaultControllerList} failed={defaultControllerList}>
-					{@const connectedControllers = (await client.GET('/v1/steam/controllers')) as {
+					{@const connectedControllers = (await BuddyState.fetchConnectedControllers()) as {
 						data: {
 							type: string;
 						}[];
@@ -307,7 +218,7 @@ let showMoreControllers = $state(false);
 			{#if showMoreControllers}
 				{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
 					<svelte:boundary pending={defaultControllerList} failed={defaultControllerList}>
-						{@const connectedControllers = (await client.GET('/v1/steam/controllers')) as {
+						{@const connectedControllers = (await BuddyState.fetchConnectedControllers()) as {
 							data: {
 								type: string;
 							}[];
