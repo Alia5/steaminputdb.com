@@ -165,6 +165,18 @@
                 ? ((url) => {
                     try {
                         window.Router.WindowStore.GamepadUIMainWindowInstance.NavigateToSteamWeb(url, 'sidb', true)
+                        window.Router.WindowStore.GamepadUIMainWindowInstance.m_StoreBrowser.m_browserView.SetSteamURLCallback(
+                            (cb_url) => {
+                                console.log('NavigateToSteamWeb callback URL:', cb_url);
+                                if (cb_url.includes("https://store.steampowered.com")) {
+                                    window.Router.WindowStore.GamepadUIMainWindowInstance.NavigateToSteamWeb(
+                                        "http" + cb_url.split("http").pop(),
+                                        'sidb',
+                                        true
+                                    );
+                                }
+                            }
+                        )
                     } catch (e) {
                         (window.opener.open ?? window.open)(url);
                     }
