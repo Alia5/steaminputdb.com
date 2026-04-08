@@ -30,6 +30,10 @@ const isLinux = $derived(
 		ua.toLowerCase().includes('wayland')
 );
 const platform = $derived(isWindows ? 'windows' : isLinux ? 'linux' : 'unknown');
+const isMobile = $derived(
+	ua.toLowerCase().includes('mobile') ||
+		(navigator as unknown as { userAgentData?: { mobile?: boolean } })?.userAgentData?.mobile
+);
 
 const fetchReleases = async () => {
 	if (!browser) {
@@ -107,92 +111,112 @@ const fetchReleases = async () => {
 				</span>
 			</p>
 		{/if}
-		<h3>Automatic installation</h3>
-		<p>
-			The easiest way to get everything up and running is to run this script in {isWindows
-				? 'Powershell'
-				: 'your terminal'}.
-		</p>
-		<div class="box card glass">
-			<strong class="card glass">
-				{#if isWindows}
-					<IcoWindows />
-					Powershell
-				{:else if isLinux}
-					<IcoLinux />
-					Shell
-				{/if}
-			</strong>
-			<code
-				{@attach selectAllHandler()}
-				style="border: none; box-shadow: none; outline: none; user-select: all; background: transparent; width: 100%; display: block; font-size: 1.2em; padding: 0.5em 1em;">
-				{#if isWindows}
-					irm https://www.steaminputdb.com/buddy-app/install.ps1 | iex
-				{/if}
-				{#if isLinux}
-					curl -L https://www.steaminputdb.com/buddy-app/install.sh | sh
-				{/if}
-			</code>
-		</div>
-		<h3>Direct Downloads</h3>
-
-		<div class="stacked">
-			<svelte:boundary pending={spinner}>
-				{@const releases = await fetchReleases()}
-				{@const stable = releases.stable}
-				{@const prerelease = releases.prerelease}
-				{@const stableAsset = stable?.assets?.find((a) => a.name.toLowerCase().includes(platform))}
-				{@const prereleaseAsset = prerelease?.assets?.find((a) =>
-					a.name.toLowerCase().includes(platform)
-				)}
-				<div transition:fade={{ duration: 196 }} style="display: grid; gap: 1em;">
-					{#if stableAsset}
-						<a
-							href={stableAsset.browser_download_url}
-							target="_blank"
-							rel="external"
-							style="background-color: color(from var(--color-primary) srgb r g b / 0.7);"
-							class="button">
-							{#if isWindows}
-								<IcoWindows />
-							{:else if isLinux}
-								<IcoLinux />
-							{/if}
-							Download <em>({stable?.tag_name})</em>
-						</a>
-					{:else if stable}
-						<a href={stable.html_url} target="_blank" rel="external" class="button">
-							<IcoGitHub />
-							View on GitHub
-						</a>
+		{#if !isMobile}
+			<h3>Automatic installation</h3>
+			<p>
+				The easiest way to get everything up and running is to run this script in {isWindows
+					? 'Powershell'
+					: 'your terminal'}.
+				<br />
+				<!-- eslint-disable prettier/prettier -->
+			This will download and install the latest release of SteamInputDB-Buddy and apply the neccessary modification to your Steam client.
+            <!-- eslint-enable prettier/prettier -->
+				<br />
+			</p>
+			<div class="box card glass">
+				<strong class="card glass">
+					{#if isWindows}
+						<IcoWindows />
+						Powershell
+					{:else if isLinux}
+						<IcoLinux />
+						Shell
 					{/if}
-
-					{#if prereleaseAsset}
-						<a
-							href={prereleaseAsset.browser_download_url}
-							target="_blank"
-							rel="external"
-							style="background-color: color(from var(--highlight-color) srgb r g b / 0.33); font-size: 1.2em;"
-							class="button">
-							{#if isWindows}
-								<IcoWindows />
-							{:else if isLinux}
-								<IcoLinux />
-							{/if}
-							Download pre-release
-						</a>
-					{:else if prerelease}
-						<a href={prerelease.html_url} target="_blank" rel="external" class="button">
-							<IcoGitHub />
-							View on GitHub
-						</a>
+				</strong>
+				<code
+					{@attach selectAllHandler()}
+					style="border: none; box-shadow: none; outline: none; user-select: all; background: transparent; width: 100%; display: block; font-size: 1.2em; padding: 0.5em 1em;">
+					{#if isWindows}
+						irm https://www.steaminputdb.com/buddy-app/install.ps1 | iex
 					{/if}
-				</div>
-				{#snippet failed()}
-					<!-- blank -->
-				{/snippet}
-			</svelte:boundary>
-		</div>
+					{#if isLinux}
+						curl -L https://www.steaminputdb.com/buddy-app/install.sh | sh
+					{/if}
+				</code>
+			</div>
+			<h3>Direct Downloads</h3>
+
+			<div class="stacked">
+				<svelte:boundary pending={spinner}>
+					{@const releases = await fetchReleases()}
+					{@const stable = releases.stable}
+					{@const prerelease = releases.prerelease}
+					{@const stableAsset = stable?.assets?.find((a) =>
+						a.name.toLowerCase().includes(platform)
+					)}
+					{@const prereleaseAsset = prerelease?.assets?.find((a) =>
+						a.name.toLowerCase().includes(platform)
+					)}
+					<div transition:fade={{ duration: 196 }} style="display: grid; gap: 1em;">
+						{#if stableAsset}
+							<a
+								href={stableAsset.browser_download_url}
+								target="_blank"
+								rel="external"
+								style="background-color: color(from var(--color-primary) srgb r g b / 0.7);"
+								class="button">
+								{#if isWindows}
+									<IcoWindows />
+								{:else if isLinux}
+									<IcoLinux />
+								{/if}
+								Download <em>({stable?.tag_name})</em>
+							</a>
+						{:else if stable}
+							<a href={stable.html_url} target="_blank" rel="external" class="button">
+								<IcoGitHub />
+								View on GitHub
+							</a>
+						{/if}
+
+						{#if prereleaseAsset}
+							<a
+								href={prereleaseAsset.browser_download_url}
+								target="_blank"
+								rel="external"
+								style="background-color: color(from var(--highlight-color) srgb r g b / 0.33); font-size: 1.2em;"
+								class="button">
+								{#if isWindows}
+									<IcoWindows />
+								{:else if isLinux}
+									<IcoLinux />
+								{/if}
+								Download pre-release
+							</a>
+						{:else if prerelease}
+							<a href={prerelease.html_url} target="_blank" rel="external" class="button">
+								<IcoGitHub />
+								View on GitHub
+							</a>
+						{/if}
+					</div>
+					{#snippet failed()}
+						<!-- blank -->
+					{/snippet}
+				</svelte:boundary>
+			</div>
+			<h3>Looking for other Platforms?</h3>
+		{:else}
+			<p>
+				It seems you are accessing this page from a mobile device.
+				<br />
+				<!-- eslint-disable prettier/prettier -->
+				SteamInputDB-Buddy provides direct integration of SteamInputDB with a running Steam Client and must therefore run on a desktop System or Steam Deck / Steam Machine.
+				<br />
+				Don't worry, you cann still browse the latest releases on GitHub
+                <!-- eslint-enable prettier/prettier -->
+			</p>
+		{/if}
 		{@render fallbackContents()}
 	</section>
 </main>
@@ -253,6 +277,7 @@ main {
 	:global(p) {
 		margin-bottom: 0.5em;
 		text-align: justify;
+		word-break: normal;
 	}
 }
 
