@@ -36,7 +36,9 @@ const defaultAppID = $derived(
 );
 
 let selectedAppID = $derived(defaultAppID ?? -1);
-let selectedController = $derived(controllers?.[0]?.index ?? -1);
+let selectedController = $derived(
+	controllers.find((c) => c.type == fileInfo.controller_type)?.index ?? controllers?.[0]?.index ?? -1
+);
 let showConfigurator = $state(true);
 let isApplyingConfig = $state(false);
 
