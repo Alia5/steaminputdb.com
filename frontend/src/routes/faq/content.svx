@@ -1,6 +1,13 @@
+<script>
+
+import Logo from '$lib/assets/logo.svg?component';
+</script>
+
 # FAQ
 
-## 🚧 Work in progress 🚧
+<div class="box warning">
+<h2>🚧 Work in progress 🚧</h2>
+</div>
 
 ## What is this?
 
@@ -35,16 +42,49 @@ At the current state, I'd call this project the absolute bare minimum viable pro
 This project is open source and available on [GitHub](https://github.com/Alia5/steaminputdb.com).  
 Feel free to contribute or open an issue if you have any suggestions or find any bugs.
 
-## How to use the configs (for a steam game)
+## How to use the configs
 
-### Semi-Automatic
+### Buddy App
+
+The easiest way to use the configs is to install the official [ <Logo style="width: 1em; height: 1em; vertical-align: middle;" /> SteamInputDB-Buddy App](https://www.steaminputdb.com/buddy-app/install).  
+It provides direct integration into the Steam client, allowing you to directly apply configurations to any game directly from the Website.
+
+If you have it installed and running, you should see an "Apply Config" button on the config page (on this website).  
+Clicking it will open a dialog, where you can select which game and which controllers you want to apply the config to.
+
+<div class="box" style="width: 100%;">
+<strong>Example</strong>
+
+<enhanced:img
+    src="$lib/assets/buddy-app/advanced-apply.png?w=1280;640;400"
+    alt="Advanced apply dialog"
+    style="margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    padding: 0.5em;
+    padding-top: 0;
+    width: 100%;
+    object-fit: contain;" />  
+</div>
+
+The buddy app works on both Desktop and Big Picture mode  
+It also works for both Steam and non-Steam games.
+
+### Without Buddy App
+
+<div class="box alert">
+<strong>Non Steam Apps</strong>
+
+Non-Steam apps will have to be renamed **to the exact same name as the _"Shortcut"_ name displayed on this website**.  
+</div>
+
+#### Semi-Automatic
 
 If you own the game on Steam, simply plugin your controller, and click the "Apply Config" button on the config page (on this website).  
 Steam should open a preview-window for the config, where you can click "Apply" again to use it.  
 
 **Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ **and** have a controller plugged-in, before it works.
 
-### Manually
+#### Manually
 
 1. Create a Steam Input config and save it **or** view a community config for the game
 2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam) (depends on the operating system you're using) go to `[steam folder]/userdata/`.  
@@ -56,30 +96,47 @@ Steam should open a preview-window for the config, where you can click "Apply" a
 4. Paste the downloaded config or replace the contents of the one that's already there.
 5. Start Steam
 
-## How to use the configs (for a non-steam game)
 
-### Semi-Automatic
+<style lang="postcss">
+.box {
+	display: grid;
+	border-radius: 0.5em;
+	padding: 0;
+	--box-color: color(from var(--text-color) srgb r g b / 0.33);
+	--heading-color: color(from var(--color-primary) srgb r g b / 0.33);
+	border: 1px solid var(--box-color);
+	overflow: hidden;
+	white-space: normal;
+	width: min(100%, 80ch);
 
-[Add your game to Steam](https://support.steampowered.com/kb_article.php?ref=2219-YDJV-5557) and rename it **to the exact same name as the _"Shortcut"_ name displayed on this website**.  
-Then click the "Apply Config" button on the config page (on this website).  
-Steam should open a preview-window for the config, where you can click "Apply" again to use it.  
+	& > :first-child {
+		background-color: var(--heading-color);
+		font-size: 1.1em;
+		padding: 0.5em;
+		border-radius: 0;
+		display: flex;
+		align-items: center;
+		gap: 1ch;
+		& :global(svg) {
+			color: var(--box-color);
+		}
+		width: 100%;
+        margin: 0;
+	}
+	display: grid;
+	& > :last-child {
+		padding: 1em;
+	}
+}
 
-**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ **and** have a controller plugged-in, before it works.
+.box.alert {
+	--box-color: firebrick;
+	--heading-color: color(from firebrick srgb r g b / 0.33);
+}
 
-### Manually
+.box.warning {
+    --box-color: goldenrod;
+    --heading-color: color(from goldenrod srgb r g b / 0.33);
+}
 
-1. [Add your game to Steam](https://support.steampowered.com/kb_article.php?ref=2219-YDJV-5557) and create a custom config.  
-  Save it.  
-  Choose a good name, so you can find it later.
-2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam)
-(depends on the operating system you're using) go to `[steam folder]/userdata/`.  
-    Then you have to choose the directory that corresponds to your user id.   
-    If there's only one, open it.  
-    Then go to `[steam folder]/userdata/[your user number]/241100/remote/controller_config`.
-3. Search for the file which name matches the config you created earlier.  
-   It should be in a folder like    
-    `[steam folder]/userdata/[your user number]/241100/remote/controller_config/[lots of letters and numbers]/[name of config]`
-4. Paste the downloaded config or replace the contents of the one that's already there.
-5. Start Steam.
-
-If you want to use a profile as a new template, just copy it to `[steam folder]/controller_base/template`.
+</style>
