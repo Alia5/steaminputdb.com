@@ -215,16 +215,18 @@ let dialogOpen = $state(false);
 	backdrop-filter: blur(6px);
 	background-color: #1a9fff;
 
-	&:hover,
-	&:focus-within {
-		background:
-			linear-gradient(
-				215deg,
-				color-mix(in srgb, var(--card-color), transparent 75%) 0%,
-				color-mix(in srgb, var(--card-color), transparent 90%) 70%
-			),
-			var(--bg-noise-transparent);
-		background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
+	& > button {
+		&:hover,
+		&:focus-within {
+			background:
+				linear-gradient(
+					215deg,
+					color-mix(in srgb, var(--card-color), transparent 75%) 0%,
+					color-mix(in srgb, var(--card-color), transparent 90%) 70%
+				),
+				var(--bg-noise-transparent);
+			background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
+		}
 	}
 
 	& > :first-child {
@@ -354,54 +356,4 @@ label:has(select) {
 	}
 	align-items: center;
 }
-
-/* :global(dialog.menu) {
-	position-anchor: --advanced-apply-button;
-	top: anchor(--advanced-apply-button bottom);
-	left: anchor(--advanced-apply-button left);
-	z-index: 999;
-
-	translate: calc(-50% + 1em) 1em;
-	padding: 0;
-
-	outline: 1px solid transparent;
-	border: none;
-	background: transparent;
-
-	opacity: 0;
-	transition: opacity var(--transition-duration) var(--default-ease) allow-discrete;
-	animation: fade-in var(--transition-duration) var(--default-ease) forwards;
-
-	&:popover-open {
-		opacity: 1;
-	}
-
-	&::backdrop {
-		opacity: 0;
-		transition: opacity var(--transition-duration) var(--default-ease) allow-discrete;
-		animation: fade-in var(--transition-duration) var(--default-ease) forwards;
-		background: var(
-			--background,
-			linear-gradient(
-				color-mix(in srgb, transparent, rgb(32, 25, 47) var(--background-opacity, 40%)),
-				color-mix(in srgb, transparent, rgb(7, 4, 11) var(--background-opacity, 55%))
-			)
-		);
-	}
-
-	isolation: isolate;
-	overflow: visible;
-	&::after {
-		content: '';
-		position: absolute;
-		width: 1em;
-		height: 1em;
-		top: -0.5em;
-		left: calc(50% - 0.5em);
-		transform: rotate(45deg);
-		background: var(--card-color);
-		z-index: -1;
-		border: 1px solid color-mix(in srgb, var(--text-color), transparent 90%);
-	}
-} */
 </style>
