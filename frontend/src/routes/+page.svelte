@@ -86,9 +86,14 @@ onMount(() => {
 					configurations
 					<strong>utilizing Steam API</strong>
 				</h1>
+				<p>
+					Providing an easy way to <strong>browse</strong>, <strong>filter</strong>,
+					<strong>share</strong>, and <strong>apply</strong> community-shared SteamInput controller layouts/configurations.
+				</p>
+				<br />
 				<p>SteamInputDB uses the same APIs as Steam itself</p>
 				<p>That means <strong>every</strong> configuration on Steam is also available here!</p>
-				<p>And yes, we have data for <strong>non-Steam</strong> games, too! 😎</p>
+				<p>And yes, it works with <strong>non-Steam</strong> games, too! 😎</p>
 			</div>
 		</div>
 		<div class="wip">

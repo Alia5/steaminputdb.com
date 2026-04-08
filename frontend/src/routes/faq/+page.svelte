@@ -51,6 +51,10 @@ div {
 		overflow: hidden;
 		padding-left: 1.5em;
 		margin-left: 0;
+		margin-bottom: 1em;
+	}
+	:global(p) {
+		margin-bottom: 0.5em;
 	}
 }
 </style>

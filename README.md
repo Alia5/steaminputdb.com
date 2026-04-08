@@ -8,12 +8,36 @@
 
 SteamInputDB is a **Steam API backed**, community Driven Database of SteamInput configurations
 
-SteamInputDB uses the same APIs as Steam itself  
-That means **every** configuration on Steam is also available here!  
-And yes, we have data for **non-Steam** games, too! 😎
+SteamInputDB makes it easier and more convenient to browse, filter, share, and apply community-shared SteamInput controller layouts/configurations.  
+
+It uses data _directly from Steam_ (via the Steam Web API) to fetch, search, and display _**every**_ configuration that has been uploaded to Steam, rather than creating a separate and fragmented system.  
+Upload your configuration _directly in Steam_, and it will be immediatly available on SteamInputDB!  
+And yes, it works with **non-Steam** games, too! 😎
+
+In the **future**, there will be even more community features, including multiple rating systems for games:  
+
+- How well does a game play with which controller?
+- Is Steam Input required for certain controllers?
+- Are gyro controls possible?  
+  Via Mouse? Native?
+
+Think of it as something similar to what [ProtonDB](https://www.protondb.com/) does for Proton compatibility, but for controller support.
+
+Using the official [SteamInputDB-Buddy App](https://www.steaminputdb.com/buddy-app/install), SteamInputDB provides direct integration into the Steam client, users can:
+
+- Use SteamInputDB directly in your Steam client  
+  - Use Steams integrated browser (Desktop and Big Picture mode)
+  - Added buttons in your Steam library (Steam Desktop and Big Picture mode) to directly browse configurations for each game  
+- Flexible "apply config" system, allowing you to directly and selectivly apply configurations to **any** game or specific controllers
+- Pre filter configurations to your connected controllers, removing UI clutter and complexity
+- And more to come! <sup style="opacity: 0.5;">(soon™)</sup>  
+
+I created this project because I think that Steams built-in sharing system does severely lack discoverability and usability.  
+At the current state, I'd call this project the absolute bare minimum viable product, but I hope more features will be added in the future.  
 
 > [!WARNING]
     Work in progress.
+
 
 > [!NOTE]
   Actively looking for contributors!  
@@ -23,7 +47,8 @@ And yes, we have data for **non-Steam** games, too! 😎
   Many Issues _need_ refinement, though. **Do not hesitate to contact me**  
   Feel free to join on my [Discord](https://discord.gg/hs34MtcHJY)  
   Messaging on the server is preferred over DMs, I get way to much spam already
- 
+
+
 ## License
 
 ```text

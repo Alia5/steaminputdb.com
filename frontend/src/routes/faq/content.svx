@@ -4,8 +4,30 @@
 
 ## What is this?
 
-This is a website that lets you query and directly link to Steam Input configurations for games.  
-It uses the Steam Web API to fetch/search and display _**every**_ configuration that has been uploaded to Steam.
+SteamInputDB makes it easier and more convenient to browse, filter, share, and apply community-shared SteamInput controller layouts/configurations.  
+
+It uses data _directly from Steam_ (via the Steam Web API) to fetch, search, and display _**every**_ configuration that has been uploaded to Steam, rather than creating a separate and fragmented system.  
+Upload your configuration _directly in Steam_, and it will be immediatly available on SteamInputDB!  
+And yes, it works with **non-Steam** games, too! 😎
+
+
+In the **future**, there will be even more community features, including multiple rating systems for games:  
+
+- How well does a game play with which controller?
+- Is Steam Input required for certain controllers?
+- Are gyro controls possible?  
+  Via Mouse? Native?
+
+Think of it as something similar to what [ProtonDB](https://www.protondb.com/) does for Proton compatibility, but for controller support.
+
+Using the official [SteamInputDB-Buddy App](https://www.steaminputdb.com/buddy-app/install), SteamInputDB provides direct integration into the Steam client, users can:
+
+- Use SteamInputDB directly in your Steam client  
+  - Use Steams integrated browser (Desktop and Big Picture mode)
+  - Added buttons in your Steam library (Steam Desktop and Big Picture mode) to directly browse configurations for each game  
+- Flexible "apply config" system, allowing you to directly and selectivly apply configurations to **any** game or specific controllers
+- Pre filter configurations to your connected controllers, removing UI clutter and complexity
+- And more to come! <sup style="opacity: 0.5;">(soon™)</sup>  
 
 I created this project because I think that Steams built-in sharing system does severely lack discoverability and usability.  
 At the current state, I'd call this project the absolute bare minimum viable product, but I hope more features will be added in the future.  
@@ -25,12 +47,12 @@ Steam should open a preview-window for the config, where you can click "Apply" a
 ### Manually
 
 1. Create a Steam Input config and save it **or** view a community config for the game
-2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam) (depends on the operating system you're using) go to `<steam foler>/userdata/`.  
+2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam) (depends on the operating system you're using) go to `[steam folder]/userdata/`.  
     Then you have to choose the directory that corresponds to your user id.  
     If there's only one, open it.  
-    Then go to  `<steam folder>/userdata/<your user number>/241100/remote/controller_config`  
+    Then go to  `[steam folder]/userdata/[your user number]/241100/remote/controller_config`  
 3. Search for the file which name matches the config you created earlier.  
-   It should be in a folder like `<steam folder>/userdata/<your user number>/241100/remote/controller_config/<steam app id>/<name of config>`
+   It should be in a folder like `[steam folder]/userdata/[your user number]/241100/remote/controller_config/[steam app id]/[name of config]`
 4. Paste the downloaded config or replace the contents of the one that's already there.
 5. Start Steam
 
@@ -50,14 +72,14 @@ Steam should open a preview-window for the config, where you can click "Apply" a
   Save it.  
   Choose a good name, so you can find it later.
 2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam)
-(depends on the operating system you're using) go to `<steam foler>/userdata/`.  
+(depends on the operating system you're using) go to `[steam folder]/userdata/`.  
     Then you have to choose the directory that corresponds to your user id.   
     If there's only one, open it.  
-    Then go to `<steam folder>/userdata/<your user number>/241100/remote/controller_config`.
+    Then go to `[steam folder]/userdata/[your user number]/241100/remote/controller_config`.
 3. Search for the file which name matches the config you created earlier.  
    It should be in a folder like    
-    `<steam folder>/userdata/<your user number>/241100/remote/controller_config/<lots of letters and numbers>/<name of config>`
+    `[steam folder]/userdata/[your user number]/241100/remote/controller_config/[lots of letters and numbers]/[name of config]`
 4. Paste the downloaded config or replace the contents of the one that's already there.
 5. Start Steam.
 
-If you want to use a profile as a new template, just copy it to `<steam folder>/controller_base/template`.
+If you want to use a profile as a new template, just copy it to `[steam folder]/controller_base/template`.

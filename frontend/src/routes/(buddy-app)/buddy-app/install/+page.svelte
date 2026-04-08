@@ -91,7 +91,7 @@ const fetchReleases = async () => {
 	<p class="box alert card glass">
 		<strong class="card glass"><IcoSteam /> Steam<em>Beta</em>Update required!</strong>
 		<span>
-			The <em>Steam <strong>Beta</strong> Update</em> is required in order for SteamUnitDB-Buddy to be
+			The <em>Steam <strong>Beta</strong> Update</em> is required in order for SteamInputDB-Buddy to be
 			functional.
 			<br />
 			You can opt-into the beta in your Steam Client settings under <em>Interface</em>.
@@ -194,6 +194,7 @@ const fetchReleases = async () => {
 			</svelte:boundary>
 		</div>
 		{@render fallbackContents()}
+		<p>You need to manually enable Steams CEF remote debugging, if not using the install script</p>
 	</section>
 </main>
 
@@ -230,16 +231,28 @@ main {
 
 	text-align: justify;
 	height: fit-content;
+
 	:global(h1),
 	:global(h2),
 	:global(h3),
 	:global(h4),
 	:global(h5),
 	:global(h6) {
-		margin-top: 1em;
-		margin-bottom: 0.5em;
+		margin-top: 0.5em;
+		margin-bottom: 0.2em;
+	}
+	:global(li) {
+		margin-bottom: 0.33em;
+	}
+	:global(ol),
+	:global(ul) {
+		overflow: hidden;
+		padding-left: 1.5em;
+		margin-left: 0;
+		margin-bottom: 1em;
 	}
 	:global(p) {
+		margin-bottom: 0.5em;
 		text-align: justify;
 	}
 }
