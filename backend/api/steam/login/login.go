@@ -56,7 +56,7 @@ type Response struct {
 	URL         string `header:"Location"`
 }
 
-const jwtValidity = time.Hour * 24
+const jwtValidity = time.Hour * 24 * 30
 
 func RegisterWithURL(a huma.API, steamURL string) {
 	registerRoutes(a, steamURL)
