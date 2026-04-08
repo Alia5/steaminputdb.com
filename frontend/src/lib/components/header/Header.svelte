@@ -24,8 +24,11 @@ const HIDE_THRESHOLD_PX = 72;
 
 let searchShowsResults = $state(false);
 
+import { browser } from '$app/environment';
+import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
 import IconNews from '~icons/material-symbols/news-rounded';
 import IconAccount from '~icons/mdi/account';
+import IconSettings from '~icons/mdi/cog';
 import IconLogout from '~icons/mdi/logout';
 import IconSearch from '~icons/mdi/magnify';
 import IconMenu from '~icons/mdi/menu';
@@ -176,6 +179,12 @@ $effect(() => {
 		<IconSearch style="font-size: 1.4em;" />
 		<span>Advanced Search</span>
 	</a>
+	{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
+		<a href={resolve('/buddy-app')} onclick={() => modal.close()}>
+			<IconSettings style="font-size: 1.4em;" />
+			<span>Buddy App Settings</span>
+		</a>
+	{/if}
 {/snippet}
 
 <style lang="postcss">
