@@ -29,10 +29,25 @@ import IconAccount from '~icons/mdi/account';
 import IconLogout from '~icons/mdi/logout';
 import IconSearch from '~icons/mdi/magnify';
 import IconMenu from '~icons/mdi/menu';
+
+let windowHeight = $state(0);
+let windowWidth = $state(0);
+
+$effect(() => {
+	if (windowHeight <= 742 && windowWidth >= windowHeight) {
+		header.style.position = 'relative';
+		header.style.removeProperty('transform');
+	} else {
+		header.style.position = 'sticky';
+	}
+});
 </script>
 
 <svelte:window
 	onscroll={() => {
+		if (windowHeight <= 742 && windowWidth >= windowHeight) {
+			return;
+		}
 		if (searchShowsResults) {
 			return;
 		}
@@ -62,7 +77,9 @@ import IconMenu from '~icons/mdi/menu';
 			downScrollDistance = 0;
 			return;
 		}
-	}} />
+	}}
+	bind:innerHeight={windowHeight}
+	bind:innerWidth={windowWidth} />
 
 <header
 	bind:this={header}
