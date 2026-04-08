@@ -194,7 +194,6 @@ const fetchReleases = async () => {
 			</svelte:boundary>
 		</div>
 		{@render fallbackContents()}
-		<p>You need to manually enable Steams CEF remote debugging, if not using the install script</p>
 	</section>
 </main>
 

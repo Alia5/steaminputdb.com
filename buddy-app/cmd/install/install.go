@@ -65,6 +65,7 @@ func Install(c *config.Install, cfg *config.Steam) error {
 
 		if created {
 			slog.Info("Steam CEF remote debug enabled successfully")
+			install.RestartSteam()
 		} else {
 			slog.Info("Steam CEF remote debug already enabled")
 		}

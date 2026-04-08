@@ -81,6 +81,7 @@ func RestartSteam() {
 	openURL("steam://exit")
 	time.Sleep(5 * time.Second)
 	openURL("steam://open/main")
+	time.Sleep(5 * time.Second)
 }
 
 func openURL(url string) {

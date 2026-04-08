@@ -463,6 +463,48 @@ components:
           format: uri
           type: string
       type: object
+    InstallRequestBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/InstallRequestBody.json
+          format: uri
+          readOnly: true
+          type: string
+        autoStart:
+          type:
+            - boolean
+            - "null"
+        defaultInstallDir:
+          type:
+            - boolean
+            - "null"
+        desktopShortcut:
+          type:
+            - boolean
+            - "null"
+        enableSteamCEF:
+          type:
+            - boolean
+            - "null"
+        installFile:
+          type:
+            - string
+            - "null"
+        startMenuShortcut:
+          type:
+            - boolean
+            - "null"
+      required:
+        - installFile
+        - defaultInstallDir
+        - autoStart
+        - enableSteamCEF
+        - desktopShortcut
+        - startMenuShortcut
+      type: object
     OpenConfiguratorArgs:
       additionalProperties: false
       properties:
@@ -548,6 +590,27 @@ info:
   version: dev
 openapi: 3.1.0
 paths:
+  /v1/install:
+    post:
+      description: Install SteamInputDB-Buddy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstallRequestBody"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Install
+      tags:
+        - install
   /v1/ping:
     get:
       description: Health check and basic information
@@ -762,35 +825,6 @@ paths:
       summary: Get Steam Controllers
       tags:
         - steam
-  /v1/steam/execute_js:
-    post:
-      description: Execute JavaScript code in the context of the Steam Client
-      requestBody:
-        content:
-          application/octet-stream:
-            schema:
-              contentMediaType: application/octet-stream
-              format: binary
-              type: string
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type:
-                  - string
-                  - "null"
-          description: OK
-        default:
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ErrorModel"
-          description: Error
-      summary: Execute JavaScript in Steam Client
-      tags:
-        - steam
   /v1/steam/open_configurator:
     post:
       description: Open the Steam Controller Configurator for a given app
@@ -831,6 +865,21 @@ paths:
       summary: Steam Client connection status
       tags:
         - steam
+  /v1/uninstall:
+    post:
+      description: Uninstall SteamInputDB-Buddy
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Uninstall
+      tags:
+        - install
 servers:
   - description: Local API
     url: http://localhost:5119

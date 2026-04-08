@@ -7,10 +7,10 @@ const BUDDY_APP_TIMEOUT_MS = 2000;
 
 const apiURL = 'http://localhost:5119';
 
-const timeoutFetch = (baseFetch: typeof fetch): typeof fetch => (input, init) =>
+const timeoutFetch = (baseFetch: typeof fetch, timeout = BUDDY_APP_TIMEOUT_MS): typeof fetch => (input, init) =>
     baseFetch(input, {
         ...init,
-        signal: AbortSignal.timeout(BUDDY_APP_TIMEOUT_MS)
+        signal: AbortSignal.timeout(timeout)
     });
 
 log.debug('Creating API client with', 'url', apiURL);
@@ -20,9 +20,9 @@ export const client = createClient<paths>({
 });
 
 
-export const clientWithSvelteFetch = (fetch: typeof window.fetch, url?: string) => createClient<paths>({
+export const clientWithSvelteFetch = (fetch: typeof window.fetch, url?: string, timeout = BUDDY_APP_TIMEOUT_MS) => createClient<paths>({
     baseUrl: url || apiURL,
-    fetch: timeoutFetch(fetch)
+    fetch: timeoutFetch(fetch, timeout)
 });
 
 export type ResponseType<

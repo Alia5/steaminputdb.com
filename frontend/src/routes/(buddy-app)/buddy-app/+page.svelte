@@ -12,7 +12,9 @@ import { clientWithSvelteFetch } from '$lib/buddy-api/client';
 import { log } from '$lib/log';
 import { toast } from '$lib/toaster/toaster.svelte';
 
+import { browser } from '$app/environment';
 import { resolve } from '$app/paths';
+import Modal from '$lib/components/Modal.svelte';
 import IconHelp from '~icons/material-symbols/help-outline';
 import IconMDIChecked from '~icons/mdi/check-circle-outline';
 import IconMDICross from '~icons/mdi/close-circle-outline';
@@ -42,6 +44,24 @@ $effect(() => {
 		document.cookie = 'buddy-app=enabled; path=/; max-age=31536000';
 	}
 });
+
+const ua = $derived<string>(browser ? navigator.userAgent : '');
+// const ua = $derived<string>('linux');
+const isWindows = $derived(ua.toLowerCase().includes('windows'));
+const isLinux = $derived(
+	ua.toLowerCase().includes('linux') ||
+		ua.toLowerCase().includes('x11') ||
+		ua.toLowerCase().includes('wayland')
+);
+
+let finishInstallModalOpen = $state(false);
+let finishInstallSettigs = $state({
+	autoStart: true,
+	desktopShortcut: true,
+	startMenuShortcut: true,
+	defaultInstallDir: true
+});
+let installPending = $state(false);
 </script>
 
 <main>
@@ -94,6 +114,8 @@ $effect(() => {
 				Make sure SteamInputDB Buddy is running, and allow SteamInputDB.com to access localhost in
 				your browser settings.
 			</p>
+			<a href={resolve('/buddy-app/install')} class="button" style="width: fit-content;"
+				>Install SteamInputDB Buddy</a>
 			<h3>Want to get rid of SteamInputDB Buddy?</h3>
 			<button
 				class="disable-buddy"
@@ -130,43 +152,61 @@ $effect(() => {
 						{/if}
 					</div>
 				{/snippet}
-				<svelte:boundary pending={spinner} failed={steamStatusFailed}>
-					{@const steamStatus = await steamClientStatus()}
-					<dl transition:fade|global={{ duration: 196 }}>
-						<dt>Connected to Steam:</dt>
-						<dd>
-							{#if steamStatus.cefRemoteDebugReachable}
-								<IconMDIChecked style="color: green; width: 1.6em; height: 1.6em;" />
-							{:else}
-								<IconMDICross style="color: firebrick; width: 1.6em; height: 1.6em;" />
-							{/if}
-						</dd>
-						<dt>Steam Directory:</dt>
-						<dd>
-							<code
-								{@attach selectAllHandler(
-									`outline: 1px solid transparent;
-                                        background: rgb(128 128 128 / 0.10);`
-								)}>{steamStatus.steamPath}</code>
-						</dd>
-						<dt>CEF Remote Debug enabled:</dt>
-						<dd>
-							{#if steamStatus.cefDebugEnableFilePresent}
-								<IconMDIChecked style="color: green; width: 1.6em; height: 1.6em;" />
-							{:else}
-								<IconMDICross style="color: firebrick; width: 1.6em; height: 1.6em;" />
-							{/if}
-						</dd>
-						<dt>Steam running:</dt>
-						<dd>
-							{#if steamStatus.steamRunning}
-								<IconMDIChecked style="color: green; width: 1.6em; height: 1.6em;" />
-							{:else}
-								<IconMDICross style="color: firebrick; width: 1.6em; height: 1.6em;" />
-							{/if}
-						</dd>
-					</dl>
-				</svelte:boundary>
+				<div class="steam-connection">
+					<svelte:boundary pending={spinner} failed={steamStatusFailed}>
+						{@const steamStatus = await steamClientStatus()}
+						{#if !steamStatus.cefRemoteDebugReachable && steamStatus.steamRunning}
+							<div>
+								<p>SteamInputDB-Buddy is running, but is not fully installed</p>
+								<button
+									style="background-color: green;"
+									onclick={() => {
+										finishInstallModalOpen = true;
+									}}>Finish | Repair installation</button>
+							</div>
+						{/if}
+						{#if !steamStatus.steamRunning}
+							<div>
+								<strong style="color: firebrick;"
+									>SteamInputDB-Buddy cannot function without Steam running</strong>
+							</div>
+						{/if}
+						<dl transition:fade|global={{ duration: 196 }}>
+							<dt>Connected to Steam:</dt>
+							<dd>
+								{#if steamStatus.cefRemoteDebugReachable}
+									<IconMDIChecked style="color: green; width: 1.6em; height: 1.6em;" />
+								{:else}
+									<IconMDICross style="color: firebrick; width: 1.6em; height: 1.6em;" />
+								{/if}
+							</dd>
+							<dt>Steam Directory:</dt>
+							<dd>
+								<code
+									{@attach selectAllHandler(
+										`outline: 1px solid transparent;
+                                            background: rgb(128 128 128 / 0.10);`
+									)}>{steamStatus.steamPath}</code>
+							</dd>
+							<dt>CEF Remote Debug enabled:</dt>
+							<dd>
+								{#if steamStatus.cefDebugEnableFilePresent}
+									<IconMDIChecked style="color: green; width: 1.6em; height: 1.6em;" />
+								{:else}
+									<IconMDICross style="color: firebrick; width: 1.6em; height: 1.6em;" />
+								{/if}
+							</dd>
+							<dt>Steam running:</dt>
+							<dd>
+								{#if steamStatus.steamRunning}
+									<IconMDIChecked style="color: green; width: 1.6em; height: 1.6em;" />
+								{:else}
+									<IconMDICross style="color: firebrick; width: 1.6em; height: 1.6em;" />
+								{/if}
+							</dd>
+						</dl>
+					</svelte:boundary>
+				</div>
 			</div>
 		</section>
 		<section class="card glass" transition:fade|global={{ duration: 196 }}>
@@ -277,6 +317,29 @@ $effect(() => {
 				</svelte:boundary>
 			</div>
 		</section>
+		<section class="card glass" transition:fade|global={{ duration: 196 }} id="uninstall">
+			<h3>Want to get rid of SteamInputDB Buddy?</h3>
+			<button
+				class="disable-buddy"
+				onclick={async () => {
+					try {
+						document.cookie = 'buddy-app=disabled; path=/; max-age=0';
+						await clientWithSvelteFetch(fetch, undefined, 30000).POST('/v1/uninstall');
+						toast({
+							message: 'SteamInputDB Buddy integration disabled',
+							color: 'orange'
+						});
+						goto(resolve('/?buddy-app=disabled'));
+					} catch (e) {
+						log.error('Failed to disable buddy', 'error', e);
+						toast({
+							message:
+								'Failed to uninstall buddy.\nYou can manually uninstall it by simply removing "%LOCALAPPDATA%\\SteamInputDB" or "~/.local/bin/steaminputdb-buddy"',
+							color: 'firebrick'
+						});
+					}
+				}}>Disable and Uninstall</button>
+		</section>
 	{/if}
 </main>
 
@@ -302,6 +365,88 @@ $effect(() => {
 	</div>
 {/snippet}
 
+<Modal bind:open={finishInstallModalOpen}>
+	<div class="card modal-card">
+		<form
+			transition:slide|global
+			inert={installPending}
+			onsubmit={(e) => {
+				e.preventDefault();
+				installPending = true;
+				clientWithSvelteFetch(fetch, undefined, 45000)
+					.POST('/v1/install', {
+						body: {
+							autoStart: finishInstallSettigs.autoStart,
+							desktopShortcut: finishInstallSettigs.desktopShortcut,
+							startMenuShortcut: finishInstallSettigs.startMenuShortcut,
+							defaultInstallDir: finishInstallSettigs.defaultInstallDir,
+							enableSteamCEF: true,
+							installFile: null
+						}
+					})
+					.then(() => {
+						finishInstallModalOpen = false;
+						toast({
+							message: 'Installation successful!',
+							color: 'green'
+						});
+					})
+					.catch((e) => {
+						log.error('Failed to install buddy', 'error', e);
+						toast({
+							message: 'Failed to install buddy',
+							color: 'firebrick'
+						});
+					})
+					.finally(() => {
+						installPending = false;
+						finishInstallModalOpen = false;
+						goto(resolve('/buddy-app'), { replaceState: true, invalidateAll: true });
+						setTimeout(() => {
+							goto(resolve('/buddy-app'), { replaceState: true, invalidateAll: true });
+						}, 5000);
+					});
+			}}>
+			<strong>Finish | Repair Installation</strong>
+			<label for="install-autoStart">Run on system startup</label>
+			<input type="checkbox" id="install-autoStart" bind:checked={finishInstallSettigs.autoStart} />
+			<label for="install-desktopShortcut">Add Desktop Shortcut</label>
+			<input
+				type="checkbox"
+				id="install-desktopShortcut"
+				bind:checked={finishInstallSettigs.desktopShortcut} />
+			<label for="install-startMenuShortcut">Add StartMenu Shortcut</label>
+			<input
+				type="checkbox"
+				id="install-startMenuShortcut"
+				bind:checked={finishInstallSettigs.startMenuShortcut} />
+			<label for="install-copyFiles" style="display: grid;">
+				<span> Copy files to default Installation directory </span>
+				<span style="opacity: 0.75; font-size: 0.9em;">
+					{#if isWindows}
+						(%LOCALAPPDATA%\SteamInputDB)
+					{:else if isLinux}
+						(~/.local/bin/steaminputdb-buddy)
+					{/if}
+				</span>
+			</label>
+			<input
+				type="checkbox"
+				id="install-copyFiles"
+				bind:checked={finishInstallSettigs.defaultInstallDir} />
+			<button type="submit">
+				{#if installPending}
+					<div transition:fade>
+						<Spinner size="1.6em" thickness="2px" />
+					</div>
+				{:else}
+					<span transition:fade>Install</span>
+				{/if}
+			</button>
+		</form>
+	</div>
+</Modal>
+
 <style lang="postcss">
 main {
 	position: relative;
@@ -318,8 +463,25 @@ main {
 	height: fit-content;
 }
 
+#uninstall {
+	display: grid;
+	gap: 1em;
+	margin-top: 1em;
+	grid-column: 1 / -1;
+}
+
 h1 {
 	margin-bottom: 0.6em;
+}
+
+.steam-connection {
+	display: grid;
+	gap: 1em;
+	& > :first-child {
+		display: grid;
+		gap: 1em;
+		width: fit-content;
+	}
 }
 
 .center {
@@ -449,7 +611,8 @@ form.settings {
 	}
 }
 
-button:not(.plain) {
+button:not(.plain),
+.button:not(.plain) {
 	color: var(--text-color-dark);
 	font-weight: bold;
 	background:
@@ -483,6 +646,56 @@ code {
 	&:hover,
 	&:focus-visible {
 		color: var(--text-color-dark) !important;
+	}
+}
+
+.modal-card {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	translate: -50% -50%;
+
+	padding: 0;
+
+	& > form {
+		padding: 2em 4em;
+		display: grid;
+		grid-template-columns: auto auto;
+		gap: 1em;
+
+		button[type='submit'] {
+			display: grid;
+			grid-template-areas: 'stack';
+			place-items: center;
+			& > * {
+				grid-area: stack;
+			}
+			width: min(100%, 16ch);
+		}
+
+		& > :first-child {
+			grid-column: 1/-1;
+			margin-right: auto;
+			font-size: 1.2em;
+			margin-bottom: 1em;
+		}
+		& > :last-child {
+			grid-column: 1/-1;
+			display: grid;
+			margin-left: auto;
+			grid-auto-flow: column;
+			gap: 2em;
+			margin-top: 1em;
+		}
+		&[inert] {
+			& input {
+				opacity: 0.5;
+			}
+			& button {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
 	}
 }
 </style>

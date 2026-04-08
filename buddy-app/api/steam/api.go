@@ -2,7 +2,6 @@ package steam
 
 import (
 	"github.com/Alia5/steaminputdb.com/buddy-app/api/steam/apply_config"
-	"github.com/Alia5/steaminputdb.com/buddy-app/api/steam/execute_js"
 	"github.com/Alia5/steaminputdb.com/buddy-app/api/steam/get_apps"
 	"github.com/Alia5/steaminputdb.com/buddy-app/api/steam/get_controllers"
 	"github.com/Alia5/steaminputdb.com/buddy-app/api/steam/open_configurator"
@@ -21,5 +20,5 @@ func RegisterRoutes(a huma.API, dal *db.DAL, cfg *appconfig.Config) {
 	apply_config.RegisterRoutes(a, dal, cfg)
 
 	// DO NOT REGISTER THIS IN PROD BUILDS! ONLY USE FOR DEBUGGING!!!!
-	execute_js.RegisterRoutes(a, dal, cfg)
+	// execute_js.RegisterRoutes(a, dal, cfg)
 }
