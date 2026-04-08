@@ -11,6 +11,9 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
+import BPMSelect from '$lib/components/BPM_Select/BPM_Select.svelte';
+import BPMOption from '$lib/components/BPM_Select/BPM_option.svelte';
+import IcoDropdown from '~icons/mdi/chevron-down';
 import { CONTROLLER_LIST } from './controllerlist.svelte';
 
 let {
@@ -76,6 +79,7 @@ $effect(() => {
 	}
 });
 let showMoreControllers = $state(false);
+let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam Gamepad') : false);
 </script>
 
 {#if method === 'POST' || method === 'post'}
@@ -97,7 +101,38 @@ let showMoreControllers = $state(false);
 			bind:value={values.searchtext}
 			inlineButton={false} />
 		<button type="submit" disabled={disabled}>Search</button>
-		<label for="sort-by">
+		{#if isSteamBigPicture}
+			<BPMSelect
+				bind:value={values['sort-by']}
+				name="sorting"
+				onchange={(v) => {
+					values['sort-by'] = v;
+					changeSubmitHandler();
+				}}
+				disabled={disabled}>
+				{#snippet children({ ...rest })}
+					<span>Sort by:</span>
+					{#if !values['sort-by']}
+						<span>Rank</span>
+					{/if}
+					<BPMOption value="vote" {...rest}>Rank</BPMOption>
+					<BPMOption value="publication" {...rest}>Date</BPMOption>
+					<BPMOption value="trend" {...rest}>Trend (30 days)</BPMOption>
+					<BPMOption value="votes_asc" {...rest}>Votes (ascending)</BPMOption>
+					<BPMOption value="votes_up" {...rest}>Votes (upvotes)</BPMOption>
+					<BPMOption value="text_search" {...rest}>Relevance</BPMOption>
+					<BPMOption value="playtime_trend" {...rest}>Playtime trend (30 days)</BPMOption>
+					<BPMOption value="total_playtime" {...rest}>Total playtime</BPMOption>
+					<BPMOption value="avg_playtime_trend" {...rest}>Average playtime trend</BPMOption>
+					<BPMOption value="lifetime_avg_playtime" {...rest}
+						>Average playtime since upload</BPMOption>
+					<BPMOption value="playtime_sessions_trend" {...rest}>Sessions trend (30 days)</BPMOption>
+					<BPMOption value="lifetime_playtime_sessions" {...rest}>Lifetime sessions</BPMOption>
+					<IcoDropdown />
+				{/snippet}
+			</BPMSelect>
+		{/if}
+		<label for="sort-by" style={isSteamBigPicture ? 'display: none;' : ''}>
 			<span>Sort by:</span>
 			<select
 				id="sort-by"
@@ -119,7 +154,7 @@ let showMoreControllers = $state(false);
 				<option value="lifetime_playtime_sessions">Lifetime sessions</option>
 			</select>
 
-			<Icon icon="mdi:chevron-down" />
+			<IcoDropdown />
 		</label>
 	</div>
 	{#if typeof showTotalCount === 'number'}
@@ -458,6 +493,10 @@ form {
 		align-items: center;
 	}
 
+	:global(.bpm-select) {
+		margin-left: auto;
+		font-size: 1.2em;
+	}
 	label[for='sort-by'] {
 		margin-left: auto;
 		display: grid;

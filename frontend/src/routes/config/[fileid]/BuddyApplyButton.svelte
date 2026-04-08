@@ -1,8 +1,11 @@
 <script lang="ts">
+import { browser } from '$app/environment';
 import type { components } from '$lib/api/openapi';
 import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { client } from '$lib/buddy-api/client';
 import type { components as buddyComponents } from '$lib/buddy-api/openapi';
+import BPMOption from '$lib/components/BPM_Select/BPM_option.svelte';
+import BPMSelect from '$lib/components/BPM_Select/BPM_Select.svelte';
 import Modal from '$lib/components/Modal.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { toast } from '$lib/toaster/toaster.svelte';
@@ -41,6 +44,8 @@ let selectedController = $derived(
 );
 let showConfigurator = $state(true);
 let isApplyingConfig = $state(false);
+
+let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam Gamepad') : false);
 
 const applyConfig = async (appId: string | number, controllerIdx: number, openConfigurator: boolean) => {
 	if (!fileInfo.file_id) {
@@ -155,26 +160,49 @@ let dialogOpen = $state(false);
 					});
 			}}>
 			<strong>Apply To</strong>
-			<label for="app">
-				<span>App</span>
-				<select id="app" name="app" bind:value={selectedAppID}>
-					{#each apps as app (app.appid)}
-						<option value={app.appid}>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</option>
-					{/each}
-				</select>
-				<IconChevronDown style="width: 1.6em; height: 1.6em;" />
-			</label>
-			<label for="controller">
-				<span>Controller</span>
-				<select id="controller" name="controller" bind:value={selectedController}>
-					{#each controllers as controller (controller.index)}
-						<option value={controller.index}>
-							{controller.name}
-						</option>
-					{/each}
-				</select>
-				<IconChevronDown style="width: 1.6em; height: 1.6em;" />
-			</label>
+			{#if isSteamBigPicture}
+				<BPMSelect name="App" bind:value={selectedAppID}>
+					{#snippet children({ ...rest })}
+						<span>App:</span>
+						{#each apps as app (app.appid)}
+							<BPMOption value={app.appid} {...rest}
+								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</BPMOption>
+						{/each}
+						<IconChevronDown style="width: 1.6em; height: 1.6em;" />
+					{/snippet}
+				</BPMSelect>
+				<BPMSelect name="Controller" bind:value={selectedController}>
+					{#snippet children({ ...rest })}
+						<span>Controller:</span>
+						{#each controllers as controller (controller.index)}
+							<BPMOption value={controller.index} {...rest}>{controller.name}</BPMOption>
+						{/each}
+						<IconChevronDown style="width: 1.6em; height: 1.6em;" />
+					{/snippet}
+				</BPMSelect>
+			{:else}
+				<label for="app">
+					<span>App</span>
+					<select id="app" name="app" bind:value={selectedAppID}>
+						{#each apps as app (app.appid)}
+							<option value={app.appid}
+								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</option>
+						{/each}
+					</select>
+					<IconChevronDown style="width: 1.6em; height: 1.6em;" />
+				</label>
+				<label for="controller">
+					<span>Controller</span>
+					<select id="controller" name="controller" bind:value={selectedController}>
+						{#each controllers as controller (controller.index)}
+							<option value={controller.index}>
+								{controller.name}
+							</option>
+						{/each}
+					</select>
+					<IconChevronDown style="width: 1.6em; height: 1.6em;" />
+				</label>
+			{/if}
 			<label for="showConfigurator">
 				<span>Open Steam Input configurator</span>
 				<input
@@ -299,6 +327,10 @@ form {
 				background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
 			}
 		}
+	}
+	& :global(.bpm-select) {
+		width: 100%;
+		grid-column: 1/-1;
 	}
 }
 

@@ -18,7 +18,11 @@ import { controllerForType } from './controllers/controllerForType.svelte';
 import { glyphFor } from './glyphs/glyphFor.svelte';
 import { decodeGyroButtons, mergeLayerInputs, niceInputName } from './helper';
 
+import { browser } from '$app/environment';
 import IconHelp from '~icons/material-symbols/help-outline';
+import IcoDropDown from '~icons/mdi/chevron-down';
+import BPMSelect from '../BPM_Select/BPM_Select.svelte';
+import BPMOption from '../BPM_Select/BPM_option.svelte';
 
 const {
 	vdfLink
@@ -57,6 +61,8 @@ let selectedPreset = $derived.by(() => {
 		: parsedVdf.controller_mappings.preset;
 });
 let selectedController = $state<string>('controller_generic');
+
+let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam Gamepad') : false);
 
 const getAllGroupsForSource = (source: string, preset: ControllerPreset | undefined) => {
 	if (!preset || !parsedVdf) {
@@ -530,20 +536,38 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 				<em>Beta</em>
 				<IconHelp style="width: 1.6em; height: 1.6em;" />
 			</p>
-			<label for="controller-type">
-				<span>Controller-Type:</span>
-				<select id="controller-type" name="controller-type" bind:value={selectedController}>
-					<option value="controller_neptune">Steam Deck</option>
-					<option value="controller_triton">Steam Controller</option>
-					<option value="controller_steamcontroller_gordon">Steam Controller (2015)</option>
-					<option value="controller_ps5">DualSense / DualSense Edge</option>
-					<option value="controller_ps4">DualShock 4</option>
-					<option value="controller_switch_pro">Switch Pro / 8BitDo</option>
-					<option value="controller_xboxone">XBox One / Elite</option>
-					<option value="controller_generic">Other</option>
-				</select>
-				<Icon icon="mdi:chevron-down" />
-			</label>
+			{#if isSteamBigPicture}
+				<BPMSelect name="Controller-Type" bind:value={selectedController}>
+					{#snippet children({ ...rest })}
+						<span>Controller-Type:</span>
+						<BPMOption value="controller_neptune" {...rest}>Steam Deck</BPMOption>
+						<BPMOption value="controller_triton" {...rest}>Steam Controller</BPMOption>
+						<BPMOption value="controller_steamcontroller_gordon" {...rest}
+							>Steam Controller (2015)</BPMOption>
+						<BPMOption value="controller_ps5" {...rest}>DualSense / DualSense Edge</BPMOption>
+						<BPMOption value="controller_ps4" {...rest}>DualShock 4</BPMOption>
+						<BPMOption value="controller_switch_pro" {...rest}>Switch Pro / 8BitDo</BPMOption>
+						<BPMOption value="controller_xboxone" {...rest}>XBox One / Elite</BPMOption>
+						<BPMOption value="controller_generic" {...rest}>Other</BPMOption>
+						<IcoDropDown />
+					{/snippet}
+				</BPMSelect>
+			{:else}
+				<label for="controller-type">
+					<span>Controller-Type:</span>
+					<select id="controller-type" name="controller-type" bind:value={selectedController}>
+						<option value="controller_neptune">Steam Deck</option>
+						<option value="controller_triton">Steam Controller</option>
+						<option value="controller_steamcontroller_gordon">Steam Controller (2015)</option>
+						<option value="controller_ps5">DualSense / DualSense Edge</option>
+						<option value="controller_ps4">DualShock 4</option>
+						<option value="controller_switch_pro">Switch Pro / 8BitDo</option>
+						<option value="controller_xboxone">XBox One / Elite</option>
+						<option value="controller_generic">Other</option>
+					</select>
+					<IcoDropDown />
+				</label>
+			{/if}
 		</div>
 		<svelte:boundary>
 			{#if parsedVdf}
@@ -601,6 +625,11 @@ section {
 		position: absolute;
 		inset: 1em;
 		z-index: -1;
+	}
+
+	:global(.bpm-option) {
+		margin-left: auto;
+		font-size: 1.2em;
 	}
 }
 
