@@ -10,6 +10,9 @@
             "path": "buddy-app"
         },
         {
+            "path": "buddy-app-decky-plugin"
+        },
+        {
             "name": "root",
             "path": "."
         }

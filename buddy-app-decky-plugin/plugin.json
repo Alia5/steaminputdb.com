@@ -1,0 +1,11 @@
+{
+  "name": "SteamInputDB-Buddy",
+  "author": "SteamInputDB",
+  "flags": ["debug"],
+  "api_version": 1,
+  "publish": {
+    "tags": ["steaminputdb", "utility", "integration"],
+    "description": "SteamInputDB-Buddy Decky plugin. The Decky plugin serves as alternative installation method of the official SteamInputDB-Buddy app and provides a direct integration of SteamInputDB into the Steam client.",
+    "image": "https://www.steaminputdb.com/ogimage.png"
+  }
+}
