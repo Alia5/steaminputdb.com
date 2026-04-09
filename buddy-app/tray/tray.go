@@ -25,11 +25,18 @@ const defaultBuddyUIHost = "https://steaminputdb.com/"
 const devBuddyUIHost = "http://localhost:5173/"
 
 //go:embed icon.ico
-var trayIcon []byte
+var trayIconICO []byte
+
+//go:embed icon.png
+var trayIconPNG []byte
 
 func Run(dal *db.DAL, cfg *config.Steam, shutdown func()) {
 	systray.Run(func() {
-		systray.SetIcon(trayIcon)
+		if runtime.GOOS == "windows" {
+			systray.SetIcon(trayIconICO)
+		} else {
+			systray.SetIcon(trayIconPNG)
+		}
 		systray.SetTooltip("SteamInputDB Buddy")
 
 		isAutoRun, err := install.AutoStart()
