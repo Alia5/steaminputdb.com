@@ -17,6 +17,15 @@ jobs:
             artifact_suffix: "-Release"
             upload_artifacts: true
 
+    decky-plugin:
+        needs: build
+        uses: ./.github/workflows/decky-plugin.yml
+        secrets: inherit
+        with:
+            artifact_suffix: "-Release"
+            buddy_artifact_name: "Buddy-linux-amd64-Release"
+            publish_branch: true
+
     generate-changelog:
         name: Generate Changelog
         needs: build
@@ -27,7 +36,7 @@ jobs:
 
     create-release:
         name: Create Release
-        needs: [build, generate-changelog]
+        needs: [build, decky-plugin, generate-changelog]
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
@@ -48,7 +57,7 @@ jobs:
                   for dir in artifacts/*; do
                       if [ -d "$dir" ]; then
                           base="$(basename "$dir")"
-                          if [[ "$base" == Buddy-* ]]; then
+                          if [[ "$base" == Buddy-* ]] || [[ "$base" == DeckyPlugin-* ]]; then
                               for file in "$dir"/*; do
                                   if [ -f "$file" ]; then
                                       cp "$file" "release_files/$(basename "$file")"
@@ -58,7 +67,7 @@ jobs:
                       fi
                   done
                   if [ -z "$(ls -A release_files)" ]; then
-                      echo "ERROR: No buddy-app artifacts found for release" >&2
+                      echo "ERROR: No artifacts found for release" >&2
                       ls -la artifacts || true
                       exit 1
                   fi

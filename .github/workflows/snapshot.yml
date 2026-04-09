@@ -39,6 +39,14 @@ jobs:
             artifact_suffix: "-Snapshot"
             upload_artifacts: true
 
+    decky-plugin:
+        needs: build
+        uses: ./.github/workflows/decky-plugin.yml
+        secrets: inherit
+        with:
+            artifact_suffix: "-Snapshot"
+            buddy_artifact_name: "Buddy-linux-amd64-Snapshot"
+
     generate-changelog:
         name: Generate Changelog
         needs: build
@@ -48,7 +56,7 @@ jobs:
 
     create-pre-release:
         name: Create Pre-Release
-        needs: [build, generate-changelog, calculate-version]
+        needs: [build, decky-plugin, generate-changelog, calculate-version]
         runs-on: ubuntu-latest
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
         steps:
@@ -70,7 +78,7 @@ jobs:
                   for dir in artifacts/*; do
                     if [ -d "$dir" ]; then
                       base="$(basename "$dir")"
-                      if [[ "$base" == Buddy-* ]]; then
+                      if [[ "$base" == Buddy-* ]] || [[ "$base" == DeckyPlugin-* ]]; then
                         for file in "$dir"/*; do
                           if [ -f "$file" ]; then
                             cp "$file" "release_files/$(basename "$file")"
@@ -80,7 +88,7 @@ jobs:
                     fi
                   done
                   if [ -z "$(ls -A release_files)" ]; then
-                    echo "ERROR: No buddy-app artifacts found for snapshot release" >&2
+                    echo "ERROR: No artifacts found for snapshot release" >&2
                     ls -la artifacts || true
                     exit 1
                   fi

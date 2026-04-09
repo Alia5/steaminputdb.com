@@ -1,0 +1,174 @@
+name: Build Decky Plugin
+
+on:
+    workflow_call:
+        inputs:
+            artifact_suffix:
+                required: false
+                type: string
+                default: ""
+                description: "Suffix to add to artifact names"
+            buddy_artifact_name:
+                required: true
+                type: string
+                description: "Name of the buddy-app linux-amd64 artifact to download"
+            publish_branch:
+                required: false
+                type: boolean
+                default: false
+                description: "Whether to publish source to the buddy-decky-plugin branch"
+
+jobs:
+    decky-plugin-build:
+        name: Build Decky Plugin
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9
+
+            - name: Install dependencies
+              working-directory: buddy-app-decky-plugin
+              run: pnpm install --frozen-lockfile
+
+            - name: Build frontend
+              working-directory: buddy-app-decky-plugin
+              run: pnpm run build
+
+            - name: Download buddy-app binary
+              uses: actions/download-artifact@v4
+              with:
+                  name: ${{ inputs.buddy_artifact_name }}
+                  path: buddy-binary
+
+            - name: Assemble plugin
+              working-directory: buddy-app-decky-plugin
+              shell: bash
+              run: |
+                  set -euo pipefail
+
+                  GIT_VERSION=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always || echo "v0.0.0-dev")
+                  VERSION_BARE="${GIT_VERSION#v}"
+
+                  if git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --exact-match HEAD 2>/dev/null; then
+                      RELEASE_TAG="$GIT_VERSION"
+                      IS_SNAPSHOT=false
+                  else
+                      RELEASE_TAG="dev-snapshot"
+                      IS_SNAPSHOT=true
+                  fi
+
+                  BINARY_URL="https://github.com/Alia5/steaminputdb.com/releases/download/${RELEASE_TAG}/steaminputdb-buddy-linux-amd64"
+
+                  echo "Version: $GIT_VERSION (bare: $VERSION_BARE)"
+                  echo "Release tag: $RELEASE_TAG (snapshot: $IS_SNAPSHOT)"
+                  echo "Binary URL: $BINARY_URL"
+
+                  mkdir -p SteamInputDB-Buddy/bin
+
+                  cp -r dist SteamInputDB-Buddy/
+                  cp main.py SteamInputDB-Buddy/main.py
+                  cp plugin.json SteamInputDB-Buddy/plugin.json
+                  cp package.json SteamInputDB-Buddy/package.json
+                  cp README.md SteamInputDB-Buddy/README.md
+                  cp ../LICENSE.txt SteamInputDB-Buddy/LICENSE.txt
+
+                  cp ../buddy-binary/steaminputdb-buddy-linux-amd64 SteamInputDB-Buddy/bin/steaminputdb-buddy
+                  chmod +x SteamInputDB-Buddy/bin/steaminputdb-buddy
+
+                  CHECKSUM=$(sha256sum SteamInputDB-Buddy/bin/steaminputdb-buddy | awk '{ print $1 }')
+
+                  sed -i "s/<VERSION_SET_BY_CI>/${VERSION_BARE}/g" SteamInputDB-Buddy/package.json
+                  sed -i "s|<URL_SET_BY_CI>|${BINARY_URL}|g" SteamInputDB-Buddy/package.json
+                  sed -i "s/<CHECKSUM_SET_BY_CI>/${CHECKSUM}/g" SteamInputDB-Buddy/package.json
+
+                  if [[ "$IS_SNAPSHOT" == "true" ]]; then
+                      sed -i 's/"remote_binary_bundling": true/"remote_binary_bundling": false/g' SteamInputDB-Buddy/package.json
+                  fi
+
+                  zip -r "steaminputdb-buddy-decky-plugin-${GIT_VERSION}.zip" SteamInputDB-Buddy/*
+
+            - name: Upload Decky plugin artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: DeckyPlugin${{ inputs.artifact_suffix }}
+                  path: buddy-app-decky-plugin/steaminputdb-buddy-decky-plugin-*.zip
+                  if-no-files-found: error
+
+    publish-store-branch:
+        name: Publish to store branch
+        runs-on: ubuntu-latest
+        needs: decky-plugin-build
+        if: ${{ inputs.publish_branch }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Download buddy-app binary
+              uses: actions/download-artifact@v4
+              with:
+                  name: ${{ inputs.buddy_artifact_name }}
+                  path: buddy-binary
+
+            - name: Publish to buddy-decky-plugin branch
+              shell: bash
+              run: |
+                  set -euo pipefail
+
+                  GIT_VERSION=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always || echo "v0.0.0-dev")
+                  VERSION_BARE="${GIT_VERSION#v}"
+                  RELEASE_TAG="$GIT_VERSION"
+                  BINARY_URL="https://github.com/Alia5/steaminputdb.com/releases/download/${RELEASE_TAG}/steaminputdb-buddy-linux-amd64"
+                  CHECKSUM=$(sha256sum buddy-binary/steaminputdb-buddy-linux-amd64 | awk '{ print $1 }')
+
+                  BRANCH="buddy-decky-plugin"
+                  WORK=$(mktemp -d)
+
+                  cd buddy-app-decky-plugin
+                  git ls-files --cached --others --exclude-standard | grep -v '^dev/' | while read -r f; do
+                      mkdir -p "$WORK/$(dirname "$f")"
+                      cp "$f" "$WORK/$f"
+                  done
+                  cd ..
+
+                  cp LICENSE.txt "$WORK/LICENSE.txt"
+
+                  sed -i "s/<VERSION_SET_BY_CI>/${VERSION_BARE}/g" "$WORK/package.json"
+                  sed -i "s|<URL_SET_BY_CI>|${BINARY_URL}|g" "$WORK/package.json"
+                  sed -i "s/<CHECKSUM_SET_BY_CI>/${CHECKSUM}/g" "$WORK/package.json"
+
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  if git ls-remote --exit-code --heads origin "$BRANCH"; then
+                      git fetch origin "$BRANCH"
+                      git checkout "$BRANCH"
+                  else
+                      git checkout --orphan "$BRANCH"
+                      git rm -rf .
+                  fi
+
+                  git rm -rf . || true
+                  rm -rf buddy-binary
+                  cp -r "$WORK"/. .
+                  git add -A
+
+                  if git diff --cached --quiet; then
+                      echo "No changes to commit"
+                  else
+                      git commit -m "Release ${GIT_VERSION}"
+                      git push origin "$BRANCH"
+                  fi
