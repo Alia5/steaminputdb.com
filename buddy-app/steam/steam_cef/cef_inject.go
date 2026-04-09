@@ -76,7 +76,7 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 		slog.Debug("executeJs: GetCEFTabs failed", "err", err)
 		return nil, err
 	}
-	slog.Debug("executeJs: fetched tabs", "count", len(tabs))
+	slog.Debug("executeJs: fetched tabs", "count", len(tabs), "tabs", tabs)
 	webSocketDebugURL := ""
 	for _, t := range tabs {
 		if strings.EqualFold(t.Title, tab) {
@@ -85,6 +85,7 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 		}
 	}
 	if webSocketDebugURL == "" {
+		slog.Debug("executeJs: target tab not found", "tab", tab)
 		return nil, ErrCEFTabNotFound
 	}
 
