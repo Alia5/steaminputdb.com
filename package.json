@@ -1,13 +1,13 @@
 {
     "name": "steaminputdb-buddy",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "SteamInputDB-Buddy Decky plugin. The Decky plugin serves as alternative installation method of the official SteamInputDB-Buddy app and provides a direct integration of SteamInputDB into the Steam client.",
     "remote_binary_bundling": true,
     "remote_binary": [
         {
             "name": "steaminputdb-buddy",
-            "url": "https://github.com/Alia5/steaminputdb.com/releases/download/v0.1.4/steaminputdb-buddy-linux-amd64",
-            "sha256hash": "5e4eba707f87987413663ea36e6a921f30872101c767ba76cb11e4fd6203e67f"
+            "url": "https://github.com/Alia5/steaminputdb.com/releases/download/v0.1.5/steaminputdb-buddy-linux-amd64",
+            "sha256hash": "241ae6fc8bb203bd3c0373bf7eff710cc7a3dfbc91cd3038485ea644580ef25f"
         }
     ],
     "type": "module",

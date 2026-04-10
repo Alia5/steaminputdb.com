@@ -1,7 +1,7 @@
 {
   "name": "SteamInputDB-Buddy",
   "author": "SteamInputDB",
-  "flags": ["debug"],
+  "flags": [],
   "api_version": 1,
   "publish": {
     "tags": ["steaminputdb", "utility", "integration"],
