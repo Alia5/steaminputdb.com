@@ -585,6 +585,21 @@ components:
           format: duration
           type: string
       type: object
+    UpdateRequestBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:5119/schemas/UpdateRequestBody.json
+          format: uri
+          readOnly: true
+          type: string
+        version:
+          type: string
+      required:
+        - version
+      type: object
 info:
   title: SteamInputDB Buddy API
   version: dev
@@ -880,6 +895,27 @@ paths:
       summary: Uninstall
       tags:
         - install
+  /v1/update:
+    post:
+      description: Update SteamInputDB-Buddy to a specified version
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRequestBody"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Update
+      tags:
+        - update
 servers:
   - description: Local API
     url: http://localhost:5119

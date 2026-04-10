@@ -45,6 +45,18 @@ $effect(() => {
 	}
 });
 
+const updateBuddy = async (version: string) => {
+	const res = await clientWithSvelteFetch(fetch, undefined, 15000).POST('/v1/update', {
+		body: {
+			version
+		}
+	});
+	if (res.error) {
+		throw res.error;
+	}
+	return res;
+};
+
 const ua = $derived<string>(browser ? navigator.userAgent : '');
 // const ua = $derived<string>('linux');
 const isWindows = $derived(ua.toLowerCase().includes('windows'));
@@ -97,6 +109,33 @@ let installPending = $state(false);
 											target="_blank"
 											rel="noopener noreferrer">v{latest}</a
 										>)</em>
+									<button
+										transition:fade={{ duration: 196 }}
+										type="button"
+										onclick={() => {
+											updateBuddy(`v${latest}`)
+												.then(() => {
+													toast({
+														message:
+															'Update successful! Restarting SteamInputDB Buddy...',
+														color: 'green'
+													});
+													setTimeout(() => {
+														BuddyState.pingBuddy(fetch);
+														goto(resolve('/buddy-app'), {
+															replaceState: true,
+															invalidateAll: true
+														});
+													}, 5000);
+												})
+												.catch((e) => {
+													log.error('Failed to update buddy', 'error', e);
+													toast({
+														message: 'Failed to update buddy',
+														color: 'firebrick'
+													});
+												});
+										}}>Update now</button>
 								{:else}
 									<em transition:fade={{ duration: 196 }}
 										>(You are running the latest version)</em>
@@ -125,6 +164,7 @@ let installPending = $state(false);
 						message: 'SteamInputDB Buddy integration disabled',
 						color: 'orange'
 					});
+					BuddyState.pingBuddy(fetch);
 					goto(resolve('/?buddy-app=disabled'));
 				}}>Disable SteamInputDB Buddy integration</button>
 		{/if}
@@ -329,6 +369,7 @@ let installPending = $state(false);
 							message: 'SteamInputDB Buddy integration disabled',
 							color: 'orange'
 						});
+						BuddyState.pingBuddy(fetch);
 						goto(resolve('/?buddy-app=disabled'));
 					} catch (e) {
 						log.error('Failed to disable buddy', 'error', e);
@@ -401,6 +442,7 @@ let installPending = $state(false);
 					.finally(() => {
 						installPending = false;
 						finishInstallModalOpen = false;
+						BuddyState.pingBuddy(fetch);
 						goto(resolve('/buddy-app'), { replaceState: true, invalidateAll: true });
 						setTimeout(() => {
 							goto(resolve('/buddy-app'), { replaceState: true, invalidateAll: true });
