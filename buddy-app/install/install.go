@@ -78,13 +78,13 @@ func CreateCefFile(path string) error {
 }
 
 func RestartSteam() {
-	openURL("steam://exit")
+	OpenURL("steam://exit")
 	time.Sleep(5 * time.Second)
-	openURL("steam://open/main")
+	OpenURL("steam://open/main")
 	time.Sleep(5 * time.Second)
 }
 
-func openURL(url string) {
+func OpenURL(url string) {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "windows":

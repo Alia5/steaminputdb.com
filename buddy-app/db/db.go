@@ -17,11 +17,11 @@ import (
 	"github.com/uptrace/bun/driver/sqliteshim"
 )
 
-func Init() (*DAL, error) {
+func Init() (*DAL, bool, error) {
 	dir := filepath.Dir(install.DefaultInstallPath())
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		slog.Error("failed to create database directory", "path", dir, "error", err)
-		return nil, err
+		return nil, false, err
 	}
 	databaseURL := fmt.Sprintf(
 		"file:%s/buddy-app.db?cache=shared&mode=rwc&_journal_mode=WAL&_busy_timeout=5000",
@@ -32,7 +32,7 @@ func Init() (*DAL, error) {
 	sqldb, err := sql.Open(sqliteshim.ShimName, databaseURL)
 	if err != nil {
 		slog.Error("failed to open SQLite database", "dsn", databaseURL, "error", err)
-		return nil, err
+		return nil, false, err
 	}
 	sqldb.SetMaxOpenConns(1)
 	sqldb.SetMaxIdleConns(10)
@@ -42,10 +42,10 @@ func Init() (*DAL, error) {
 
 	db = db.WithQueryHook(logging.NewQueryHook())
 
-	err = migrations.Migrate(context.Background(), db)
+	hasMigrated, err := migrations.Migrate(context.Background(), db)
 	if err != nil {
-		return nil, err
+		return nil, hasMigrated, err
 	}
 
-	return newDal(db), nil
+	return newDal(db), hasMigrated, nil
 }

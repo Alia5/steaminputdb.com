@@ -20,25 +20,25 @@ var Migrations = migrate.NewMigrations()
 // 	}
 // }
 
-func Migrate(ctx context.Context, db *bun.DB) error {
+func Migrate(ctx context.Context, db *bun.DB) (bool, error) {
 	migrator := migrate.NewMigrator(db, Migrations)
 	err := migrator.Init(ctx)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if err := migrator.Lock(ctx); err != nil {
-		return err
+		return false, err
 	}
 	defer migrator.Unlock(ctx) //nolint:errcheck
 
 	group, err := migrator.Migrate(ctx)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if group.IsZero() {
 		slog.Debug("there are no new migrations to run (database is up to date)")
-		return nil
+		return false, nil
 	}
 	slog.Info("migrated", "to", group)
-	return nil
+	return true, nil
 }

@@ -68,7 +68,7 @@ func main() {
 		return
 	}
 
-	dal, err := db.Init()
+	dal, hasMigrated, err := db.Init()
 	if err != nil {
 		slog.Error("Failed to initialize database", "error", err)
 		os.Exit(1)
@@ -204,6 +204,14 @@ func main() {
 			stop()
 		}
 	}()
+
+	if hasMigrated {
+		if os.Getenv("DEV") != "1" {
+			install.OpenURL("http://localhost:5371/buddy-app?buddy-app=enabled")
+		} else {
+			install.OpenURL("https://www.steaminputdb.com/buddy-app?buddy-app=enabled")
+		}
+	}
 
 	<-sigCtx.Done()
 	slog.Info("Shutting down...")
