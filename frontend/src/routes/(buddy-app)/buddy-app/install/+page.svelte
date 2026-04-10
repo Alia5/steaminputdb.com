@@ -335,18 +335,18 @@ p.alert {
 }
 
 a.button {
-	display: inline-flex;
+	display: flex;
+	justify-content: center;
 	font-size: 1.6em;
 	align-items: center;
 	gap: 0.5em;
 	padding: 0.5em 1.5em;
-	background: var(--card-color);
+	background-color: var(--card-color);
 	color: var(--text-color);
-	border-radius: 0.5em;
 	font-weight: bold;
 	&:hover,
 	&:focus-visible {
-		background: var(--inverse-card-color) !important;
+		background-color: color(from var(--inverse-text-color) srgb r g b / 0.4) !important;
 		color: var(--color-primary) !important;
 	}
 	& em {

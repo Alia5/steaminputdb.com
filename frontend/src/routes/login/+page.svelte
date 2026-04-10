@@ -60,5 +60,15 @@ a {
 	}
 	width: fit-content;
 	height: fit-content;
+	background: var(--card-glass);
+	background-color: color(from var(--color-primary) srgb r g b / 0.2);
+	padding: 0.75em 1.25em;
+	color: var(--text-color);
+	font-weight: bold;
+
+	&:hover,
+	&:focus-visible {
+		background-color: color(from var(--color-primary) srgb r g b / 0.4);
+	}
 }
 </style>

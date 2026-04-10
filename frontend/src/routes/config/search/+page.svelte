@@ -341,7 +341,7 @@ search {
 	grid-template-rows: min-content auto;
 	gap: 1em;
 	place-items: center;
-	min-width: 50%;
+	min-width: 60%;
 	--max-width: 1440px;
 	max-width: min(100%, var(--max-width));
 	isolation: isolate;

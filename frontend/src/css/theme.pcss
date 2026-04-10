@@ -29,13 +29,13 @@
 	);
 	--inverse-text-color: light-dark(var(--text-color-dark), var(--text-color-light));
 	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 20%);
-	--color-primary: light-dark(#7e3ddf, #a971ff);
+	--color-primary: light-dark(#7e3ddf, #8d54e2);
 	--color-primary-active: color-mix(in srgb, var(--color-primary), var(--text-color) 75%);
-	--card-color: light-dark(#dfdee9ff, #1f1d24ff);
-	--inverse-card-color: light-dark(#29262eff, #dfdee9ff);
-	--background-color: light-dark(#f8f7fa, #13141b);
+	--card-color: light-dark(#dfdee9ff, #1d1b22ff);
+	--inverse-card-color: light-dark(#211f25ff, #dfdee9ff);
+	--background-color: light-dark(#f8f7fa, #0c0d13);
 	--shadow-color: light-dark(#0f0f0f3f, #0e0e0ea1);
-	--shadow-color-dark: light-dark(#0f0f0f54, #0e0e0ec4);
+	--shadow-color-dark: light-dark(#0f0f0f54, #030303c4);
 
 	--background-neutral-alpha: rgba(128, 128, 128, 0.25);
 
@@ -60,9 +60,9 @@
 
 	--card-border-pseudo-gradient: linear-gradient(
 		15deg,
-		rgba(3, 3, 3, 0.26) 0%,
-		rgba(80, 80, 80, 0.24) 50%,
-		rgba(255, 255, 255, 0.295)
+		light-dark(rgba(6, 6, 12, 0.522), rgba(73, 73, 73, 0.26)) 0%,
+		rgba(82, 82, 82, 0.24) 50%,
+		light-dark(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.295))
 	);
 
 	--bg-noise: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' xmlns:xlink='http://www.w3.org/1999/xlink'><filter id='noice'><feTurbulence type='fractalNoise' baseFrequency='1.24' numOctaves='4' stitchTiles='stitch'></feTurbulence><feColorMatrix type='saturate' values='0'></feColorMatrix><feComponentTransfer><feFuncR type='linear' slope='0.46'></feFuncR><feFuncG type='linear' slope='0.46'></feFuncG><feFuncB type='linear' slope='0.46'></feFuncB><feFuncA type='linear' slope='0.56'></feFuncA></feComponentTransfer><feComponentTransfer><feFuncR type='linear' slope='1.47' intercept='-0.23' /><feFuncG type='linear' slope='1.47' intercept='-0.23' /><feFuncB type='linear' slope='1.47' intercept='-0.23' /></feComponentTransfer></filter><rect width='50' height='50' filter='url(#noice)'></rect></svg>");

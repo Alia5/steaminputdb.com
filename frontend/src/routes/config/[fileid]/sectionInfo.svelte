@@ -22,7 +22,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 
 	creatorInfo?: components['schemas']['PlayerInfo'];
 })}
-	<section id="info">
+	<section id="config-info">
 		<dl class="card glass">
 			<dt>Controller</dt>
 			<dd>
@@ -176,9 +176,10 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 {/snippet}
 
 <style lang="postcss">
-:global(#info) {
+:global(#config-info) {
 	display: flex;
 	flex-flow: row wrap-reverse;
+	overflow: hidden;
 
 	--gap: 1em;
 	--info-min-width: 58ch;

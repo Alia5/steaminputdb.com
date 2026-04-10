@@ -64,7 +64,7 @@ let {
 	background: transparent;
 	border: 1px solid color-mix(in srgb, var(--text-color), transparent 90%);
 	box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.25);
-	border-radius: 0.5em;
+	border-radius: 100vw;
 	color: var(--text-color);
 	display: flex;
 	flex-flow: row nowrap;

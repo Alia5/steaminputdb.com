@@ -169,6 +169,7 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 	max-width: 100%;
 	gap: 1em;
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 25ch), auto));
+	overflow: hidden;
 
 	padding: 0 1em;
 
@@ -182,6 +183,7 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 		padding: 1em 0;
 
 		grid-template-columns: minmax(56px, min(420px, 33%)) auto;
+		overflow: auto;
 
 		& > :first-child {
 			min-height: 56px;

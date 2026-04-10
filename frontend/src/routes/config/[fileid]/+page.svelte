@@ -127,7 +127,7 @@ div {
 	place-self: center;
 	gap: 1em;
 	place-items: center;
-	min-width: 50%;
+	min-width: 60%;
 	--max-width: 1440px;
 	max-width: min(100%, var(--max-width));
 	/* container: main / inline-size;*/

@@ -246,16 +246,11 @@ let dialogOpen = $state(false);
 	background-color: #1a9fff;
 
 	& > button {
+		background: transparent;
+		background-color: color(from #1a9fff srgb r g b / 0.5);
 		&:hover,
 		&:focus-within {
-			background:
-				linear-gradient(
-					215deg,
-					color-mix(in srgb, var(--card-color), transparent 75%) 0%,
-					color-mix(in srgb, var(--card-color), transparent 90%) 70%
-				),
-				var(--bg-noise-transparent);
-			background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
+			background-color: color(from #1a9fff srgb r g b / 0.7);
 		}
 	}
 

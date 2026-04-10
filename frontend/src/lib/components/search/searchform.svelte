@@ -509,7 +509,7 @@ form {
 		border: 1px solid color-mix(in srgb, var(--text-color), transparent 90%);
 		padding: 0.5em 1em;
 		box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.25);
-		border-radius: 0.5em;
+		border-radius: 100vw;
 		transition: all var(--transition-duration) var(--default-ease);
 
 		& :global([disabled]) {
