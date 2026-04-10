@@ -1,7 +1,12 @@
 <script lang="ts">
+import { resolve } from '$app/paths';
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import { createHomeSchemaJsonLd } from '$lib/schema/home';
 import { onMount } from 'svelte';
+import type { PageProps } from './$types';
+import HotTodayBar from './HotTodayBar.svelte';
+
+const { data }: PageProps = $props();
 
 let eyes = $state<{
 	left: HTMLElement;
@@ -16,6 +21,8 @@ onMount(() => {
 	eyes.left = group.children[0] as HTMLElement;
 	eyes.right = group.children[1] as HTMLElement;
 });
+
+$inspect(data.hotToday);
 </script>
 
 <svelte:head>
@@ -73,14 +80,14 @@ onMount(() => {
 <main>
 	<div>
 		<div>
-			<div id="sc2">
+			<section id="sc2">
 				<SC2
 					height="100%"
 					--eyes-color="black"
 					--eyes-white-color="var(--text-color-dark)"
 					--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
-			</div>
-			<div>
+			</section>
+			<section>
 				<h1>
 					Community driven database of <span>SteamInput</span>
 					configurations
@@ -94,12 +101,26 @@ onMount(() => {
 				<p>SteamInputDB uses the same APIs as Steam itself</p>
 				<p>That means <strong>every</strong> configuration on Steam is also available here!</p>
 				<p>And yes, it works with <strong>non-Steam</strong> games, too! 😎</p>
-			</div>
+			</section>
 		</div>
-		<div class="wip">
-			<span>🚧 Work in Progress 🚧</span>
-			<span>More coming Soon™</span>
-		</div>
+
+		<!-- <section id="search">
+			<Search />
+		</section> -->
+
+		<section id="hot">
+			<h2>Hot Today</h2>
+			<HotTodayBar hotConfigs={data.hotToday} />
+		</section>
+
+		<section id="buddy">
+			<h2><span>SteamInputDB-<strong>Buddy App</strong></span> available now! <em>(Beta)</em></h2>
+			<p>SteamInputDB-Buddy directly integrates this website with your Steam client.</p>
+			<p>
+				Browse this website directly in Steam or apply configurations to any game with a single click
+			</p>
+			<a href={resolve('/buddy-app/install')} class="button">Learn more | Install</a>
+		</section>
 	</div>
 </main>
 
@@ -112,12 +133,23 @@ main {
 	& > div {
 		display: grid;
 		place-items: center;
+		gap: 4em;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+#search {
+	margin: 2em 0;
+	@media (orientation: landscape) {
+		font-size: 1.5em;
 	}
 }
 
 main > div > :first-child {
 	display: grid;
 	place-items: center;
+	gap: 1em;
 }
 
 h1 {
@@ -127,6 +159,7 @@ h1 {
 	& span {
 		color: var(--highlight-color);
 	}
+	margin-bottom: 0.5em;
 }
 p {
 	font-size: 1.2em;
@@ -151,21 +184,66 @@ p {
 	}
 }
 
-.wip {
+#buddy {
 	display: grid;
-	place-items: center;
-	margin-top: 2em;
-	gap: 1em;
+
+	& :global(strong) {
+		color: var(--color-primary);
+	}
+
+	justify-self: center;
+	& strong {
+		color: var(--color-primary);
+	}
+	& span {
+		color: var(--highlight-color);
+	}
+	& em {
+		font-size: 0.8em;
+		opacity: 0.75;
+	}
+
 	& > :first-child {
 		font-size: 1.8em;
+		justify-self: center;
+		margin-bottom: 0.5em;
 		@media screen and (max-width: 400px) {
 			font-size: 1.5em;
 		}
 	}
-	& > :last-child {
-		color: var(--highlight-color);
-		font-size: 2em;
+
+	a.button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.6em;
+		width: fit-content;
+		justify-self: center;
+		margin-top: 1em;
+		gap: 0.5em;
+		padding: 0.5em 1.5em;
+		color: var(--text-color);
+		border-radius: 99vw;
 		font-weight: bold;
+		& em {
+			font-size: 0.8em;
+			opacity: 0.75;
+		}
+	}
+}
+
+#hot {
+	max-width: 100%;
+	overflow: hidden;
+	display: grid;
+	place-items: center;
+	& > :first-child {
+		font-size: 1.8em;
+		justify-self: center;
+		margin-bottom: 0.5em;
+		@media screen and (max-width: 400px) {
+			font-size: 1.5em;
+		}
 	}
 }
 </style>
