@@ -32,7 +32,7 @@ func NewMemDB(tb testing.TB) (*db.DAL, error) {
 
 	bunDB := bun.NewDB(sqldb, sqlitedialect.New())
 
-	err = migrations.Migrate(context.Background(), bunDB)
+	_, err = migrations.Migrate(context.Background(), bunDB)
 	if err != nil {
 		return nil, err
 	}

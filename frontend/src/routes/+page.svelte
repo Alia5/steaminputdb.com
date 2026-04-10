@@ -21,8 +21,6 @@ onMount(() => {
 	eyes.left = group.children[0] as HTMLElement;
 	eyes.right = group.children[1] as HTMLElement;
 });
-
-$inspect(data.hotToday);
 </script>
 
 <svelte:head>

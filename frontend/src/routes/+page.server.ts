@@ -1,6 +1,7 @@
 import { resolve } from '$app/paths';
 import { clientWithSvelteFetch } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
+import { log } from '$lib/log';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async (event) => {
                 ?.sort((a, b) => (a.votes?.up || 0) > (b.votes?.up || 0) ? -1 : 1)
                 ?? [];
         } catch (e) {
-            console.error('Failed to fetch hot configs', e);
+            log.error('Failed to fetch hot configs', e);
             hotToday = [];
         }
     }
