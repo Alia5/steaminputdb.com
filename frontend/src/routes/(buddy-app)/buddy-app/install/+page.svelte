@@ -93,10 +93,10 @@ const fetchReleases = async () => {
 		<AboutBuddy />
 	</section>
 	<p class="box alert card glass">
-		<strong class="card glass"><IcoSteam /> Steam<em>Beta</em>Update required!</strong>
+		<strong class="card glass"><IcoSteam /> Steam<em>Beta client</em>Update required!</strong>
 		<span>
-			The <em>Steam <strong>Beta</strong> Update</em> is required in order for SteamInputDB-Buddy to be
-			functional.
+			The <em>Steam <strong>Beta client</strong> Update</em> is required in order for SteamInputDB-Buddy
+			to be functional.
 			<br />
 			You can opt-into the beta in your Steam Client settings under <em>Interface</em>.
 		</span>
@@ -330,8 +330,8 @@ main {
 }
 
 p.alert {
-	--box-color: firebrick;
-	--heading-color: color(from firebrick srgb r g b / 0.33);
+	--box-color: orange;
+	--heading-color: color(from orange srgb r g b / 0.33);
 }
 
 a.button {
