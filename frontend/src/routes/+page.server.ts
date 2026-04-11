@@ -23,6 +23,7 @@ export const load: PageServerLoad = async (event) => {
     if (Date.now() - lastHotUpdate > HOT_UPDATE_PERIOD_HOURS * 3600 * 1000) {
     // if (true) {
         try {
+            log.info('Updating hot configs');
             const res = await clientWithSvelteFetch(event.fetch).POST('/v1/search/configs', {
                 body: {
                     limit: 15,

@@ -1,0 +1,241 @@
+---
+title: New Frontpage and Steam client integration via Buddy-App
+date: 2026-04-11
+hero: /hero_images/hot_configs_and_buddy.png?enhanced&w=600
+lead: Along with displaying the trending configs on the frontpage SteamInputDB now provides direct integration on your Steam client via a buddy-app. Available for Linux and Windows. And yes, it works on the SteamDeck 😉
+---
+
+<script>
+
+import Author from '$lib/components/author.svelte';
+import Logo from '$lib/assets/logo.svg';
+import IcoWindows from '~icons/mdi/windows';
+import IcoLinux from '~icons/mdi/linux';
+import IcoSteam from '~icons/mdi/steam';
+
+const ogimgSrc = "/hero_images/hot_configs_and_buddy.png";
+
+
+</script>
+
+<svelte:head>
+<title>{title}</title>
+    <meta property="og:title" content={title} />
+    <meta name="description" content={lead} />
+    <meta property="og:description" content={lead} />
+    <meta property="og:image" content={ogimgSrc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={lead} />
+    <meta name="twitter:image" content={ogimgSrc} />
+ <meta name="twitter:image:alt" content={title} />
+</svelte:head>
+
+
+# {title}
+
+<Author date={new Date(date)} />
+<p class="lead">{lead}</p>
+
+
+<div class="hero">
+    <img src={hero} alt="A screenshot showing the updated frontpage with todays hot configs" />
+</div>
+
+---
+
+## General site updates
+
+Another month goes by, and another round of updates for SteamInputDB!
+
+Along with a few minor tweaks to the theme, a much needed (but still not thorough enough) update to the [FAQ](/faq), and some general polish all around.
+
+<div style="display: flex; gap: 1em; align-items: center;">
+    <img src="/favicon.png" alt="SteamInputDB Logo" style="width: 6.66em; height: auto;" />
+
+    <div style="display: grid; gap: 0.5em;">
+
+I also _finally_ got around to creating a proper Icon/Logo for the site.  
+It's nothing fancy, but I feel it gives the site a bit more identity than a vectorized Steam Controller 2 asset from Valve...  
+You can find the source Illustrator file in [SteamInputDB's GitHub repository](https://github.com/Alia5/steaminputdb.com)
+
+Let me know what you think about it on reddit or on my [Discord](https://discord.gg/hs34MtcHJY) server!
+
+    </div>
+</div>
+
+The most immediately obvious change is, of course, the new frontpage.  
+Along with some updated texts, it now features a section showing the currently trending configs on Steam, as reported by the Steam Web API.  
+
+Do note that only Steam games are shown here, non-Steam shortcuts and special layouts like Desktop configs are filtered out.  
+The trending data is cached for about 6 hours to avoid **extreme** fluctuations.
+
+But now to what I'm sure most of you are actually interested in:
+
+## Steam client integration via <strong style="color: var(--highlight-color);">SteamInputDB-<span class="primary">Buddy</span></strong> App
+
+In the [last news post about the Layout Preview](/news/2026-03-12_layout_preview), I teased that direct integration into Steam itself was on the roadmap.  
+Well, here it is.
+
+[**SteamInputDB-Buddy**](/buddy-app/install) is a _fully optional_ companion app that can provide direct integration into the Steam client.  
+Using it, this website can talk to your SteamClient and query your connected controllers, your library and it can even apply any Steam Input configuration to any game or non-Steam shortcut.  
+All directly from the website, without you ever having to download a `.vdf`-file or interact with Steams (_very basic_) Steam Input community features / UI.  
+
+**And don't worry:** None of this is ever transmitted to our server! **All of your data stays local on your machine!**
+
+### Current features
+
+- Flexible "apply config" system  
+  - Apply configurations to specific (_connected_) controllers
+  - Apply **any** configuration to **any** game, even across titles and non-Steam games.  
+    Think: taking a config from _Game [1]_ and applying it to _Game [2]_, or to a non-Steam shortcut
+    <enhanced:img src="$lib/assets/buddy-app/advanced-apply.png?w=1280;640;400" alt="Advanced apply dialog" style="margin-top: 0.25em; margin-bottom: 0.25em; padding: 0.5em; padding-top: 0; width: 50%" />  
+- Controller-aware filtering  
+  Pre-filters configs to your actually connected controllers, removing UI clutter and complexity
+- Library buttons inside Steam for each game, so you can jump straight to available configs from your library  
+  - Works in both Desktop and Big Picture mode
+  - Optionally uses Steams built-in browser, so you can stay in Steam while browsing configs 
+  <enhanced:img src="$lib/assets/buddy-app/desktop-button.png" alt="Library Button" style="margin-top: 0.25em; margin-bottom: 0.25em; width: 50%" />  
+- And more to come! <sup style="opacity: 0.5;">(soon™)</sup>  
+
+[SteamInputDB-Buddy](/buddy-app/install) is available for both <IcoWindows  style="vertical-align: middle; margin-left: 0.25em;" /> Windows
+and <IcoLinux style="vertical-align: middle; margin-left: 0.25em;" /> Linux
+and of course, it also works on the SteamDeck 😎
+
+<a href="/buddy-app/install" class="button"> <strong>Download | Install</strong> <span>SteamInputDB-Buddy</span> </a>
+
+Please let me know any features you'd like to see or report any bugs you find on reddit, the [GitHub repository](https://github.com/Alia5/steaminputdb.com) or join the discussion on [Discord](https://discord.gg/hs34MtcHJY)
+
+Do note that SteamInputDB is not yet gamepad navigable when using the site via the Buddy-App in Steam Big Picture mode (_that **includes** the Steam Deck_)  
+This is certainly something I want to add in the future, for now Deck users will just have to resort to the touch-screen or a connected mouse/keyboard when browsing configs on the Deck, sorry about that!
+
+## What's next?
+
+As outlined in the updated [FAQ](/faq), I'd really like to add more community features to SteamInputDB
+Things like (but not limited to)
+
+ - General controller compatibility ratings for games
+   - Does it support specific controllers well?
+   - Is Gyro supported? Natively?
+   - Mixed Input support?  
+
+  Think of it as something similar to what [ProtonDB](https://www.protondb.com/) does for Linux-gaming compatibility, but for controller support.
+
+ - Comments and discussions on configs 
+ - User profile customization and preferences  
+   - Link your socials / YouTube
+   - Showcases to feature your profiles  
+   - Controller and Layout-feature preferences / prefiltering
+
+And of course continued support of the brand new buddy-app and a lot of smaller tweaks and fixes here and there.  
+
+I'm not really sure of the order of or even when these features will be implemented, but your feedback will most likely have an impact.  
+
+<div class="box card glass alert" style="width: fit-content; justify-self: center;">
+
+<h3 style="margin-top: 0">Call to contributors</h3>
+
+<div style="display: grid; gap: 0.5em;">
+
+As all of this is **a lot** of work for one person that does all of this _in their spare time_,  
+I'm _still_ looking for contributors to SteamInputDB, which is fully open source and available on [GitHub](https://github.com/Alia5/steaminputdb.com).
+
+If you have any experience with web-development (Go and Svelte especially) please reach out to me via [Discord](https://discord.gg/hs34MtcHJY) or look at the [Issue board](https://github.com/users/Alia5/projects/5) and start hacking!  
+Many Issues need refinement, though, so it might be a good idea to talk to me first, before your contribution drifts into the wrong direction.  
+
+If you aren't a developer, feel free to contribute in any way you can! Whether that's reporting bugs, suggesting features, or simply spreading the word!
+
+
+</div>
+
+</div>
+<style>
+
+.primary {
+    color: var(--color-primary);
+}
+
+em {
+    opacity: 0.96;
+}
+
+.hero {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    margin-bottom: 2em;
+    & > :first-child {
+        width: 70%;
+    }
+}
+
+p {
+    white-space: normal;
+    text-align: center;
+}
+
+div.alert {
+	--box-color: orange;
+	--heading-color: color(from orange srgb r g b / 0.33);
+}
+
+a:not(.button) {
+    color: var(--color-primary) !important;
+}
+
+a.button {
+    display: grid;
+    grid-template-columns: auto;
+    grid-auto-flow: row;
+    padding: 0.75em 4em;
+    font-weight: bold;
+    gap: 0.25em;
+    place-items: center;
+    color: var(--text-color) !important;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    & > :first-child {
+        font-size: 1.2em;
+    }
+}
+
+code {
+    opacity: 0.85;
+}
+
+.box {
+	display: grid;
+	border-radius: 0.5em;
+	padding: 0;
+	--box-color: color(from var(--text-color) srgb r g b / 0.33);
+	--heading-color: color(from var(--color-primary) srgb r g b / 0.33);
+	border: 1px solid var(--box-color);
+	overflow: hidden;
+	white-space: normal;
+	width: min(100%, 80ch);
+
+	& > :first-child {
+		background-color: var(--heading-color);
+		font-size: 1.1em;
+		padding: 0.5em;
+		border-radius: 0;
+		display: flex;
+		align-items: center;
+		gap: 1ch;
+		& :global(svg) {
+			color: var(--box-color);
+		}
+		width: 100%;
+	}
+	display: grid;
+	& code {
+		text-align: center;
+	}
+	& > :last-child {
+		padding: 1em;
+	}
+}
+
+</style>

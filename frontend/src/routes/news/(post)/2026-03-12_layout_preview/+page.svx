@@ -2,13 +2,13 @@
 title: Layout Preview
 date: 2026-03-12
 hero: /hero_images/layout_preview.png?enhanced&w=600
+lead: SteamInputDB now features a preview of the controller layouts, right in your browser! No need to open Steam to preview community layouts anymore!
 ---
 
 <script>
 
 import Author from '$lib/components/author.svelte';
 const ogimgSrc = "/hero_images/layout_preview.png";
-const lead = "SteamInputDB now features a preview of the controller layouts, right in your browser! No need to open Steam to preview community layouts anymore!";
 </script>
 
 <svelte:head>
