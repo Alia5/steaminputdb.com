@@ -12,7 +12,7 @@ cp plugin.json plugin-dist/plugin.json
 cp package.json plugin-dist/package.json
 cp README.md plugin-dist/README.md
 
-cp ../LICENSE.txt plugin-dist/LICENSE.txt
+cat ../LICENSE.txt THIRD-PARTY-NOTICES.txt > plugin-dist/LICENSE.txt
 
 VERSION=$(git describe --tags --abbrev=0)
 BINARY_URL="https://github.com/Alia5/steaminputdb.com/releases/download/${VERSION}/steaminputdb-buddy-linux-amd64"

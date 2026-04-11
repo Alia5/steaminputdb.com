@@ -82,7 +82,7 @@ jobs:
                   cp plugin.json SteamInputDB-Buddy/plugin.json
                   cp package.json SteamInputDB-Buddy/package.json
                   cp README.md SteamInputDB-Buddy/README.md
-                  cp ../LICENSE.txt SteamInputDB-Buddy/LICENSE.txt
+                  cat ../LICENSE.txt THIRD-PARTY-NOTICES.txt > SteamInputDB-Buddy/LICENSE.txt
 
                   cp ../buddy-binary/steaminputdb-buddy-linux-amd64 SteamInputDB-Buddy/bin/steaminputdb-buddy
                   chmod +x SteamInputDB-Buddy/bin/steaminputdb-buddy
@@ -144,7 +144,7 @@ jobs:
                   done
                   cd ..
 
-                  cp LICENSE.txt "$WORK/LICENSE.txt"
+                  cat LICENSE.txt buddy-app-decky-plugin/THIRD-PARTY-NOTICES.txt > "$WORK/LICENSE.txt"
 
                   sed -i "s/<VERSION_SET_BY_CI>/${VERSION_BARE}/g" "$WORK/package.json"
                   sed -i "s|<URL_SET_BY_CI>|${BINARY_URL}|g" "$WORK/package.json"
