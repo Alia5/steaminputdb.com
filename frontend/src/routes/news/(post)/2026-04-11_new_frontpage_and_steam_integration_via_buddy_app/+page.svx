@@ -79,10 +79,10 @@ In the [last news post about the Layout Preview](/news/2026-03-12_layout_preview
 Well, here it is.
 
 [**SteamInputDB-Buddy**](/buddy-app/install) is a _fully optional_ companion app that can provide direct integration into the Steam client.  
-Using it, this website can talk to your SteamClient and query your connected controllers, your library and it can even apply any Steam Input configuration to any game or non-Steam shortcut.  
+Using it, this website can talk to your Steam client and query your connected controllers, your library and it can even apply any Steam Input configuration to any game or non-Steam shortcut.  
 All directly from the website, without you ever having to download a `.vdf`-file or interact with Steams (_very basic_) Steam Input community features / UI.  
 
-**And don't worry:** None of this is ever transmitted to our server! **All of your data stays local on your machine!**
+None of this is ever transmitted to our server! **All of your data stays local on your machine!**
 
 ### Current features
 

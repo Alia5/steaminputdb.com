@@ -211,9 +211,9 @@ const fetchReleases = async () => {
 				It seems you are accessing this page from a mobile device.
 				<br />
 				<!-- eslint-disable prettier/prettier -->
-				SteamInputDB-Buddy provides direct integration of SteamInputDB with a running Steam Client and must therefore run on a desktop System or Steam Deck / Steam Machine.
+				SteamInputDB-Buddy provides direct integration of SteamInputDB with a running Steam client and must therefore run on a desktop system or Steam Deck / Steam Machine.
 				<br />
-				Don't worry, you cann still browse the latest releases on GitHub
+				Don't worry, you can still browse the latest releases on GitHub
                 <!-- eslint-enable prettier/prettier -->
 			</p>
 		{/if}

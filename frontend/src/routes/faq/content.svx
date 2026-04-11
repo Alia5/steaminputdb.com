@@ -27,7 +27,7 @@ In the **future**, there will be even more community features, including multipl
 
 Think of it as something similar to what [ProtonDB](https://www.protondb.com/) does for Proton compatibility, but for controller support.
 
-Using the official [SteamInputDB-Buddy App](https://www.steaminputdb.com/buddy-app/install), SteamInputDB provides direct integration into the Steam client, users can:
+Using the official [SteamInputDB-Buddy App](https://www.steaminputdb.com/buddy-app/install), SteamInputDB provides direct integration into the Steam client.
 
 SteamInputDB-Buddy, currently features:
 
