@@ -1,4 +1,4 @@
-package uimods
+package steam_js
 
 import (
 	"context"
@@ -17,19 +17,19 @@ var cleanupTabs = []string{
 	"SharedJSContext",
 }
 
-type CleanupExecutor interface {
+type UiModCleanupExecutor interface {
 	steamcef.Executor[*struct{}, *struct{}]
 }
 
-//go:embed templates/cleanup.js.tmpl
+//go:embed templates/dist/cleanup.js.tmpl
 var cleanupTmpl string
 
-func NewCleanup(cfg *appconfig.Steam) CleanupExecutor {
-	return steamcef.NewExecutor[*struct{}, *struct{}](cfg, template.Must(template.New("cleanup").Parse(cleanupTmpl)))
+func NewUiModCleanup(cfg *appconfig.Steam) UiModCleanupExecutor {
+	return steamcef.NewExecutor[*struct{}, *struct{}](cfg, template.Must(template.New("cleanup").Delims("<<%", "%>>").Parse(cleanupTmpl)))
 }
 
-func Cleanup(ctx context.Context, cfg *appconfig.Steam) error {
-	executor := NewCleanup(cfg)
+func UiModCleanup(ctx context.Context, cfg *appconfig.Steam) error {
+	executor := NewUiModCleanup(cfg)
 	var errs []error
 	for _, tab := range cleanupTabs {
 		_, err := executor.ExecuteInTab(ctx, tab, &struct{}{})

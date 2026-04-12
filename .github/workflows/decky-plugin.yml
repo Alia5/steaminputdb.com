@@ -24,17 +24,17 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: "22"
 
             - name: Install pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v5
               with:
                   version: 9
 
@@ -47,7 +47,7 @@ jobs:
               run: pnpm run build
 
             - name: Download buddy-app binary
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               with:
                   name: ${{ inputs.buddy_artifact_name }}
                   path: buddy-binary
@@ -100,7 +100,7 @@ jobs:
                   zip -r "steaminputdb-buddy-decky-plugin-${GIT_VERSION}.zip" SteamInputDB-Buddy/*
 
             - name: Upload Decky plugin artifact
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: DeckyPlugin${{ inputs.artifact_suffix }}
                   path: buddy-app-decky-plugin/steaminputdb-buddy-decky-plugin-*.zip
@@ -113,12 +113,12 @@ jobs:
         if: ${{ inputs.publish_branch }}
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
             - name: Download buddy-app binary
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               with:
                   name: ${{ inputs.buddy_artifact_name }}
                   path: buddy-binary

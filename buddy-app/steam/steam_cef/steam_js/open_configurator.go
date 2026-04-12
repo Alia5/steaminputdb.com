@@ -16,10 +16,10 @@ type OpenConfiguratorExecutor interface {
 	steamcef.Executor[*OpenConfiguratorArgs, *struct{}]
 }
 
-//go:embed templates/open_configurator.js.tmpl
+//go:embed templates/dist/open_configurator.js.tmpl
 var openConfiguratorJSTmpl string
 
-var openConfiguratorJS = template.Must(template.New("openConfigurator").Parse(openConfiguratorJSTmpl))
+var openConfiguratorJS = template.Must(template.New("openConfigurator").Delims("<<%", "%>>").Parse(openConfiguratorJSTmpl))
 
 func NewOpenConfigurator(cfg *appconfig.Steam) OpenConfiguratorExecutor {
 	return steamcef.NewExecutor[*OpenConfiguratorArgs, *struct{}](cfg, openConfiguratorJS)

@@ -1,4 +1,4 @@
-package uimods
+package steam_js
 
 import (
 	"context"
@@ -12,18 +12,16 @@ import (
 type AddSteamInputDbButtonDesktopArgs struct {
 	Override        bool `json:"override"`
 	UseSteamBrowser bool `json:"useSteamBrowser"`
-	//
-	Logo string `json:"logo"`
 }
 
 type AddSteamInputDBButtonDesktop interface {
 	steamcef.Executor[*AddSteamInputDbButtonDesktopArgs, *struct{}]
 }
 
-//go:embed templates/lib_sidb_button_desktop.js.tmpl
+//go:embed templates/dist/sidb_button_desktop.js.tmpl
 var addSteamInputDBButtonDesktopTmpl string
 
-var addSteamInputDBButtonDesktopJS = template.Must(template.New("addSteamInputDBButtonDesktop").Parse(addSteamInputDBButtonDesktopTmpl))
+var addSteamInputDBButtonDesktopJS = template.Must(template.New("addSteamInputDBButtonDesktop").Delims("<<%", "%>>").Parse(addSteamInputDBButtonDesktopTmpl))
 
 func NewAddSteamInputDBButtonDesktop(cfg *appconfig.Steam) AddSteamInputDBButtonDesktop {
 	return steamcef.NewExecutor[*AddSteamInputDbButtonDesktopArgs, *struct{}](cfg, addSteamInputDBButtonDesktopJS)
@@ -34,8 +32,6 @@ func AddSteamInputDBButton_Desktop(ctx context.Context, cfg *appconfig.Steam, ov
 	_, err := executor.ExecuteInTab(ctx, "Steam", &AddSteamInputDbButtonDesktopArgs{
 		Override:        override,
 		UseSteamBrowser: useSteamBrowser,
-		//
-		Logo: logoStr,
 	})
 	if err != nil {
 		return err

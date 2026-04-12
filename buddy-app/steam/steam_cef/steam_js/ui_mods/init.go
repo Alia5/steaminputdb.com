@@ -11,12 +11,19 @@ import (
 	"github.com/Alia5/steaminputdb.com/buddy-app/db"
 	"github.com/Alia5/steaminputdb.com/buddy-app/db/models"
 	"github.com/Alia5/steaminputdb.com/buddy-app/steam"
+	"github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef/steam_js"
 )
 
 var initPollInterval = 2 * time.Second
 var refreshPollInterval = 15 * time.Second
 var defaultWaitTimeout = 60 * time.Second
 var injectTimeout = 1 * time.Second
+
+var cleanupTabs = []string{
+	"Steam",
+	"Steam Big Picture Mode",
+	"SharedJSContext",
+}
 
 func Init(cfg *appconfig.Config, dal *db.DAL) {
 	ctx := context.Background()
@@ -134,12 +141,12 @@ func InjectUiMods(
 
 	var desktopInjectErr error
 	if addDesktopUIEntries {
-		desktopInjectErr = AddSteamInputDBButton_Desktop(ctx, &cfg.Steam, override, useSteamBrowser)
+		desktopInjectErr = steam_js.AddSteamInputDBButton_Desktop(ctx, &cfg.Steam, override, useSteamBrowser)
 	}
 
 	var bpmInjectErr error
 	if addBPMUIEntries {
-		bpmInjectErr = AddSteamInputDBButton_BPM(ctx, &cfg.Steam, override)
+		bpmInjectErr = steam_js.AddSteamInputDBButton_BPM(ctx, &cfg.Steam, override)
 	}
 	if desktopInjectErr != nil && bpmInjectErr != nil {
 		return fmt.Errorf("desktop inject error: %w; BPM inject error: %w", desktopInjectErr, bpmInjectErr)

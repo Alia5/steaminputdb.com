@@ -1,0 +1,7 @@
+window.__sidbCleanup?.forEach((cleanupFn) => {
+    try {
+        cleanupFn();
+    } catch (e) {
+        console.error('Error during SIDB cleanup', e);
+    }
+});

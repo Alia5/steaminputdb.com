@@ -14,10 +14,10 @@ type GetControllersExecutor interface {
 	steamcef.Executor[*struct{}, []ControllerInfo]
 }
 
-//go:embed templates/get_controllers.js.tmpl
+//go:embed templates/dist/get_controllers.js.tmpl
 var getControllersJSTmpl string
 
-var getControllersJS = template.Must(template.New("getControllers").Parse(getControllersJSTmpl))
+var getControllersJS = template.Must(template.New("getControllers").Delims("<<%", "%>>").Parse(getControllersJSTmpl))
 
 func NewGetControllers(cfg *appconfig.Steam) GetControllersExecutor {
 	return steamcef.NewExecutor[*struct{}, []ControllerInfo](cfg, getControllersJS)

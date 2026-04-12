@@ -10,10 +10,10 @@ import (
 	steamcef "github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef"
 )
 
-//go:embed templates/open_in_steam_browser.js.tmpl
+//go:embed templates/dist/open_in_steam_browser.js.tmpl
 var openInSteamBrowserJSTmpl string
 
-var openInSteamBrowserJS = template.Must(template.New("openInSteamBrowser").Parse(openInSteamBrowserJSTmpl))
+var openInSteamBrowserJS = template.Must(template.New("openInSteamBrowser").Delims("<<%", "%>>").Parse(openInSteamBrowserJSTmpl))
 
 type templateParams struct {
 	URL string

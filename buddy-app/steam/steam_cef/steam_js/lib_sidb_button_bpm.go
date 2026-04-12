@@ -1,4 +1,4 @@
-package uimods
+package steam_js
 
 import (
 	"context"
@@ -11,18 +11,16 @@ import (
 
 type AddSteamInputDbButtonBPMArgs struct {
 	Override bool `json:"override"`
-	//
-	Logo string `json:"logo"`
 }
 
 type AddSteamInputDBButtonBPM interface {
 	steamcef.Executor[*AddSteamInputDbButtonBPMArgs, *struct{}]
 }
 
-//go:embed templates/lib_sidb_button_bpm.js.tmpl
+//go:embed templates/dist/sidb_button_BPM.js.tmpl
 var addSteamInputDBButtonBPMTmpl string
 
-var addSteamInputDBButtonBPMJS = template.Must(template.New("addSteamInputDBButtonBPM").Parse(addSteamInputDBButtonBPMTmpl))
+var addSteamInputDBButtonBPMJS = template.Must(template.New("addSteamInputDBButtonBPM").Delims("<<%", "%>>").Parse(addSteamInputDBButtonBPMTmpl))
 
 func NewAddSteamInputDBButtonBPM(cfg *appconfig.Steam) AddSteamInputDBButtonBPM {
 	return steamcef.NewExecutor[*AddSteamInputDbButtonBPMArgs, *struct{}](cfg, addSteamInputDBButtonBPMJS)
@@ -32,8 +30,6 @@ func AddSteamInputDBButton_BPM(ctx context.Context, cfg *appconfig.Steam, overri
 	executor := NewAddSteamInputDBButtonBPM(cfg)
 	_, err := executor.ExecuteInTab(ctx, "Steam Big Picture Mode", &AddSteamInputDbButtonBPMArgs{
 		Override: override,
-		//
-		Logo: logoStr,
 	})
 	if err != nil {
 		return err

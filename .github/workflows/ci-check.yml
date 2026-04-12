@@ -20,12 +20,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   submodules: recursive
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version-file: "frontend/.nvmrc"
                   cache: "npm"
@@ -57,12 +57,12 @@ jobs:
             PUBLIC_LOG_LEVEL: debug
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   submodules: recursive
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version-file: "frontend/.nvmrc"
                   cache: "npm"
@@ -104,12 +104,12 @@ jobs:
         needs: [frontend-lint, frontend-test]
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   submodules: recursive
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version-file: "frontend/.nvmrc"
                   cache: "npm"
@@ -135,7 +135,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
                   submodules: recursive
@@ -176,7 +176,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   submodules: recursive
 
@@ -218,7 +218,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
                   submodules: recursive
@@ -230,6 +230,13 @@ jobs:
                   cache: true
                   cache-dependency-path: |
                       buddy-app/go.sum
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: "25"
+                  cache: "npm"
+                  cache-dependency-path: buddy-app/steam/steam_cef/steam_js/templates/package-lock.json
 
             - name: Install build tools
               run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
@@ -249,6 +256,12 @@ jobs:
                   mkdir -p frontend/dist
                   touch frontend/dist/.placeholder
               working-directory: backend
+
+            - name: Build templates
+              working-directory: buddy-app/steam/steam_cef/steam_js/templates
+              run: |
+                  npm ci
+                  npm run build
 
             - name: Run tests
               working-directory: buddy-app
@@ -275,7 +288,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
                   submodules: recursive
@@ -287,6 +300,13 @@ jobs:
                   cache: true
                   cache-dependency-path: |
                       buddy-app/go.sum
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: "25"
+                  cache: "npm"
+                  cache-dependency-path: buddy-app/steam/steam_cef/steam_js/templates/package-lock.json
 
             - name: Install build tools
               run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
@@ -306,6 +326,12 @@ jobs:
                   mkdir -p frontend/dist
                   touch frontend/dist/.placeholder
               working-directory: backend
+
+            - name: Build templates
+              working-directory: buddy-app/steam/steam_cef/steam_js/templates
+              run: |
+                  npm ci
+                  npm run build
 
             - name: Generate Windows version info
               if: matrix.target.goos == 'windows'
@@ -329,7 +355,7 @@ jobs:
 
             - name: Upload buddy-app artifact
               if: ${{ inputs.upload_artifacts }}
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: Buddy-${{ matrix.target.goos }}-${{ matrix.target.goarch }}${{ inputs.artifact_suffix }}
                   path: buddy-app/dist/steaminputdb-buddy-${{ matrix.target.goos }}-${{ matrix.target.goarch }}${{ matrix.target.ext }}
@@ -355,7 +381,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
                   submodules: recursive

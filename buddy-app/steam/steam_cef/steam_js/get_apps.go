@@ -17,10 +17,10 @@ type GetAppsExecutor interface {
 	steamcef.Executor[*GetAppsArgs, []AppInfo]
 }
 
-//go:embed templates/get_apps.js.tmpl
+//go:embed templates/dist/get_apps.js.tmpl
 var getAppsJSTmpl string
 
-var getAppsJS = template.Must(template.New("getApps").Parse(getAppsJSTmpl))
+var getAppsJS = template.Must(template.New("getApps").Delims("<<%", "%>>").Parse(getAppsJSTmpl))
 
 func NewGetApps(cfg *appconfig.Steam) GetAppsExecutor {
 	return steamcef.NewExecutor[*GetAppsArgs, []AppInfo](cfg, getAppsJS)

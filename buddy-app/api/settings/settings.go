@@ -14,6 +14,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/buddy-app/db"
 	"github.com/Alia5/steaminputdb.com/buddy-app/db/models"
 	"github.com/Alia5/steaminputdb.com/buddy-app/install"
+	"github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef/steam_js"
 	uimods "github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef/steam_js/ui_mods"
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -127,7 +128,7 @@ func RegisterRoutes(a huma.API, dal *db.DAL, cfg *appconfig.Config) {
 				return nil, err
 			}
 
-			uimods.Cleanup(ctx, &cfg.Steam)
+			steam_js.UiModCleanup(ctx, &cfg.Steam)
 			uimods.InjectUiMods(
 				ctx,
 				cfg,
@@ -167,7 +168,7 @@ func RegisterRoutes(a huma.API, dal *db.DAL, cfg *appconfig.Config) {
 			if err != nil {
 				return nil, err
 			}
-			uimods.Cleanup(ctx, &cfg.Steam)
+			steam_js.UiModCleanup(ctx, &cfg.Steam)
 			uimods.InjectUiMods(
 				ctx,
 				cfg,

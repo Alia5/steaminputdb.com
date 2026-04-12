@@ -1,0 +1,15 @@
+__INJECT_RETURN = (async () => {
+    await (
+        (window?.ControllerStore?.DoControllerListQuery?.())
+        ?? (window?.ControllerStore?.prototype?.DoControllerListQuery?.())
+    )
+        ?.catch((e) => {
+            console.log(e);
+        });
+    return (
+        window?.ControllerStore?.m_controllerList
+        ?? window?.ControllerStore?.prototype?.m_controllerList
+    )?.map((c) =>
+        JSON.parse(JSON.stringify(c, (_, val) => typeof val === 'bigint' ? val.toString() : val))
+    );
+})();

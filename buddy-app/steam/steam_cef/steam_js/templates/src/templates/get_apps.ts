@@ -1,0 +1,4 @@
+__INJECT_RETURN = ((nonSteamOnly, installedOnly) => window.appStore.allApps
+    .filter((a) => (!nonSteamOnly || a.app_type === 0x40000000) && (!installedOnly || a.installed))
+    .map((a) => JSON.parse(JSON.stringify(a, (_, val) => typeof val === 'bigint' ? val.toString() : val)))
+)(goTmpl('.NonSteamOnly'), goTmpl('.InstalledOnly'));

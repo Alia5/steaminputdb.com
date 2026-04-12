@@ -18,10 +18,10 @@ type ApplyConfigExecutor interface {
 	steamcef.Executor[*ApplyConfigArgs, *struct{}]
 }
 
-//go:embed templates/apply_config.js.tmpl
+//go:embed templates/dist/apply_config.js.tmpl
 var applyConfigJSTmpl string
 
-var applyConfigJS = template.Must(template.New("applyConfig").Parse(applyConfigJSTmpl))
+var applyConfigJS = template.Must(template.New("applyConfig").Delims("<<%", "%>>").Parse(applyConfigJSTmpl))
 
 func NewApplyConfig(cfg *appconfig.Steam) ApplyConfigExecutor {
 	return steamcef.NewExecutor[*ApplyConfigArgs, *struct{}](cfg, applyConfigJS)

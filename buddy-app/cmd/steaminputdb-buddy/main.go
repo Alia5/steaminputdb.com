@@ -19,6 +19,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/buddy-app/db"
 	"github.com/Alia5/steaminputdb.com/buddy-app/install"
 	"github.com/Alia5/steaminputdb.com/buddy-app/middleware"
+	"github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef/steam_js"
 	uimods "github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef/steam_js/ui_mods"
 	buddytray "github.com/Alia5/steaminputdb.com/buddy-app/tray"
 	"github.com/Alia5/steaminputdb.com/buddy-app/version"
@@ -222,7 +223,7 @@ func main() {
 		slog.Error("Server shutdown error", "err", err)
 	}
 
-	if err := uimods.Cleanup(shutdownCtx, &cfg.Steam); err != nil {
+	if err := steam_js.UiModCleanup(shutdownCtx, &cfg.Steam); err != nil {
 		slog.Error("UI mods cleanup error", "err", err)
 	}
 }

@@ -14,11 +14,11 @@ if [[ -z "$TAG_OR_RANGE" ]]; then
   LATEST_TAG=$(git describe --tags --abbrev=0 --match "v*.*.*" 2>/dev/null || echo "")
   if [[ -z "$LATEST_TAG" ]]; then
     LOG_RANGE=""
-    CONTEXT_MSG="All unreleased changes:"
+    CONTEXT_MSG=""
     VERSION_TITLE="Development Version"
   else
     LOG_RANGE="$LATEST_TAG..HEAD"
-    CONTEXT_MSG="Changes since $LATEST_TAG:"
+    CONTEXT_MSG=""
     VERSION_TITLE="Development Version"
   fi
 else

@@ -1,5 +1,0 @@
-(async () => {
-	await SteamClient.Input.GetConfigForAppAndController({{.AppID}}, {{.ControllerIndex}});
-	await SteamClient.Apps.DownloadWorkshopItem(241100, {{.WorkshopItemID}}, true);
-	await SteamClient.Input.SetSelectedConfigForApp({{.AppID}}, {{.ControllerIndex}}, "workshop://{{.WorkshopItemID}}", false, true);
-})()
