@@ -11,6 +11,7 @@ import IcoAlert from '~icons/mdi/alert';
 import IcoGitHub from '~icons/mdi/github';
 import IcoLinux from '~icons/mdi/linux';
 import IcoWindows from '~icons/mdi/windows';
+import IcoSteamDeck from '~icons/simple-icons/steamdeck';
 
 interface GitHubRelease {
 	tag_name: string;
@@ -94,14 +95,28 @@ const fetchReleases = async () => {
 
 	<section id="install">
 		<h2>Downloads | Installation</h2>
-		{#if isLinux}
-			<p class="box alert card glass">
-				<strong class="card glass"><IcoAlert /> Decky users beware</strong>
+		<div class="box alert card glass">
+			<strong class="card glass"><IcoSteamDeck /> Decky users <IcoAlert /> </strong>
+			<div style="display: grid; gap: 0.5em;">
 				<span>
-					We are currently investigating a Decky-plugin as installation method for the Buddy-App
-				</span>
-			</p>
-		{/if}
+					If you are using a Steam Deck, we offer a Decky-Plugin as alternative installation method.</span>
+				<span>
+					The Decky-Plugin is not currently available in the Decky store, <strong>you</strong> can
+					speed up the review-process by commenting
+					<a
+						href="https://github.com/SteamDeckHomebrew/decky-plugin-database/pull/1023"
+						target="_blank"
+						rel="external">here</a
+					></span>
+				<span>
+					In the meantime, <a
+						href="https://github.com/Alia5/steaminputdb.com/releases"
+						target="_blank"
+						rel="external">GitHub releases</a>
+					include the Decky-Loader plugin <code style="padding: 0.1em 0.33em">.zip</code>-File for
+					manual installation.</span>
+			</div>
+		</div>
 		{#if !isMobile}
 			<h3>Automatic installation</h3>
 			<p>
@@ -320,7 +335,7 @@ main {
 	}
 }
 
-p.alert {
+.alert {
 	--box-color: orange;
 	--heading-color: color(from orange srgb r g b / 0.33);
 }
