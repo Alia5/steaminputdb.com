@@ -7,6 +7,7 @@ import Header from '$lib/components/header/Header.svelte';
 import { browser } from '$app/environment';
 import { page } from '$app/state';
 import { BuddyState } from '$lib/buddy-app/buddyState.svelte';
+import { GamepadNavigator } from '$lib/gamepad/gamepadNavigator.svelte';
 import { toast } from '$lib/toaster/toaster.svelte';
 import { onMount, type Snippet } from 'svelte';
 import { quadIn, quadOut } from 'svelte/easing';
@@ -46,6 +47,13 @@ onMount(() => {
 			}
 		});
 	}
+	if (!browser) {
+		return;
+	}
+	GamepadNavigator.Init();
+	return () => {
+		GamepadNavigator.Dispose();
+	};
 });
 </script>
 

@@ -381,7 +381,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 {#snippet mappingPreview(prefix: string, device: string, cls: string)}
 	{@const leftBumperInputs = getInputs(prefix, device)}
 	{#if leftBumperInputs?.length}
-		<div class={cls}>
+		<div class={cls} data-gamepadnav-focusable>
 			<div>
 				{#each leftBumperInputs as input, idx (idx)}
 					{#if input}
@@ -397,7 +397,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 {#snippet sourcePreview(source: string, cls: string)}
 	{@const groups = getSourceGroups(source)}
 	{#if groups?.length}
-		<div class={cls}>
+		<div class={cls} data-gamepadnav-focusable>
 			{#if source.includes('trackpad')}
 				<span class="device-label">{source === 'left_trackpad' ? 'Left' : 'Right'} Trackpad</span>
 			{:else if source === 'dpad'}

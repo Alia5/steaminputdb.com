@@ -179,7 +179,8 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 :global(#config-info) {
 	display: flex;
 	flex-flow: row wrap-reverse;
-	overflow: hidden;
+	overflow: clip;
+	overflow-clip-margin: 2em;
 
 	--gap: 1em;
 	--info-min-width: 58ch;

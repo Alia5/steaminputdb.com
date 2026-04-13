@@ -54,6 +54,10 @@ $effect(() => {
 		if (searchShowsResults) {
 			return;
 		}
+		if (document.activeElement && header.contains(document.activeElement)) {
+			return;
+		}
+
 		const y = window.scrollY;
 		const delta = y - lastScrollY;
 		const direction = delta > 0 ? -1 : delta < 0 ? 1 : 0;

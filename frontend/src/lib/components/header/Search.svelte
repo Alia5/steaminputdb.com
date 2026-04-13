@@ -1,4 +1,5 @@
 <script lang="ts">
+import { browser } from '$app/environment';
 import { client, type ResponseType } from '$lib/api/client';
 import { Debounced } from '$lib/debounce.svelte';
 import { log } from '$lib/log';
@@ -22,7 +23,12 @@ let previewResults = $state<ResponseType<'POST', '/v1/search/'>['data']>({
 let forceShowLoading = $state(false);
 let showError = $state(false);
 
+let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam Gamepad') : false);
+
 let shouldShowWhat = $derived.by(() => {
+	if (isSteamBigPicture) {
+		return false;
+	}
 	if (!focusState.value) {
 		return false;
 	}
@@ -117,6 +123,7 @@ const fetchLivePreview = (search_term = '') => {
 	{#if shouldShowWhat}
 		<dialog
 			open
+			data-no-focus-trap
 			in:fly={{
 				y: '-100%',
 				x: 0,

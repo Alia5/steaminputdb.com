@@ -11,6 +11,8 @@ declare global {
         // @ts-expect-error ignore
         opener?: SteamWindow | null;
         __sidbCleanup?: (() => void)[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        __sidbGamepadCallbackClean?: any;
         appStore: {
             allApps: {
                 appid: number;
