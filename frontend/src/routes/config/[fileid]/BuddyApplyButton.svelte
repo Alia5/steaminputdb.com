@@ -106,7 +106,7 @@ const applyButtonHandler = () => {
 let dialogOpen = $state(false);
 </script>
 
-<div class="buddy-preview-button button blue">
+<div class="buddy-preview-button button blue card glass">
 	<button
 		class="button"
 		{@attach tooltip({
@@ -234,23 +234,16 @@ let dialogOpen = $state(false);
 	grid-template-columns: 1fr auto;
 	width: 100%;
 	padding: 0;
+	border-radius: 100vw;
 
-	background:
-		linear-gradient(
-			215deg,
-			color-mix(in srgb, var(--card-color), transparent 75%) 0%,
-			color-mix(in srgb, var(--card-color), transparent 90%) 70%
-		),
-		var(--bg-noise-transparent);
 	backdrop-filter: blur(6px);
-	background-color: #1a9fff;
+	background-color: color(from #1a9fff srgb r g b / 1);
 
 	& > button {
 		background: transparent;
-		background-color: color(from #1a9fff srgb r g b / 0.5);
 		&:hover,
 		&:focus-within {
-			background-color: color(from #1a9fff srgb r g b / 0.7);
+			background-color: color(from #1a9fff srgb r g b / 0.33);
 		}
 	}
 
