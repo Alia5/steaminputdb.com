@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -62,6 +63,7 @@ func RegisterRoute(a huma.API, opts ...bool) {
 			if useMemCache && !req.Raw {
 				cached, ok := memcache.Get[*Response](cache, fmt.Sprint(req.AppID))
 				if ok {
+					slog.Debug("returning cached app info", "app_id", req.AppID)
 					return cached, nil
 				}
 			}
