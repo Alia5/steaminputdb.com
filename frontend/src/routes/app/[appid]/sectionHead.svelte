@@ -5,7 +5,7 @@ export { sectionHead };
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
 import { tooltip } from '$lib/attachments/tooltip.svelte';
-import { communityUrlBase, steamStoreUrlBase } from '$lib/steamapi/const';
+import { assetUrlBase, communityUrlBase, steamStoreUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
 import { fade } from 'svelte/transition';
@@ -20,6 +20,23 @@ import { fade } from 'svelte/transition';
 })}
 	<section class="app-header">
 		<div>
+			{#if appInfo?.assets?.library_hero || appInfo?.assets?.header || appInfo?.assets?.package_header || appInfo?.assets?.main_capsule}
+				{@const srcChosen = appInfo?.assets?.asset_url_format
+					? `${assetUrlBase}${appInfo.assets?.asset_url_format?.replace(
+							'${FILENAME}',
+							appInfo?.assets?.library_hero ??
+								appInfo.assets.header ??
+								appInfo.assets.package_header ??
+								appInfo.assets.main_capsule ??
+								'undefined'
+						)}`
+					: undefined}
+				{#if srcChosen}
+					<picture class="capsule" transition:fade={{ duration: 196, easing: cubicOut }}>
+						<enhanced:img src={srcChosen} alt="Thumbnail" height="100%"></enhanced:img>
+					</picture>
+				{/if}
+			{/if}
 			{#if appInfo?.assets?.community_icon}
 				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
 					<enhanced:img
@@ -99,23 +116,50 @@ import { fade } from 'svelte/transition';
 <style lang="postcss">
 :global(section.app-header) {
 	display: grid;
-	max-width: 100%;
+	width: 100%;
 	gap: 1em;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 25ch), auto));
-
-	padding: 0 1em;
-	isolation: isolate;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 32em), auto));
+	max-width: calc(100dvw -2em);
+	container-type: inline-size;
+	justify-self: center;
 
 	& > :first-child {
-		margin: auto;
+		position: relative;
 		display: grid;
 		grid-template-columns: minmax(min-content, 2em) auto;
 		align-items: center;
 		width: 100%;
 		height: fit-content;
+		min-height: 12em;
 		grid-column-gap: 1em;
 		grid-row-gap: 0.25em;
-		padding: 1em 0;
+		padding: 1em 1.6em;
+		margin-right: auto;
+		color: var(--text-color-dark);
+		@container (width > 1200px) {
+			max-width: 40cqw;
+		}
+
+		& .capsule {
+			position: absolute;
+			inset: 0;
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			z-index: -1;
+			border-radius: 1em;
+			box-shadow: 0 0.25em 0.5em black;
+
+			object-fit: cover;
+			object-position: center;
+			width: 100%;
+			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
+			& img {
+				width: 100%;
+				height: 100%;
+			}
+		}
 
 		& picture,
 		& img {
@@ -133,7 +177,12 @@ import { fade } from 'svelte/transition';
 
 		& > :last-child {
 			margin-right: auto;
-			filter: drop-shadow(1px 1px 2px black);
+			filter: drop-shadow(2px 2px 2px black) drop-shadow(0px 0px 8px black);
+			& h1 {
+				text-overflow: ellipsis;
+				width: 100%;
+				overflow: hidden;
+			}
 		}
 	}
 	& > :last-child {

@@ -754,16 +754,14 @@ search {
 
 section.user-header {
 	display: grid;
-	max-width: 100%;
+	width: 100%;
 	gap: 1em;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 25ch), auto));
-
-	padding: 0 1em;
-	isolation: isolate;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 32em), auto));
+	max-width: calc(100dvw -2em);
+	container-type: inline-size;
 
 	& > :first-child {
 		position: relative;
-		margin: auto;
 		display: grid;
 		grid-template-columns: minmax(min-content, 10em) auto;
 		align-items: center;
@@ -771,8 +769,12 @@ section.user-header {
 		height: fit-content;
 		grid-column-gap: 1em;
 		grid-row-gap: 0.25em;
-		padding: 1em 0;
-		padding-left: 1.6em;
+		padding: 1em 1.6em;
+		margin-right: auto;
+		overflow: hidden;
+		@container (width > 1200px) {
+			max-width: 40cqw;
+		}
 
 		& video {
 			position: absolute;
@@ -794,6 +796,8 @@ section.user-header {
 			width: fit-content;
 			grid-row: 1 / span 1;
 			grid-column: 1 / span 1;
+			min-height: 56px;
+			min-width: 56px;
 		}
 		& .avatar-frame {
 			scale: 1.2;
@@ -806,7 +810,10 @@ section.user-header {
 
 		& > :last-child {
 			margin-right: auto;
-			filter: drop-shadow(2px 2px 2px black) drop-shadow(0px 0px 1px black);
+			filter: drop-shadow(2px 2px 2px black) drop-shadow(0px 0px 8px black);
+			text-overflow: ellipsis;
+			width: 100%;
+			overflow: hidden;
 		}
 	}
 	& > :last-child {
@@ -814,8 +821,7 @@ section.user-header {
 		flex-flow: row wrap;
 		align-items: center;
 		justify-content: end;
-		width: 100%;
-		margin: auto;
+		justify-self: end;
 		gap: 1em;
 
 		& > a {

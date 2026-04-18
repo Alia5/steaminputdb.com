@@ -35,14 +35,16 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 			{#if appInfo?.assets}
 				{@const assets = appInfo?.assets}
 				{@const assetChosen =
-					assets.small_capsule ??
-					assets.main_capsule ??
+					assets.library_hero ??
 					assets.header ??
+					assets.package_header ??
+					assets.main_capsule ??
+					assets.small_capsule ??
 					assets.hero_capsule ??
 					assets.library_hero ??
 					'none.svg'}
 				{#if assetChosen}
-					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
+					<picture class="capsule" transition:fade={{ duration: 196, easing: cubicOut }}>
 						<enhanced:img
 							src={`${assetUrlBase}${assets.asset_url_format?.replace(
 								'${FILENAME}',
@@ -51,11 +53,7 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 							alt="Capsule"
 							height="100%"></enhanced:img>
 					</picture>
-				{:else}
-					<div></div>
 				{/if}
-			{:else}
-				<div></div>
 			{/if}
 			<div>
 				<h1>{fileInfo.title}</h1>
@@ -166,44 +164,47 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 <style lang="postcss">
 :global(section.cfg-head) {
 	display: grid;
-	max-width: 100%;
+	width: 100%;
 	gap: 1em;
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 25ch), auto));
-	overflow: hidden;
-
-	padding: 0 1em;
+	padding: 1em;
+	container-type: inline-size;
 
 	& > :first-child {
-		margin: auto;
+		position: relative;
 		display: grid;
-		place-items: center;
+		align-items: center;
 		width: 100%;
 		height: fit-content;
-		gap: 1em;
-		padding: 1em 0;
+		min-height: 12em;
+		grid-column-gap: 1em;
+		grid-row-gap: 0.25em;
+		padding: 1em 1.6em;
+		margin-right: auto;
+		color: var(--text-color-dark);
 
-		grid-template-columns: minmax(56px, min(420px, 33%)) auto;
-		overflow: auto;
-
-		& > :first-child {
-			min-height: 56px;
+		& .capsule {
+			position: absolute;
+			inset: 0;
 			height: 100%;
 			width: 100%;
-			background: linear-gradient(135deg, white -70%, transparent 120%);
-			position: relative;
+			object-fit: cover;
+			object-position: center;
+			z-index: -1;
+			border-radius: 1em;
+			overflow: hidden;
+			box-shadow: 0 0.25em 0.5em black;
 
-			& :global(picture),
+			object-fit: cover;
+			object-position: center;
+			width: 100%;
+			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
 			& :global(img) {
-				aspect-ratio: 21 / 8;
+				width: 100%;
+				height: 100%;
 				object-fit: cover;
 				object-position: center;
-				width: 100%;
-				overflow: hidden;
-				z-index: -1;
 			}
-
-			z-index: -1;
-			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
 		}
 
 		& > :nth-child(2) {
@@ -213,21 +214,24 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 			grid-template-columns: min-content auto;
 			place-items: center;
 			gap: 0.5ch;
+			filter: drop-shadow(2px 2px 2px black) drop-shadow(0px 0px 8px black)
+				drop-shadow(0px 0px 24px black);
 
 			& > :first-child {
 				grid-column: 1 / span 2;
 				text-align: start;
 				width: 100%;
 				color: var(--text-color-dark);
-				filter: drop-shadow(1px 1px 2px black);
 			}
 			& :global(> :nth-child(1n + 2)) {
 				color: color-mix(in srgb, var(--color-primary), var(--text-color-dark) 60%);
 				font-size: 1.8em;
-				filter: drop-shadow(1px 1px 2px black);
 			}
 			& > :last-child {
 				margin-right: auto;
+			}
+			& a {
+				color: color-mix(in srgb, var(--color-primary), var(--text-color-dark) 15%);
 			}
 		}
 	}
@@ -238,7 +242,10 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 		gap: 1em;
 		width: 100%;
 		grid-template-columns: repeat(auto-fit, minmax(19ch, auto));
-
+		margin-right: 0;
+		@container (width > 1200px) {
+			max-width: 40cqw;
+		}
 		& > :global(.hov-over) {
 			width: 100%;
 		}
