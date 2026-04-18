@@ -484,7 +484,7 @@ let {
 	width: max-content;
 	border-radius: 0.5em;
 	isolation: isolate;
-	backdrop-filter: blur(4px);
+	backdrop-filter: blur(6px);
 
 	& > p {
 		text-align: center;
@@ -510,16 +510,14 @@ let {
 			background: var(--bg, var(--card-glass));
 		}
 		&.def {
-			opacity: 0.666;
-
 			&::after {
-				background: var(--card-color);
-				background-color: var(--bg, var(--card-color));
+				background: var(--card-glass);
+				background-color: var(--bg, color(from var(--card-color) srgb r g b / 0.5));
 			}
 
 			& > [data-tooltip-arrow] {
-				background: var(--card-color);
-				background-color: var(--bg, var(--card-color));
+				background: var(--card-glass);
+				background-color: var(--bg, color(from var(--card-color) srgb r g b / 0.5));
 				&::before {
 					content: '';
 					position: absolute;
