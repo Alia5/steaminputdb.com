@@ -583,12 +583,12 @@ fieldset {
 
 	& legend {
 		font-size: 1.1em;
-		border-radius: 0.5em;
+		border-radius: 100vw;
 		background: var(--card-background-noise);
 		isolation: isolate;
 		position: relative;
 		& > :first-child {
-			padding: 0.25em 0.5em;
+			padding: 0.25em 0.75em;
 			display: block;
 		}
 		&::before {
