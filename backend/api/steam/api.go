@@ -9,13 +9,14 @@ import (
 	"github.com/Alia5/steaminputdb.com/api/steam/filedetails"
 	"github.com/Alia5/steaminputdb.com/api/steam/login"
 	"github.com/Alia5/steaminputdb.com/api/steam/user"
+	"github.com/Alia5/steaminputdb.com/db"
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func RegisterRoutes(a huma.API) {
+func RegisterRoutes(a huma.API, dal db.DAL) {
 	login.RegisterRoutes(a)
 	user.RegisterRoutes(a)
-	appinfo.RegisterRoute(a)
+	appinfo.RegisterRoute(a, dal)
 	filedetails.RegisterRoute(a)
 }
 

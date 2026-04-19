@@ -26,3 +26,17 @@ protoc \
 	"${PROTO_DIR}/webui/service_publishedfile.proto" \
 	"${PROTO_DIR}/webui/service_storequery.proto" \
     "${PROTO_DIR}/webui/service_player.proto"
+
+mkdir -p steam/client
+protoc \
+	--go_out=steam/client \
+	--go_opt=paths=source_relative \
+	--go_opt=Msteammessages_base.proto=github.com/Alia5/steaminputdb.com/steam/client \
+	--go_opt=Msteammessages_clientserver_login.proto=github.com/Alia5/steaminputdb.com/steam/client \
+        --go_opt=Msteammessages_clientserver_appinfo.proto=github.com/Alia5/steaminputdb.com/steam/client \
+        --go_opt=Menums_clientserver.proto=github.com/Alia5/steaminputdb.com/steam/client \
+        --proto_path="${PROTO_DIR}/steam" \
+        --proto_path="${PROTO_DIR}" \
+        "${PROTO_DIR}/steam/steammessages_base.proto" \
+        "${PROTO_DIR}/steam/steammessages_clientserver_login.proto" \
+        "${PROTO_DIR}/steam/steammessages_clientserver_appinfo.proto" \

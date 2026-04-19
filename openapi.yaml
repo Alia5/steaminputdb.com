@@ -2360,6 +2360,18 @@ paths:
           schema:
             default: false
             type: boolean
+        - explode: false
+          in: query
+          name: controller_support
+          schema:
+            default: false
+            type: boolean
+        - explode: false
+          in: query
+          name: official_configs
+          schema:
+            default: false
+            type: boolean
       responses:
         "200":
           content:

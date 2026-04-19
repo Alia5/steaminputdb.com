@@ -68,7 +68,7 @@ func main() {
 	}
 	config.Parsed = cfg
 
-	err := db.Init(cfg.DB)
+	dal, err := db.Init(cfg.DB)
 	if err != nil {
 		slog.Error("Failed to initialize database", "error", err)
 		os.Exit(1)
@@ -223,7 +223,7 @@ func main() {
 		))
 	})
 
-	api.RegisterAPI(hAPI)
+	api.RegisterAPI(hAPI, dal)
 
 	// use kong for parsing, ignore humas config parser
 	cli := humacli.New(func(h humacli.Hooks, _ *struct{}) {

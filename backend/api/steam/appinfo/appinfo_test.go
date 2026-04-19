@@ -3,43 +3,31 @@ package appinfo_test
 import (
 	"net/http"
 	"net/http/httptest"
-	"net/url"
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/Alia5/steaminputdb.com/api/steam/appinfo"
 	"github.com/Alia5/steaminputdb.com/steamapi"
-	"github.com/danielgtaylor/huma/v2/humatest"
+	sidbtest "github.com/Alia5/steaminputdb.com/testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/proto"
 )
 
-type roundTripperFunc func(*http.Request) (*http.Response, error)
-
-func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
-
-func setupMockSteamAPI(t *testing.T, baseURL string) {
-	t.Helper()
-	orig := http.DefaultClient
-	origSteam := steamapi.DefaultClient
-	u, err := url.Parse(baseURL)
-	require.NoError(t, err)
-
-	http.DefaultClient = &http.Client{
-		Transport: roundTripperFunc(func(req *http.Request) (*http.Response, error) {
-			if req.URL.Host == "api.steampowered.com" {
-				req.URL.Scheme = u.Scheme
-				req.URL.Host = u.Host
+func init() {
+	key := os.Getenv("STEAM_API_KEY")
+	if key == "" {
+		if b, err := os.ReadFile(".env"); err == nil {
+			for _, line := range strings.Split(string(b), "\n") {
+				if k, v, ok := strings.Cut(line, "="); ok && k == "STEAM_API_KEY" {
+					key = v
+				}
 			}
-			return http.DefaultTransport.RoundTrip(req)
-		}),
+		}
 	}
-
-	steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", baseURL)
-	t.Cleanup(func() {
-		http.DefaultClient = orig
-		steamapi.DefaultClient = origSteam
-	})
+	if key != "" {
+		steamapi.DefaultClient = steamapi.NewClient(key)
+	}
 }
 
 func TestSteamAppInfo(t *testing.T) {
@@ -49,46 +37,23 @@ func TestSteamAppInfo(t *testing.T) {
 		expectedStatus int
 		expectedBody   string
 		contains       string
-		setupMock      func(t *testing.T) *httptest.Server
+		setup          func(t *testing.T)
 	}
 
 	testCases := []testCase{
 		{
-			name: "SUCCESS",
-			setupMock: func(t *testing.T) *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := &steamapi.CStoreBrowse_GetItems_Response{
-						StoreItems: []*steamapi.StoreItem{{
-							Appid:        new(uint32((250900))),
-							Name:         new("The Binding of Isaac: Rebirth"),
-							StoreUrlPath: new("/app/250900/"),
-						}},
-					}
-					w.Header().Set("Content-Type", "application/octet-stream")
-					b, err := proto.Marshal(resp)
-					require.NoError(t, err)
-					w.Write(b)
-				}))
-			},
+			name:           "SUCCESS",
 			path:           "/v1/steam/appinfo?app_id=250900",
 			expectedStatus: http.StatusOK,
 			contains:       "The Binding of Isaac: Rebirth",
 		},
 		{
 			name:           "MISSING_APP_ID",
-			setupMock:      nil,
 			path:           "/v1/steam/appinfo",
 			expectedStatus: http.StatusUnprocessableEntity, contains: "app_id",
 		},
 		{
-			name: "APP_NOT_FOUND",
-			setupMock: func(t *testing.T) *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					if r.URL.Path != "/IStoreBrowseService/GetItems/v1/" {
-						http.Error(w, "", http.StatusNotFound)
-					}
-				}))
-			},
+			name:           "APP_NOT_FOUND",
 			path:           "/v1/steam/appinfo?app_id=999999",
 			expectedStatus: http.StatusNotFound,
 			expectedBody: `{
@@ -98,29 +63,31 @@ func TestSteamAppInfo(t *testing.T) {
 			}`,
 		},
 		{
-			name: "STEAM_API_ERROR",
-			setupMock: func(t *testing.T) *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					http.Error(w, "", http.StatusServiceUnavailable)
-				}))
-			},
+			name:           "STEAM_API_ERROR",
 			path:           "/v1/steam/appinfo?app_id=250900",
 			expectedStatus: http.StatusBadGateway,
 			contains:       "failed to get steam app info",
+			setup: func(t *testing.T) {
+				srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					http.Error(w, "", http.StatusServiceUnavailable)
+				}))
+				t.Cleanup(srv.Close)
+				orig := steamapi.DefaultClient
+				steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", srv.URL)
+				t.Cleanup(func() { steamapi.DefaultClient = orig })
+			},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			steamapi.DefaultClient = steamapi.NewClient("")
-			if tc.setupMock != nil {
-				srv := tc.setupMock(t)
-				setupMockSteamAPI(t, srv.URL)
-				t.Cleanup(srv.Close)
+			if tc.setup != nil {
+				tc.setup(t)
 			}
 
-			_, api := humatest.New(t)
-			appinfo.RegisterRoute(api)
+			api, dal, err := sidbtest.MockAPI(t)
+			require.NoError(t, err)
+			appinfo.RegisterRoute(api, dal)
 			resp := api.Get(tc.path)
 
 			assert.Equal(t, tc.expectedStatus, resp.Code, "body: %s", resp.Body.String())
