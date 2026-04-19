@@ -1,0 +1,46 @@
+{
+    "extends": [
+        "config:recommended"
+    ],
+    "dependencyDashboard": true,
+    "dependencyDashboardApproval": true,
+    "dependencyDashboardTitle": "Dependency Dashboard",
+    "labels": ["dependencies", "renovate"],
+    "rangeStrategy": "bump",
+    "packageRules": [
+        {
+            "description": "group minor+patch",
+            "matchUpdateTypes": ["minor", "patch"],
+            "groupName": "minor and patch"
+        },
+        {
+            "description": "backend",
+            "matchFileNames": ["backend/**"],
+            "groupName": "backend",
+            "labels": ["dependencies", "renovate", "backend"]
+        },
+        {
+            "description": "buddy-app",
+            "matchFileNames": ["buddy-app/**"],
+            "groupName": "buddy-app",
+            "labels": ["dependencies", "renovate", "buddy-app"]
+        },
+        {
+            "description": "frontend",
+            "matchFileNames": ["frontend/**"],
+            "groupName": "frontend",
+            "labels": ["dependencies", "renovate", "frontend"]
+        },
+        {
+            "description": "decky-plugin",
+            "matchFileNames": ["buddy-app-decky-plugin/**"],
+            "groupName": "decky-plugin",
+            "labels": ["dependencies", "renovate", "decky-plugin"]
+        },
+        {
+            "description": "major approval",
+            "matchUpdateTypes": ["major"],
+            "dependencyDashboardApproval": true
+        }
+    ]
+}
