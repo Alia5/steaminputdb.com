@@ -65,6 +65,7 @@ type connection struct {
 	conn           *net.TCPConn
 	ciph           cipher.Block
 	mu             sync.RWMutex
+	writeMu        sync.Mutex
 	tempSessionKey []byte
 	sessionID      int32
 	steamID        uint64
@@ -113,7 +114,9 @@ func (c *connection) write(data []byte) error {
 	_ = binary.Write(buf, binary.LittleEndian, uint32(len(data)))
 	_ = binary.Write(buf, binary.LittleEndian, tcpMagic)
 	buf.Write(data)
+	c.writeMu.Lock()
 	_, err := c.conn.Write(buf.Bytes())
+	c.writeMu.Unlock()
 	return err
 }
 
@@ -123,8 +126,11 @@ func (c *connection) setEncryptionKey(key []byte) {
 	c.ciph, _ = aes.NewCipher(key)
 }
 
-func (c *connection) writeProtoMsg(eMsg EMsg, body proto.Message) error {
+func (c *connection) writeProtoMsg(eMsg EMsg, body proto.Message, jobID ...uint64) error {
 	hdr := &CMsgProtoBufHeader{}
+	if len(jobID) > 0 {
+		hdr.JobidSource = &jobID[0]
+	}
 	if c.sessionID != 0 {
 		hdr.ClientSessionid = new(c.sessionID)
 	}

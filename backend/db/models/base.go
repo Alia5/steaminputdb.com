@@ -9,18 +9,21 @@ import (
 )
 
 type Timestamps struct {
-	CreatedAt time.Time `bun:",notnull,default:current_timestamp"`
+	CreatedAt time.Time `bun:",notnull,default:current_timestamp,skipupdate"`
 	UpdatedAt time.Time `bun:",notnull,default:current_timestamp"`
 }
 
 func (t *Timestamps) BeforeAppendModel(_ context.Context, q bun.Query) error {
 	now := time.Now()
-
-	// required for sqlite...
-	if _, ok := q.(*bun.UpdateQuery); ok {
+	switch q.(type) {
+	case *bun.InsertQuery:
+		if t.CreatedAt.IsZero() {
+			t.CreatedAt = now
+		}
+		t.UpdatedAt = now
+	case *bun.UpdateQuery:
 		t.UpdatedAt = now
 	}
-
 	return nil
 }
 

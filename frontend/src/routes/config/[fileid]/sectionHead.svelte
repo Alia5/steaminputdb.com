@@ -211,7 +211,7 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 			margin-right: auto;
 			display: grid;
 			height: fit-content;
-			grid-template-columns: min-content auto;
+			grid-template-columns: min-content 1fr;
 			place-items: center;
 			gap: 0.5ch;
 			filter: drop-shadow(2px 2px 2px black) drop-shadow(0px 0px 8px black)

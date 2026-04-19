@@ -21,7 +21,6 @@ func Get(ctx context.Context, c client.Client, appIDs ...uint32) ([]Info, error)
 	var resp client.CMsgClientPICSProductInfoResponse
 	err := c.SendMessage(ctx,
 		client.EMsg_k_EMsgClientPICSProductInfoRequest,
-		client.EMsg_k_EMsgClientPICSProductInfoResponse,
 		&client.CMsgClientPICSProductInfoRequest{Apps: apps},
 		&resp,
 	)

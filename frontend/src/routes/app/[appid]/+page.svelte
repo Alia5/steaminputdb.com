@@ -26,7 +26,7 @@ import { sectionHead } from './sectionHead.svelte';
 
 let { data }: PageProps = $props();
 
-const appInfo: components['schemas']['AppItem'] | undefined = $derived(data.appInfo);
+const appInfo: components['schemas']['AppInfoItem'] | undefined = $derived(data.appInfo);
 
 const pageBGURL = $derived.by(() => {
 	if (!appInfo?.assets) {

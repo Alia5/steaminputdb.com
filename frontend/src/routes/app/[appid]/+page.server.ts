@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
 
 
     const loadRes: {
-        appInfo?: components['schemas']['AppItem'];
+        appInfo?: components['schemas']['AppInfoItem'];
         configs?: components['schemas']['ConfigsResponse'];
         searchError?: {
             status?: number;
@@ -30,14 +30,16 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
 
         const client = clientWithSvelteFetch(fetch, PUBLIC_API_BASE_URL_LOCAL);
         let infoResp: Awaited<ResponseType<'GET', '/v1/steam/appinfo'>> & {
-            data?: components['schemas']['AppItem'];
+            data?: components['schemas']['AppInfoItem'];
         };
         try {
             infoResp = await client.GET('/v1/steam/appinfo', {
                 params: {
                     query: {
                         app_id,
-                        raw: false
+                        raw: false,
+                        controller_support: true,
+                        official_configs: true
                     }
                 }
             }) as typeof infoResp;

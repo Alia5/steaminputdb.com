@@ -99,8 +99,8 @@ type AppCreatorRole struct {
 
 type AppCreator struct {
 	Base                 `bun:",embed"`
-	Name                 string  `bun:"name,notnull"`
-	CreatorClanAccountID *uint32 `bun:"creator_clan_account_id"`
+	Name                 string `bun:"name,notnull,unique:creator_identity"`
+	CreatorClanAccountID uint32 `bun:"creator_clan_account_id,unique:creator_identity"`
 
 	Apps []*AppInfo `bun:"m2m:app_creator_to_apps,join:AppCreator=AppInfo"`
 }

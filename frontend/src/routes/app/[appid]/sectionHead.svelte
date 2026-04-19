@@ -1,5 +1,8 @@
 <script lang="ts" module>
 export { sectionHead };
+
+const CONTROLLER_SUPPORT_LEVEL_FULL = 2;
+const CONTROLLER_SUPPORT_LEVEL_PARTIAL = 1;
 </script>
 
 <script lang="ts">
@@ -10,13 +13,26 @@ import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
 import { fade } from 'svelte/transition';
 import IcoDesktop from '~icons/mdi/monitor';
+
+import IcoFullController from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
+import IcoPartialController from '$lib/assets/steam_controller_type_svgs/xbox_partial.svg?component';
+import IcoForbidden from '~icons/mdi/do-not-disturb-alt';
+
+import { resolve } from '$app/paths';
+import IcoDs4Full from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
+import IcoDs4Partial from '$lib/assets/steam_controller_type_svgs/ps4_partial.svg?component';
+import IcoDs5Full from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
+import IcoDs5Partial from '$lib/assets/steam_controller_type_svgs/ps5_partial.svg?component';
+import IcoSIAPI from '$lib/assets/steam_controller_type_svgs/siapi.svg?component';
+import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
+import IcoGeneric from '~icons/mdi/controller';
 </script>
 
 {#snippet sectionHead({
 	appInfo,
 	fallbackName
 }: {
-	appInfo?: components['schemas']['AppItem'];
+	appInfo?: components['schemas']['AppInfoItem'];
 	fallbackName?: string;
 })}
 	<section class="app-header">
@@ -38,33 +54,145 @@ import IcoDesktop from '~icons/mdi/monitor';
 					</picture>
 				{/if}
 			{/if}
-			{#if appInfo?.assets?.community_icon}
-				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
-					<enhanced:img
-						src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets?.community_icon}.jpg`}
-						alt="Icon"></enhanced:img>
-				</picture>
-			{:else}
-				<!-- KEEP! -->
-				{#if appInfo?.app_id !== 413080}
-					<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+			<div>
+				{#if appInfo?.assets?.community_icon}
+					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
+						<enhanced:img
+							src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets?.community_icon}.jpg`}
+							alt="Icon"></enhanced:img>
+					</picture>
 				{:else}
-					<IcoDesktop />
+					<!-- KEEP! -->
+					{#if appInfo?.app_id !== 413080}
+						<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+					{:else}
+						<IcoDesktop />
+					{/if}
 				{/if}
-			{/if}
-			{#if !appInfo && fallbackName}
-				<i>(Non Steam Shortcut)</i>
-			{/if}
-			<h1>{appInfo?.name ?? fallbackName}</h1>
+				{#if !appInfo && fallbackName}
+					<i>(Non Steam Shortcut)</i>
+				{/if}
+				<h1>{appInfo?.name ?? fallbackName}</h1>
+				<div>
+					{#if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_FULL}
+						<div
+							{@attach tooltip({
+								content: 'Full controller support',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoFullController width="2em" />
+						</div>
+					{:else if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_PARTIAL}
+						<div
+							{@attach tooltip({
+								content: 'Partial controller support',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoPartialController width="2em" />
+						</div>
+						<!-- HACK if is real steam game -->
+					{:else if appInfo?.assets?.community_icon}
+						<div
+							{@attach tooltip({
+								content: 'No controller support',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}
+							class="stacked">
+							<IcoFullController width="2em" opacity="0.5" />
+							<IcoForbidden width="2em" height="2em" color="red" style="z-index: 1;" />
+						</div>
+					{/if}
+					{#if appInfo?.controller_support?.steam_input_api_support}
+						<div
+							{@attach tooltip({
+								content: 'Steam Input API support',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoSIAPI width="2em" />
+						</div>
+					{/if}
+					{#if appInfo?.controller_support?.ds4_wired_support}
+						<div
+							{@attach tooltip({
+								content: 'Native DualShock Controller support (USB only)',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoDs4Partial width="2em" />
+						</div>
+					{/if}
+					{#if appInfo?.controller_support?.ds4_wireless_support}
+						<div
+							{@attach tooltip({
+								content: 'Native DualShock Controller support',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoDs4Full width="2em" />
+						</div>
+					{/if}
+					{#if appInfo?.controller_support?.ds5_wired_support}
+						<div
+							{@attach tooltip({
+								content: 'Native DualSense Controller support (USB only)',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoDs5Partial width="2em" />
+						</div>
+					{/if}
+					{#if appInfo?.controller_support?.ds5_wireless_support}
+						<div
+							{@attach tooltip({
+								content: 'Native DualSense Controller support',
+								outDelay: 200,
+								arrow: true,
+								placement: 'bottom',
+								autoPlacement: false
+							})}>
+							<IcoDs5Full width="2em" />
+						</div>
+					{/if}
+				</div>
+			</div>
 		</div>
 		<div>
-			<!-- 
-            TODO: create buddy-app that interacts with steam via cef-remote-debug
-            If you are reading this and think this works without - Nope CORS policy. and that's a good thing!
-			<a href="#" class="button">
-				<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
-				<span>Show Controller Config</span>
-			</a> -->
+			{#if Object.entries(appInfo?.official_configs ?? {}).length}
+				<div class="official-configs">
+					<h3>Official Configs</h3>
+					{#each Object.entries(appInfo?.official_configs ?? {}) as [controller_type, config_id] (config_id)}
+						{@const controller_list_entry = CONTROLLER_LIST.find(
+							(controller) => controller.type === controller_type
+						)}
+						<a href={resolve(`/config/${config_id}`)} class="button">
+							{#if controller_list_entry}
+								<controller_list_entry.icon width="2em" height="2em" />
+							{:else}
+								<IcoGeneric style="width: 2em; height: 2em;" />
+							{/if}
+							<span>{controller_list_entry?.niceName ?? 'Generic'}</span>
+						</a>
+					{/each}
+				</div>
+			{/if}
 			{#if appInfo?.store_url_path}
 				<a
 					href={steamStoreUrlBase + appInfo?.store_url_path}
@@ -125,22 +253,28 @@ import IcoDesktop from '~icons/mdi/monitor';
 	width: 100%;
 	gap: 1em;
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 32em), auto));
-	max-width: calc(100dvw -2em);
+	max-width: calc(100dvw - 2em);
 	container-type: inline-size;
 	justify-self: center;
 
+	.stacked {
+		display: grid;
+		grid-template-areas: 'stack';
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr;
+		place-items: center;
+		& > :global(*) {
+			grid-area: stack;
+		}
+	}
 	& > :first-child {
 		position: relative;
 		display: grid;
-		grid-template-columns: minmax(min-content, 2em) auto;
 		align-items: center;
 		width: 100%;
-		height: fit-content;
+		height: 100%;
 		min-height: 12em;
-		grid-column-gap: 1em;
-		grid-row-gap: 0.25em;
 		padding: 1em 1.6em;
-		margin-right: auto;
 		color: var(--text-color-dark);
 		@container (width > 1200px) {
 			max-width: 40cqw;
@@ -161,6 +295,7 @@ import IcoDesktop from '~icons/mdi/monitor';
 			object-position: center;
 			width: 100%;
 			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
+
 			& img {
 				width: 100%;
 				height: 100%;
@@ -173,33 +308,49 @@ import IcoDesktop from '~icons/mdi/monitor';
 			object-position: center;
 			overflow: hidden;
 			width: fit-content;
-			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
-		}
-
-		& > i {
-			grid-row: 2 / span 1;
-			grid-column: 1 / span 2;
 		}
 
 		& > :last-child {
+			display: grid;
+			grid-template-columns: minmax(min-content, 2em) auto;
+			width: 100%;
 			margin-right: auto;
+			align-items: center;
+			grid-column-gap: 1em;
+			grid-row-gap: 0.25em;
+
 			filter: drop-shadow(2px 2px 2px black) drop-shadow(0px 0px 8px black);
+
+			& > i {
+				grid-row: 2 / span 1;
+				grid-column: 1 / span 2;
+			}
+
 			& h1 {
 				text-overflow: ellipsis;
 				width: 100%;
 				overflow: hidden;
+				margin-right: auto;
+			}
+
+			& > :last-child {
+				grid-column: 1 / -1;
+				display: flex;
+				flex-direction: row wrap;
+				gap: 1ch;
+				align-items: center;
+				/* background: rebeccapurple; */
 			}
 		}
 	}
 	& > :last-child {
 		display: flex;
-		flex-flow: row wrap;
+		flex-flow: row wrap-reverse;
 		align-items: center;
 		justify-content: end;
 		width: 100%;
 		margin: auto;
 		gap: 1em;
-
 		& > a {
 			white-space: nowrap;
 			display: grid;
@@ -212,9 +363,6 @@ import IcoDesktop from '~icons/mdi/monitor';
 				color-mix(in srgb, var(--card-color), transparent 35%) 0%,
 				color-mix(in srgb, var(--card-color), transparent 60%) 70%
 			);
-			& > span {
-				width: fit-content;
-			}
 		}
 		& .button {
 			&:hover,
@@ -223,13 +371,35 @@ import IcoDesktop from '~icons/mdi/monitor';
 				background-color: var(--color-primary);
 			}
 		}
-		/* & .button:is(:first-child) {
-			background-color: #1a9fff;
-			&:hover,
-			&:focus-visible {
-				background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
+	}
+
+	.official-configs {
+		display: flex;
+		flex-flow: row wrap;
+		gap: 1ch;
+		& > :first-child {
+			width: 100%;
+			flex: 1 0 100%;
+		}
+		& > a {
+			display: grid;
+			place-items: center;
+			font-weight: bold;
+			display: grid;
+			align-items: center;
+			justify-content: center;
+			padding: 0.5em 1em;
+			gap: 0.5ch;
+			background: linear-gradient(
+				215deg,
+				color-mix(in srgb, var(--card-color), transparent 35%) 0%,
+				color-mix(in srgb, var(--card-color), transparent 60%) 70%
+			);
+			& > :global(svg) {
+				width: 2em;
+				height: 2em;
 			}
-		} */
+		}
 	}
 }
 </style>

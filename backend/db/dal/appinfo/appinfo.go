@@ -43,7 +43,8 @@ func (d *dal) Get(ctx context.Context, appID uint32, include AppInfoInclude) (*m
 		q = q.Relation("Links")
 	}
 	if include.Creators {
-		q = q.Relation("CreatorLinks").Relation("CreatorLinks.AppCreator")
+		q = q.Relation("CreatorLinks")
+		q = q.Relation("Creators")
 	}
 	if include.OfficialConfigs {
 		q = q.Relation("OfficialConfigs")
@@ -85,56 +86,60 @@ func (d *dal) Insert(ctx context.Context, appInfo *models.AppInfo) error {
 			}
 		}
 
-		if len(appInfo.Links) > 0 {
+		if appInfo.Links != nil {
 			_, err = tx.NewDelete().Model((*models.AppLink)(nil)).
 				Where("app_id = ?", appInfo.AppID).Exec(ctx)
 			if err != nil {
 				return err
 			}
-			for _, link := range appInfo.Links {
-				link.AppID = appInfo.AppID
-			}
-			_, err = tx.NewInsert().Model(&appInfo.Links).Exec(ctx)
-			if err != nil {
-				return err
+			if len(appInfo.Links) > 0 {
+				for _, link := range appInfo.Links {
+					link.AppID = appInfo.AppID
+				}
+				_, err = tx.NewInsert().Model(&appInfo.Links).Exec(ctx)
+				if err != nil {
+					return err
+				}
 			}
 		}
 
-		if len(appInfo.OfficialConfigs) > 0 {
+		if appInfo.OfficialConfigs != nil {
 			_, err = tx.NewDelete().Model((*models.OfficialSteamInputConfig)(nil)).
 				Where("app_id = ?", appInfo.AppID).Exec(ctx)
 			if err != nil {
 				return err
 			}
-			for _, cfg := range appInfo.OfficialConfigs {
-				cfg.AppID = appInfo.AppID
-			}
-			_, err = tx.NewInsert().Model(&appInfo.OfficialConfigs).Exec(ctx)
-			if err != nil {
-				return err
+			if len(appInfo.OfficialConfigs) > 0 {
+				for _, cfg := range appInfo.OfficialConfigs {
+					cfg.AppID = appInfo.AppID
+				}
+				_, err = tx.NewInsert().Model(&appInfo.OfficialConfigs).Exec(ctx)
+				if err != nil {
+					return err
+				}
 			}
 		}
 
-		if len(appInfo.CreatorLinks) > 0 {
+		if appInfo.CreatorLinks != nil {
 			_, err = tx.NewDelete().Model((*models.AppCreatorToApp)(nil)).
 				Where("app_id = ?", appInfo.AppID).Exec(ctx)
 			if err != nil {
 				return err
 			}
-			for _, link := range appInfo.CreatorLinks {
-				if link.AppCreator != nil {
-					creator, err := findOrCreateCreator(ctx, tx, link.AppCreator)
-					if err != nil {
-						return err
+			if len(appInfo.CreatorLinks) > 0 {
+				for _, link := range appInfo.CreatorLinks {
+					link.AppID = appInfo.AppID
+					if link.AppCreator != nil {
+						if err := findOrCreateCreator(ctx, tx, link.AppCreator); err != nil {
+							return err
+						}
+						link.AppCreatorID = link.AppCreator.ID
 					}
-					link.AppCreator = creator
-					link.AppCreatorID = creator.ID
 				}
-				link.AppID = appInfo.AppID
-			}
-			_, err = tx.NewInsert().Model(&appInfo.CreatorLinks).Exec(ctx)
-			if err != nil {
-				return err
+				_, err = tx.NewInsert().Model(&appInfo.CreatorLinks).Exec(ctx)
+				if err != nil {
+					return err
+				}
 			}
 		}
 
@@ -214,15 +219,13 @@ func (d *dal) Update(ctx context.Context, appInfo *models.AppInfo) error {
 			}
 			if len(appInfo.CreatorLinks) > 0 {
 				for _, link := range appInfo.CreatorLinks {
+					link.AppID = appInfo.AppID
 					if link.AppCreator != nil {
-						creator, err := findOrCreateCreator(ctx, tx, link.AppCreator)
-						if err != nil {
+						if err := findOrCreateCreator(ctx, tx, link.AppCreator); err != nil {
 							return err
 						}
-						link.AppCreator = creator
-						link.AppCreatorID = creator.ID
+						link.AppCreatorID = link.AppCreator.ID
 					}
-					link.AppID = appInfo.AppID
 				}
 				_, err = tx.NewInsert().Model(&appInfo.CreatorLinks).Exec(ctx)
 				if err != nil {
@@ -235,22 +238,11 @@ func (d *dal) Update(ctx context.Context, appInfo *models.AppInfo) error {
 	})
 }
 
-func findOrCreateCreator(ctx context.Context, tx bun.Tx, creator *models.AppCreator) (*models.AppCreator, error) {
-	existing := &models.AppCreator{}
-	q := tx.NewSelect().Model(existing).Where("name = ?", creator.Name)
-	if creator.CreatorClanAccountID != nil {
-		q = q.Where("creator_clan_account_id = ?", *creator.CreatorClanAccountID)
-	} else {
-		q = q.Where("creator_clan_account_id IS NULL")
-	}
-	err := q.Limit(1).Scan(ctx)
-	if err == nil {
-		return existing, nil
-	}
-
-	_, err = tx.NewInsert().Model(creator).Exec(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return creator, nil
+func findOrCreateCreator(ctx context.Context, tx bun.Tx, creator *models.AppCreator) error {
+	_, err := tx.NewInsert().Model(creator).
+		On("CONFLICT (name, creator_clan_account_id) DO UPDATE").
+		Set("name = EXCLUDED.name").
+		Returning("id").
+		Exec(ctx)
+	return err
 }

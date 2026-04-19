@@ -7,7 +7,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/types"
 )
 
-type Response struct {
+type AppInfoResponse struct {
 	Body responseBody
 }
 
@@ -25,10 +25,10 @@ type responseBody interface {
 
 type raw steamapi.CStoreBrowse_GetItems_Response
 
-func (r *raw) searchSuggestionsResponse()            {}
-func (r *AppInfoWrapper) searchSuggestionsResponse() {}
+func (r *raw) searchSuggestionsResponse()         {}
+func (r *AppInfoItem) searchSuggestionsResponse() {}
 
-type AppInfoWrapper struct {
+type AppInfoItem struct {
 	games.AppItem
 	ControllerSupport *ControllerSupport `json:"controller_support,omitempty"`
 	OfficialConfigs   *officialConfigs   `json:"official_configs,omitempty"`

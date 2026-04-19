@@ -3,11 +3,13 @@ package appinfo
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -25,11 +27,18 @@ import (
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/Alia5/steaminputdb.com/types"
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/google/uuid"
 )
 
-const dbMaxAge = 24 * time.Hour
+const (
+	dbMaxAge         = 24 * time.Hour
+	reconnectTimeout = 10 * time.Second
+)
 
 func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
+
+	registry := a.OpenAPI().Components.Schemas
+
 	var useMemCache bool
 	if len(opts) > 0 {
 		useMemCache = opts[0]
@@ -40,11 +49,13 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 
 	sc := client.New()
 	bgCtx := context.Background()
+	scDetails := client.LoginDetails{Anonymous: true, Language: "english"}
 	if err := sc.Connect(bgCtx); err != nil {
 		slog.Error("steam client connect failed", "error", err)
-	} else if err := sc.Login(bgCtx, client.LoginDetails{Anonymous: true, Language: "english"}); err != nil {
+	} else if err := sc.Login(bgCtx, scDetails); err != nil {
 		slog.Error("steam client login failed", "error", err)
 	}
+	sc.EnableAutoReconnect(scDetails, reconnectTimeout)
 
 	huma.Register(
 		a,
@@ -57,11 +68,20 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 			Errors: []int{
 				http.StatusBadGateway, http.StatusNotFound, http.StatusForbidden,
 			},
+			Responses: map[string]*huma.Response{
+				"200": {
+					Content: map[string]*huma.MediaType{
+						"application/json": {
+							Schema: registry.Schema(reflect.TypeFor[AppInfoItem](), true, ""),
+						},
+					},
+				},
+			},
 			Middlewares: huma.Middlewares{
 				auth.ExtractSteamIDMiddleware,
 			},
 		},
-		func(c context.Context, req *AppInfoRequest) (*Response, error) {
+		func(c context.Context, req *AppInfoRequest) (*AppInfoResponse, error) {
 
 			advancedAuthorized := os.Getenv("DEV") == "1"
 			if !advancedAuthorized && (req.Raw || req.ForceRefresh) {
@@ -95,17 +115,24 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 			cacheKey := fmt.Sprint(req.AppID)
 
 			if useMemCache && !req.Raw && !req.ForceRefresh {
-				cached, ok := memcache.Get[*AppInfoWrapper](cache, cacheKey)
+				cached, ok := memcache.Get[*AppInfoItem](cache, cacheKey)
 				if ok {
 					slog.Debug("returning cached app info", "app_id", req.AppID)
-					res := *cached
+					data, err := json.Marshal(cached)
+					if err != nil {
+						return nil, err
+					}
+					var res AppInfoItem
+					if err := json.Unmarshal(data, &res); err != nil {
+						return nil, err
+					}
 					if !req.ControllerSupport {
 						res.ControllerSupport = nil
 					}
 					if !req.OfficialConfigs {
 						res.OfficialConfigs = nil
 					}
-					return &Response{Body: &res}, nil
+					return &AppInfoResponse{Body: &res}, nil
 				}
 			}
 
@@ -132,7 +159,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				if !req.OfficialConfigs {
 					res.OfficialConfigs = nil
 				}
-				return &Response{Body: &res}, nil
+				return &AppInfoResponse{Body: &res}, nil
 			}
 
 			storeItem, err := fetchFromSteamAPI(c, req)
@@ -140,8 +167,12 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				return nil, err
 			}
 
+			if storeItem.raw == nil {
+				return nil, huma.Error404NotFound("item not found")
+			}
+
 			if req.Raw {
-				return &Response{
+				return &AppInfoResponse{
 					Body: (*raw)(storeItem.raw),
 				}, nil
 			}
@@ -174,18 +205,18 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				}
 			}
 
-			wrapper := mapModelToResponse(appInfo)
-			if useMemCache && wrapper.ControllerSupport != nil && wrapper.OfficialConfigs != nil {
-				cache.Store(cacheKey, wrapper)
+			infoItem := mapModelToResponse(appInfo)
+			if useMemCache {
+				cache.Store(cacheKey, infoItem)
 			}
-			res := *wrapper
+			res := *infoItem
 			if !req.ControllerSupport {
 				res.ControllerSupport = nil
 			}
 			if !req.OfficialConfigs {
 				res.OfficialConfigs = nil
 			}
-			return &Response{Body: &res}, nil
+			return &AppInfoResponse{Body: &res}, nil
 		},
 	)
 }
@@ -220,7 +251,7 @@ func fetchFromSteamAPI(c context.Context, req *AppInfoRequest) (*storeAPIResult,
 			if strings.Contains(err.Error(), "HTTP error 404") {
 				return nil, huma.Error404NotFound("app not found", err)
 			}
-			return nil, huma.Error502BadGateway("failed to get steam app info: %v", err)
+			return nil, huma.Error502BadGateway("failed to get steam app info", err)
 		}
 		return nil, err
 	}
@@ -234,20 +265,7 @@ func fetchFromSteamAPI(c context.Context, req *AppInfoRequest) (*storeAPIResult,
 func fetchFromSteamClient(ctx context.Context, sc client.Client, appID uint32) (*clientappinfo.Info, error) {
 	infos, err := clientappinfo.Get(ctx, sc, appID)
 	if err != nil {
-		if errors.Is(err, client.ErrDisconnected) {
-			if err := sc.Connect(ctx); err != nil {
-				return nil, fmt.Errorf("reconnect: %w", err)
-			}
-			if err := sc.Login(ctx, client.LoginDetails{Anonymous: true, Language: "english"}); err != nil {
-				return nil, fmt.Errorf("relogin: %w", err)
-			}
-			infos, err = clientappinfo.Get(ctx, sc, appID)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			return nil, err
-		}
+		return nil, err
 	}
 	if len(infos) == 0 {
 		return nil, fmt.Errorf("no PICS info for app %d", appID)
@@ -308,6 +326,7 @@ func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
 			RawPageBackground:  item.Assets.RawPageBackground,
 		}
 	}
+	appInfo.Links = make([]*models.AppLink, 0)
 	if item.Links != nil {
 		for _, link := range item.Links {
 			if link == nil || link.Url == nil {
@@ -319,6 +338,7 @@ func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
 			})
 		}
 	}
+	appInfo.CreatorLinks = make([]*models.AppCreatorToApp, 0)
 	if item.BasicInfo != nil {
 		for _, pub := range item.BasicInfo.Publishers {
 			if pub == nil || pub.Name == nil {
@@ -328,7 +348,7 @@ func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
 				RoleID: models.AppCreatorRoleIDPublisher,
 				AppCreator: &models.AppCreator{
 					Name:                 *pub.Name,
-					CreatorClanAccountID: pub.CreatorClanAccountId,
+					CreatorClanAccountID: pub.GetCreatorClanAccountId(),
 				},
 			})
 		}
@@ -340,7 +360,7 @@ func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
 				RoleID: models.AppCreatorRoleIDDeveloper,
 				AppCreator: &models.AppCreator{
 					Name:                 *dev.Name,
-					CreatorClanAccountID: dev.CreatorClanAccountId,
+					CreatorClanAccountID: dev.GetCreatorClanAccountId(),
 				},
 			})
 		}
@@ -352,7 +372,7 @@ func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
 				RoleID: models.AppCreatorRoleIDFranchise,
 				AppCreator: &models.AppCreator{
 					Name:                 *fr.Name,
-					CreatorClanAccountID: fr.CreatorClanAccountId,
+					CreatorClanAccountID: fr.GetCreatorClanAccountId(),
 				},
 			})
 		}
@@ -387,40 +407,66 @@ func enrichModelFromPICS(appInfo *models.AppInfo, info *clientappinfo.Info) {
 	cs.SteamInputAPISupport = check(int64(clientappinfo.CategorySteamInputAPI))
 	appInfo.ControllerSupport = cs
 
-	appInfo.OfficialConfigs = nil
+	appInfo.OfficialConfigs = make([]*models.OfficialSteamInputConfig, 0)
+	type configCandidate struct {
+		config    *models.OfficialSteamInputConfig
+		isDefault bool
+	}
+	best := make(map[steamtypes.ControllerType]configCandidate)
+	seen := make(map[steamtypes.ControllerType]bool)
 	for idStr, detail := range info.Config.SteamControllerConfigDetails {
-		appInfo.OfficialConfigs = appendConfigIfDefault(appInfo.OfficialConfigs, appInfo.AppID, idStr, detail)
+		cfg := parseConfig(appInfo.AppID, idStr, detail)
+		if cfg == nil {
+			continue
+		}
+		seen[cfg.ControllerType] = true
+		isDefault := hasDefaultBranch(detail.EnabledBranches)
+		if prev, ok := best[cfg.ControllerType]; !ok || (isDefault && !prev.isDefault) {
+			best[cfg.ControllerType] = configCandidate{config: cfg, isDefault: isDefault}
+		}
 	}
 	for idStr, detail := range info.Config.SteamControllerTouchConfigDetails {
-		appInfo.OfficialConfigs = appendConfigIfDefault(appInfo.OfficialConfigs, appInfo.AppID, idStr, detail)
+		ct := steamtypes.ControllerType(detail.ControllerType)
+		if seen[ct] {
+			continue
+		}
+		cfg := parseConfig(appInfo.AppID, idStr, detail)
+		if cfg == nil {
+			continue
+		}
+		isDefault := hasDefaultBranch(detail.EnabledBranches)
+		if prev, ok := best[cfg.ControllerType]; !ok || (isDefault && !prev.isDefault) {
+			best[cfg.ControllerType] = configCandidate{config: cfg, isDefault: isDefault}
+		}
+	}
+	for _, c := range best {
+		appInfo.OfficialConfigs = append(appInfo.OfficialConfigs, c.config)
 	}
 }
 
-func appendConfigIfDefault(configs []*models.OfficialSteamInputConfig, appID uint32, idStr string, detail clientappinfo.ControllerConfigDetail) []*models.OfficialSteamInputConfig {
-	branches := strings.Split(detail.EnabledBranches, ",")
-	hasDefault := false
-	for _, b := range branches {
-		if strings.TrimSpace(b) == "default" {
-			hasDefault = true
-			break
-		}
-	}
-	if !hasDefault {
-		return configs
-	}
+func parseConfig(appID uint32, idStr string, detail clientappinfo.ControllerConfigDetail) *models.OfficialSteamInputConfig {
 	configID, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		return configs
+		return nil
 	}
-	return append(configs, &models.OfficialSteamInputConfig{
+	return &models.OfficialSteamInputConfig{
 		AppID:          appID,
 		ControllerType: steamtypes.ControllerType(detail.ControllerType),
 		ConfigID:       configID,
-	})
+	}
 }
 
-func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {
-	wrapper := &AppInfoWrapper{
+func hasDefaultBranch(enabledBranches string) bool {
+	for _, b := range strings.Split(enabledBranches, ",") {
+		if strings.TrimSpace(b) == "default" {
+			return true
+		}
+	}
+	return false
+}
+
+func mapModelToResponse(appInfo *models.AppInfo) *AppInfoItem {
+	wrapper := &AppInfoItem{
 		AppItem: games.AppItem{
 			AppID:        &appInfo.AppID,
 			Name:         &appInfo.Name,
@@ -471,13 +517,25 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {
 		if appInfo.ShortDescription != nil {
 			bi.ShortDescription = appInfo.ShortDescription
 		}
+		creatorsByID := make(map[uuid.UUID]*models.AppCreator, len(appInfo.Creators))
+		for _, c := range appInfo.Creators {
+			creatorsByID[c.ID] = c
+		}
 		for _, cl := range appInfo.CreatorLinks {
-			if cl.AppCreator == nil {
+			creator := cl.AppCreator
+			if creator == nil {
+				creator = creatorsByID[cl.AppCreatorID]
+			}
+			if creator == nil {
 				continue
 			}
+			name := creator.Name
 			link := &steamapi.StoreItem_BasicInfo_CreatorHomeLink{
-				Name:                 &cl.AppCreator.Name,
-				CreatorClanAccountId: cl.AppCreator.CreatorClanAccountID,
+				Name: &name,
+			}
+			if creator.CreatorClanAccountID != 0 {
+				clanID := creator.CreatorClanAccountID
+				link.CreatorClanAccountId = &clanID
 			}
 			switch cl.RoleID {
 			case models.AppCreatorRoleIDPublisher:

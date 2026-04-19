@@ -16,6 +16,70 @@ components:
           description: Include mods in the search results
           type: boolean
       type: object
+    AppInfoItem:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/AppInfoItem.json
+          format: uri
+          readOnly: true
+          type: string
+        app_id:
+          examples:
+            - 440
+          format: int32
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        assets:
+          $ref: "#/components/schemas/StoreItem_Assets"
+        basic_info:
+          $ref: "#/components/schemas/StoreItem_BasicInfo"
+        controller_support:
+          $ref: "#/components/schemas/ControllerSupport"
+        links:
+          items:
+            type: string
+          type: array
+        name:
+          examples:
+            - Team Fortress 2
+          type:
+            - string
+            - "null"
+        official_configs:
+          additionalProperties:
+            format: int64
+            minimum: 0
+            type: integer
+          type: object
+        platforms:
+          $ref: "#/components/schemas/AppsPlatforms"
+        release:
+          $ref: "#/components/schemas/AppsRelease"
+        store_url_path:
+          examples:
+            - app/440/Team_Fortress_2
+          type:
+            - string
+            - "null"
+        type:
+          enum:
+            - game
+            - demo
+            - mod
+          examples:
+            - game
+          type: string
+      required:
+        - app_id
+        - name
+        - store_url_path
+        - type
+      type: object
     AppItem:
       additionalProperties: false
       properties:
@@ -748,6 +812,27 @@ components:
             - array
             - "null"
         total:
+          format: int64
+          type: integer
+      type: object
+    ControllerSupport:
+      additionalProperties: false
+      properties:
+        ds4_wired_support:
+          type: boolean
+        ds4_wireless_support:
+          type: boolean
+        ds5_wired_support:
+          type: boolean
+        ds5_wireless_support:
+          type: boolean
+        steam_input_api_support:
+          type: boolean
+        support_level:
+          enum:
+            - 0
+            - 1
+            - 2
           format: int64
           type: integer
       type: object
@@ -2395,7 +2480,8 @@ paths:
         "200":
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: "#/components/schemas/AppInfoItem"
           description: OK
         "403":
           content:
