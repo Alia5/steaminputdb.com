@@ -85,12 +85,14 @@ onMount(() => {
 <style lang="postcss">
 .wrapper {
 	position: relative;
-	&::view-transition-old(theme, theme-icon) {
+	&::view-transition-old(theme),
+	&::view-transition-old(theme-icon) {
 		animation-name: none !important;
 		animation: none !important;
 	}
 
-	&::view-transition-new(theme, theme-icon) {
+	&::view-transition-new(theme),
+	&::view-transition-new(theme-icon) {
 		animation-name: none !important;
 		animation: none !important;
 	}
