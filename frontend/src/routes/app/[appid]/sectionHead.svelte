@@ -26,6 +26,11 @@ import IcoDs5Partial from '$lib/assets/steam_controller_type_svgs/ps5_partial.sv
 import IcoSIAPI from '$lib/assets/steam_controller_type_svgs/siapi.svg?component';
 import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
 import IcoGeneric from '~icons/mdi/controller';
+
+import IcoSteam from '~icons/mdi/steam';
+import IcoPCGW from '~icons/simple-icons/pcgamingwiki';
+import IcoProtonDB from '~icons/simple-icons/protondb';
+import IcoSteamDB from '~icons/simple-icons/steamdb';
 </script>
 
 {#snippet sectionHead({
@@ -208,7 +213,7 @@ import IcoGeneric from '~icons/mdi/controller';
 
 						arrowFollowCursor: true
 					})}>
-					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
+					<IcoSteam style="width: 1.4em; height: 1.4em;" />
 					<!-- <Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" /> -->
 				</a>
 				<a
@@ -224,7 +229,7 @@ import IcoGeneric from '~icons/mdi/controller';
 						autoPlacement: false,
 						arrowFollowCursor: true
 					})}>
-					<Icon icon="simple-icons:steamdb" width="1.4em" height="1.4em" />
+					<IcoSteamDB style="width: 1.4em; height: 1.4em;" />
 				</a>
 				<a
 					href={`https://www.protondb.com/app/${appInfo.app_id}`}
@@ -240,7 +245,23 @@ import IcoGeneric from '~icons/mdi/controller';
 
 						arrowFollowCursor: true
 					})}>
-					<Icon icon="simple-icons:protondb" width="1.4em" height="1.4em" />
+					<IcoProtonDB style="width: 1.4em; height: 1.4em;" />
+				</a>
+				<a
+					href={`https://www.pcgamingwiki.com/api/appid.php?appid=${appInfo.app_id}`}
+					class="button"
+					target="_blank"
+					rel="external"
+					{@attach tooltip({
+						content: 'View on PCGaming Wiki',
+						outDelay: 200,
+						arrow: true,
+						placement: 'bottom',
+						autoPlacement: false,
+
+						arrowFollowCursor: true
+					})}>
+					<IcoPCGW style="width: 1.4em; height: 1.4em;" />
 				</a>
 			{/if}
 		</div>
