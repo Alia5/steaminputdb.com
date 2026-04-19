@@ -14,27 +14,27 @@
             "groupName": "minor and patch"
         },
         {
-            "description": "backend",
+            "description": "backend deps",
             "matchFileNames": ["backend/**"],
-            "groupName": "backend",
+            "groupName": "backend deps",
             "labels": ["dependencies", "renovate", "backend"]
         },
         {
-            "description": "buddy-app",
+            "description": "buddy-app deps",
             "matchFileNames": ["buddy-app/**"],
-            "groupName": "buddy-app",
+            "groupName": "buddy-app deps",
             "labels": ["dependencies", "renovate", "buddy-app"]
         },
         {
-            "description": "frontend",
+            "description": "frontend deps",
             "matchFileNames": ["frontend/**"],
-            "groupName": "frontend",
+            "groupName": "frontend deps",
             "labels": ["dependencies", "renovate", "frontend"]
         },
         {
-            "description": "decky-plugin",
+            "description": "decky-plugin deps",
             "matchFileNames": ["buddy-app-decky-plugin/**"],
-            "groupName": "decky-plugin",
+            "groupName": "decky-plugin deps",
             "labels": ["dependencies", "renovate", "decky-plugin"]
         },
         {
