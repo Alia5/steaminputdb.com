@@ -5,7 +5,6 @@ import { playwright } from '@vitest/browser-playwright';
 import { existsSync } from 'fs';
 import Unfonts from 'unplugin-fonts/vite';
 import Icons from 'unplugin-icons/vite';
-import devtoolsJson from 'vite-plugin-devtools-json';
 import { defineConfig } from 'vitest/config';
 
 
@@ -18,8 +17,6 @@ export default defineConfig({
         allowedHosts: ['host.docker.internal','steaminputdb.local','dev.local', '*']
     },
     plugins: [
-        devtoolsJson(),
-
         enhancedImages(),
         sveltekit(),
         svg({

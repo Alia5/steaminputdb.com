@@ -76,8 +76,8 @@ export default defineConfig({
     ],
     build: {
         assetsInlineLimit: Infinity,
-        rollupOptions: {
-            treeshake: 'smallest',
+        rolldownOptions: {
+            treeshake: true,
             output: {
                 inlineDynamicImports: true,
                 entryFileNames: '[name].js.tmpl',
