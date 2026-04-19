@@ -2,6 +2,8 @@ package logging
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"log/slog"
 	"time"
 
@@ -23,7 +25,11 @@ func (qh *queryHook) AfterQuery(ctx context.Context, event *bun.QueryEvent) {
 	duration := time.Since(event.StartTime)
 
 	if event.Err != nil {
-		slog.Error("SQL Query Error",
+		logFn := slog.Error
+		if errors.Is(event.Err, sql.ErrNoRows) {
+			logFn = slog.Debug
+		}
+		logFn("SQL Query Error",
 			"query", event.Query,
 			"args", event.QueryArgs,
 			"duration", duration,
