@@ -50,8 +50,7 @@ onMount(() => {
 			controller_switch2_pro: 'controller_switch_pro',
 			controller_8bitdo: 'controller_switch_pro',
 			controller_ps5_edge: 'controller_ps5',
-			controller_xboxelite: 'controller_xboxone',
-			controller_xbox360: 'controller_xboxone'
+			controller_xboxelite: 'controller_xboxone'
 		};
 		const rawType = res.controller_mappings.controller_type || 'controller_generic';
 		selectedController = controllerTypeAlias[rawType] ?? rawType;
