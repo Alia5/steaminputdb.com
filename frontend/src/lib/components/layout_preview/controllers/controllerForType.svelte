@@ -34,6 +34,8 @@ import XBox from './Xbox.svg?component';
 		<XBox />
 	{:else if controllerType === 'controller_switch_pro'}
 		<SwitchPro />
+	{:else if controllerType === 'controller_switch2_pro'}
+		<SwitchPro />
 	{:else if controllerType === 'controller_8bitdo'}
 		<SwitchPro />
 	{:else}

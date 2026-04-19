@@ -14,6 +14,7 @@ const (
 	ControllerTypeSteamController         ControllerType = "controller_triton"
 	ControllerTypeSteamControllerHeadcrab ControllerType = "controller_steamcontroller_headcrab"
 	ControllerTypeSwitchPro               ControllerType = "controller_switch_pro"
+	ControllerTypeSwitch2Pro              ControllerType = "controller_switch2_pro"
 	ControllerTypeSwitchJoyConLeft        ControllerType = "controller_switch_joycon_left"
 	ControllerTypeSwitchJoyConRight       ControllerType = "controller_switch_joycon_right"
 	ControllerTypeSwitchJoyConPair        ControllerType = "controller_switch_joycon_pair"
@@ -48,6 +49,7 @@ var controllerNiceNames map[ControllerType]string = map[ControllerType]string{
 	ControllerTypeSteamController:         "Steam Controller",
 	ControllerTypeSteamControllerHeadcrab: "Steam Controller (Headcrab)",
 	ControllerTypeSwitchPro:               "Nintendo Switch Pro",
+	ControllerTypeSwitch2Pro:              "Nintendo Switch 2 Pro",
 	ControllerTypeSwitchJoyConLeft:        "Nintendo Switch Joy-Con (Left)",
 	ControllerTypeSwitchJoyConRight:       "Nintendo Switch Joy-Con (Right)",
 	ControllerTypeSwitchJoyConPair:        "Nintendo Switch Joy-Con (Pair)",

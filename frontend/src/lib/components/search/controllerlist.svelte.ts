@@ -60,6 +60,11 @@ export const CONTROLLER_LIST = [
         niceName: 'Switch Pro'
     },
     {
+        type: 'controller_switch2_pro',
+        icon: SwitchPro,
+        niceName: 'Switch 2 Pro'
+    },
+    {
         type: 'controller_8bitdo',
         icon: EightBitDo,
         niceName: '8BitDo'

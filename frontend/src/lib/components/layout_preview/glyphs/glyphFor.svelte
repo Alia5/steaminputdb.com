@@ -281,6 +281,9 @@ glyphMaps.controller_ps3 = {
 glyphMaps.controller_8bitdo = {
 	...glyphMaps.controller_switch_pro
 };
+glyphMaps.controller_switch2_pro = {
+	...glyphMaps.controller_switch_pro
+};
 glyphMaps.controller_xboxelite = {
 	...glyphMaps.controller_xboxone
 };

@@ -547,6 +547,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 						<BPMOption value="controller_ps5" {...rest}>DualSense / DualSense Edge</BPMOption>
 						<BPMOption value="controller_ps4" {...rest}>DualShock 4</BPMOption>
 						<BPMOption value="controller_switch_pro" {...rest}>Switch Pro / 8BitDo</BPMOption>
+						<BPMOption value="controller_switch2_pro" {...rest}>Switch 2 Pro</BPMOption>
 						<BPMOption value="controller_xboxone" {...rest}>XBox One / Elite</BPMOption>
 						<BPMOption value="controller_generic" {...rest}>Other</BPMOption>
 						<IcoDropDown />
@@ -562,6 +563,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 						<option value="controller_ps5">DualSense / DualSense Edge</option>
 						<option value="controller_ps4">DualShock 4</option>
 						<option value="controller_switch_pro">Switch Pro / 8BitDo</option>
+						<option value="controller_switch2_pro">Switch 2 Pro</option>
 						<option value="controller_xboxone">XBox One / Elite</option>
 						<option value="controller_generic">Other</option>
 					</select>
