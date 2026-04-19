@@ -46,7 +46,15 @@ onMount(() => {
 				? res.controller_mappings.preset[0]
 				: res.controller_mappings.preset
 			)?.name;
-		selectedController = res.controller_mappings.controller_type || 'controller_generic';
+		const controllerTypeAlias: Record<string, string> = {
+			controller_switch2_pro: 'controller_switch_pro',
+			controller_8bitdo: 'controller_switch_pro',
+			controller_ps5_edge: 'controller_ps5',
+			controller_xboxelite: 'controller_xboxone',
+			controller_xbox360: 'controller_xboxone'
+		};
+		const rawType = res.controller_mappings.controller_type || 'controller_generic';
+		selectedController = controllerTypeAlias[rawType] ?? rawType;
 		return res;
 	})();
 });
@@ -546,8 +554,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 							>Steam Controller (2015)</BPMOption>
 						<BPMOption value="controller_ps5" {...rest}>DualSense / DualSense Edge</BPMOption>
 						<BPMOption value="controller_ps4" {...rest}>DualShock 4</BPMOption>
-						<BPMOption value="controller_switch_pro" {...rest}>Switch Pro / 8BitDo</BPMOption>
-						<BPMOption value="controller_switch2_pro" {...rest}>Switch 2 Pro</BPMOption>
+						<BPMOption value="controller_switch_pro" {...rest}
+							>Switch (1/2) Pro / 8BitDo</BPMOption>
 						<BPMOption value="controller_xboxone" {...rest}>XBox One / Elite</BPMOption>
 						<BPMOption value="controller_generic" {...rest}>Other</BPMOption>
 						<IcoDropDown />
@@ -562,8 +570,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 						<option value="controller_steamcontroller_gordon">Steam Controller (2015)</option>
 						<option value="controller_ps5">DualSense / DualSense Edge</option>
 						<option value="controller_ps4">DualShock 4</option>
-						<option value="controller_switch_pro">Switch Pro / 8BitDo</option>
-						<option value="controller_switch2_pro">Switch 2 Pro</option>
+						<option value="controller_switch_pro">Switch (1/2) Pro / 8BitDo</option>
 						<option value="controller_xboxone">XBox One / Elite</option>
 						<option value="controller_generic">Other</option>
 					</select>
