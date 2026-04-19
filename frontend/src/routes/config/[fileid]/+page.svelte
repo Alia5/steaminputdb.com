@@ -9,7 +9,7 @@ import { sectionInfo } from './sectionInfo.svelte';
 
 const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.data.fileInfo);
 const appInfo: components['schemas']['AppItem'] = $derived(page.data.appInfo);
-const creatorInfo: components['schemas']['PlayerInfo'] | undefined = $derived(page.data.creatorInfo);
+const creatorInfo: components['schemas']['UserInfoResponse'] | undefined = $derived(page.data.creatorInfo);
 
 const pageBGURL = $derived.by(() => {
 	if (!appInfo?.assets) {
@@ -43,22 +43,22 @@ if (browser) {
 </script>
 
 <svelte:head>
-	<title>SteamInputDB - {fileInfo?.title}</title>
+	<title>SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}</title>
 	<link rel="canonical" href={page.url.href} />
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
 	<meta
 		property="og:title"
-		content="SteamInputDB - Config: {fileInfo?.title} by {creatorInfo?.personaname}" />
+		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}" />
 	<meta
 		name="description"
 		content={fileInfo?.description ??
-			`Steam Input configuration ${fileInfo?.title} by ${creatorInfo?.personaname}`} />
+			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`} />
 	<meta
 		property="og:description"
 		content={fileInfo?.description ??
-			`Steam Input configuration ${fileInfo?.title} by ${creatorInfo?.personaname}`} />
+			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`} />
 	{#if appInfo?.assets}
 		{@const assets = appInfo?.assets}
 		{@const assetChosen =
@@ -75,11 +75,11 @@ if (browser) {
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta
 		name="twitter:title"
-		content="SteamInputDB - Config: {fileInfo?.title} by {creatorInfo?.personaname}" />
+		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}" />
 	<meta
 		name="twitter:description"
 		content={fileInfo?.description ??
-			`Steam Input configuration ${fileInfo?.title} by ${creatorInfo?.personaname}`} />
+			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`} />
 </svelte:head>
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>

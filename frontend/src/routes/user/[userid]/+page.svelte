@@ -152,13 +152,11 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>SteamInputDB - User: {playerInfo?.personaname ?? page.params.userid}</title>
+	<title>SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid}</title>
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
-	<meta
-		property="og:title"
-		content="SteamInputDB - Layouts by {playerInfo?.personaname ?? page.params.userid}" />
+	<meta property="og:title" content="SteamInputDB | {playerInfo?.personaname ?? page.params.userid} " />
 	<meta
 		name="description"
 		content="Search for Steam Input configurations from {playerInfo?.personaname ??
@@ -170,7 +168,7 @@ onMount(() => {
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta
 		name="twitter:title"
-		content="SteamInputDB - Layouts by {playerInfo?.personaname ?? page.params.userid}" />
+		content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} " />
 	<meta
 		name="twitter:description"
 		content="Search for Steam Input configurations from {playerInfo?.personaname ??
@@ -179,11 +177,11 @@ onMount(() => {
 		<meta property="og:image" content={playerInfo.avatarfull} />
 		<meta
 			property="og:image:alt"
-			content="SteamInputDB - User: {playerInfo?.personaname ?? page.params.userid}" />
+			content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} " />
 		<meta name="twitter:image" content={playerInfo.avatarfull} />
 		<meta
 			name="twitter:image:alt"
-			content="SteamInputDB - User: {playerInfo?.personaname ?? page.params.userid}" />
+			content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} " />
 	{/if}
 	<svelte:element this={'script'} type="application/ld+json">
 		{createUserSchemaJsonLd({

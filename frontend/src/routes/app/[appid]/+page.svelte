@@ -126,11 +126,13 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>SteamInputDB - {appInfo?.name ?? page.params.appid}</title>
+	<title>SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations</title>
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
-	<meta property="og:title" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
+	<meta
+		property="og:title"
+		content="SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations" />
 	<meta
 		name="description"
 		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
@@ -138,7 +140,9 @@ onMount(() => {
 		property="og:description"
 		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
+	<meta
+		name="twitter:title"
+		content="SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations" />
 	<meta
 		name="twitter:description"
 		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
