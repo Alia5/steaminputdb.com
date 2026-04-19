@@ -42,7 +42,7 @@ At the current state, I'd call this project the absolute bare minimum viable pro
 > [!NOTE]
   Actively looking for contributors!  
   It's very hard to fully maintain and continue to develop this website all by myself.  
-  To get started take a look at the [Building Instructions](./BUILDING.md) (subject to be improved)  
+  To get started take a look at the [Building Instructions](./BUILDING.md)  
   and the Issues tagged ["good first issue"](https://github.com/Alia5/steaminputdb.com/issues?q=state%3Aopen%20label%3A%22good%20first%20issue%22)   
   Many Issues _need_ refinement, though. **Do not hesitate to contact me**  
   Feel free to join on my [Discord](https://discord.gg/hs34MtcHJY)  

@@ -1,171 +1,178 @@
-# Building SteamInputDB
+# Building
 
-## Prerequisites
+The building instructions are grouped for the Site itself (Backend/Frontend) and the Buddy-App.  
 
-### System Requirements
+## Site
 
-- Go 1.26 or later
-- Node.js 25+
-- PostgreSQL 18+
-- Protocol Buffers Compiler (protoc)
+Building/Deving the site is only done in a Linux environment, so if you are running Microslops OS, just install the WSL environment.
 
-### Package Installation
+### Requirements
 
-**Arch Linux:**
+- Go 1.26.2+
+- NodeJS 25+
+- Git (obviously)
+- Protocol Buffers Compiler (protoc)  
+  https://protobuf.dev/installation/
+- [**Either/or**] PostgreSQL 18+ or Docker (for running PostgreSQL)
+  - Use the compose.dev.yml file in the root of the repo to quickly spin up a compatible PostgreSQL instance.
+- Optional but reccomended:  
+  - air (for hot reloading)  
+    go install github.com/air-verse/air@latest
+  - just (for task running)  
+    https://github.com/casey/just
 
-```bash
-sudo pacman -S go nvm postgresql protobuf
-```
+### General
 
-**Ubuntu:**
-
-```bash
-sudo apt install golang nvm postgresql protobuf-compiler
-```
-
-### Go Tools
-
-Install required Go tools:
+clone the repository and checkout submodules:  
 
 ```bash
-# Protocol Buffers Go plugin
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-
-# Air for hot reloading
-go install github.com/air-verse/air@latest
-
-# golangci-lint for linting
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-```
-
-## Building the Project
-
-### Initialize Submodules
-
-The project uses Steam protocol buffer definitions as a submodule:
-
-```bash
+git clone git@github.com:Alia5/steaminputdb.com.git
+cd steaminputdb.com
 git submodule update --init --recursive
 ```
 
-### Generate Protocol Buffer Types
+#### Backend
 
-Generate Go and TypeScript types from Steam protobufs:
+Assuming you have all the dependencies installed.  
 
-**Backend:**
-
-```bash
-cd backend
-make gen
-```
-
-**Frontend:**
-
-```bash
-cd frontend
-npm run gen-proto
-```
-
-### Backend
-
-**Install dependencies:**
-
-```bash
-cd backend
-make deps
-```
-
-**Build the binary:**
-
-```bash
-make build
-```
-
-The binary will be located at `backend/dist/steaminputdb`.
-
-**Run tests:**
-
-```bash
-make test
-```
-
-**Development with hot reload:**
-
-```bash
-make dev
-```
-
-### Frontend
-
-**Development server:**
-
-```bash
-cd frontend
-npm run dev
-```
-
-**Build for production:**
-
-```bash
-npm run build
-```
-
-**Run tests:**
-
-```bash
-npm test
-```
-
-## Running with Docker Compose
-
-### Development Environment
+Spin up PostgreSQL (docker here)
 
 ```bash
 docker compose -f compose.dev.yml up
 ```
 
-### Production Environment
+Setup your .env file (copy .env.example and fill in the values):  
 
-```bash
-docker compose up -d
-```
-
-The services will be available at:
-
-- Backend: `http://localhost:8888`
-- Backend API: `http://localhost:8889`
-- Metrics: `http://localhost:8899`
-
-## Database Setup
-
-The backend automatically runs migrations on startup.
-
-## Configuration
-
-Backend configuration is managed via TOML files. See `docker/steaminputdb/config.toml` for an example.
-
-Environment variables can also be used:
-
-- `LISTEN_ADDRESS` - Main server listen address (default: `:8888`)
-- `API_LISTEN_ADDRESS` - API server listen address (default: `:8889`)
-- `METRICS_LISTEN_ADDRESS` - Metrics server listen address (default: `:8899`)
-- `DATABASE_URL` - PostgreSQL connection string
-
-## Makefile Targets
-
-Run `make help` in the backend directory to see all available targets:
+You will **need** a Steam API key to run the backend  
+You can get one from Steam on: https://steamcommunity.com/dev/apikey
 
 ```bash
 cd backend
-make help
+cp .env.example .env
+# Edit the .env file and insert your API KEY
 ```
 
-Common targets:
+Generate/Build the protobuf files (from the backend subdirectory):
 
-- `make build` - Build the binary
-- `make test` - Run tests
-- `make dev` - Run with hot reload
-- `make lint` - Run linter
-- `make fmt` - Format code
-- `make gen` - Generate protobuf types
-- `make clean` - Remove build artifacts
+```bash
+chmod +x ./scripts/gen.sh
+./scripts/gen.sh
+```
+
+You can then run the backend with (from the backend subdirectory):
+
+```bash
+go run ./cmd/steaminputdb/   
+```
+
+**Alternatively**, you can use air for hot reloading from the backend subdirectory by just running
+
+```bash
+air
+```
+
+#### Frontend
+
+From the frontend subdirectory, install dependencies:  
+
+```bash
+cd frontend
+npm i
+```
+
+You can then run the frontend (including hot reload) with: 
+
+```bash
+npm run dev
+```
+
+## Buddy-App
+
+The Buddy-App does build on Windows, but it is recommended to use a linux environment for dev and just use GOOS=windows to build the app for windows.  
+**If** you are running Microslops OS, just install the WSL environment.  
+
+### Requirements
+
+- Go 1.26.2+
+- NodeJS 25+
+- Optional but reccomended:  
+  - air (for hot reloading)  
+    go install github.com/air-verse/air@latest
+  - just (for task running)  
+    https://github.com/casey/just
+
+### General
+
+clone the repository and checkout submodules:  
+
+```bash
+git clone git@github.com:Alia5/steaminputdb.com.git
+cd steaminputdb.com
+git submodule update --init --recursive
+```
+
+The buddy-app has Javascript and Go components.  
+The JS-Parts get injected into a running Steam client and are embedded in the Go binary, thus they will need to be built first!  
+
+### Building the JS-Parts
+
+```bash
+cd buddy-app/steam/steam_cef/steam_js/templates
+npm i
+npm run build
+```
+
+### Building the Go Binary
+
+Generate/Build the protobuf files (from the backend subdirectory):
+
+```bash
+chmod +x ./scripts/gen.sh
+./scripts/gen.sh
+```
+
+Create a .env file in the buddy-app subdirectory with the following content:
+
+```env
+DEV=1
+STEAMINPUTDB_BUDDY_CORS_ORIGINS=*
+LOG_LEVEL=debug
+```
+
+You need to enable _CEF Remote Debugging_ in the Steam Client to allow the buddy-app to connect to it.  
+To do that, create a file named `.cef-enable-remote-debugging` in your Steam directory (where the Steam binary is located), then restart Steam.  
+(Note that Steam uses TCP port 8080 on localhost, **with no easy way to change it**, so make sure that port is already used by another application...)
+
+You can then run the buddy-app with (from the buddy-app subdirectory):
+
+```bash
+go run ./cmd/steaminputdb-buddy 
+```
+
+**alternatively**, and reccomended you can use air for hot reloading from the buddy-app subdirectory by just running
+
+```bash
+air
+```
+
+To build the buddy-app binary without running it use
+
+```bash
+go build -o dist/steaminputdb-buddy ./cmd/steaminputdb-buddy
+```
+
+If you want to build the buddy-app binary for windows from a linux environment (eg. WSL), run
+
+```bash
+GOOS=windows GOARCH=amd64 go build -o dist/steaminputdb-buddy.exe ./cmd/steaminputdb-buddy
+```
+
+#### Windows users
+
+The air script will even work when run from Windows Powershell, even if the repo is checked out inside WSL.  
+Assuming you have `just` installed on Windows.
+
+```pwsh
+cd \\wsl.localhost\<DISTRO_NAME>\<REPO_DIRECTORY>\buddy-app
+air
+```
