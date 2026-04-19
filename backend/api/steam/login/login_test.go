@@ -9,7 +9,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/api/steam/login"
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/steamapi"
-	"github.com/danielgtaylor/huma/v2/humatest"
+	sidbtest "github.com/Alia5/steaminputdb.com/testing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -227,7 +227,8 @@ func TestSteamLogin(t *testing.T) {
 				},
 			}
 
-			_, api := humatest.New(t)
+			api, dal, err := sidbtest.MockAPI(t)
+			assert.NoError(t, err)
 
 			var openIDURL, steamAPIURL string
 			var openIDServer, steamAPIServer *httptest.Server
@@ -245,7 +246,7 @@ func TestSteamLogin(t *testing.T) {
 				}
 			}
 
-			login.RegisterWithURL(api, openIDURL)
+			login.RegisterWithURL(api, dal, openIDURL)
 
 			resp := api.Post("/v1/steam/login", tc.requestBody)
 			assert.Equal(t, tc.expectedStatus, resp.Code)

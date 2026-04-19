@@ -947,60 +947,6 @@ components:
         - service
         - version
       type: object
-    PlayerInfo:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          examples:
-            - http://localhost:8889/schemas/PlayerInfo.json
-          format: uri
-          readOnly: true
-          type: string
-        avatar:
-          type: string
-        avatarframe:
-          $ref: "#/components/schemas/AvatarFrame"
-        avatarfull:
-          type: string
-        avatarhash:
-          type: string
-        avatarmedium:
-          type: string
-        communityvisibilitystate:
-          format: int64
-          type: integer
-        lastlogoff:
-          format: date-time
-          type: string
-        loccountrycode:
-          type: string
-        mini_profile_background:
-          $ref: "#/components/schemas/MiniProfileBackground"
-        personaname:
-          type: string
-        primaryclanid:
-          type: string
-        profilebackground:
-          type: string
-        profileurl:
-          type: string
-        timecreated:
-          format: date-time
-          type: string
-      required:
-        - communityvisibilitystate
-        - personaname
-        - profileurl
-        - avatar
-        - avatarmedium
-        - avatarfull
-        - avatarhash
-        - lastlogoff
-        - primaryclanid
-        - timecreated
-        - loccountrycode
-      type: object
     PublishedFileAuthorSnapshot:
       additionalProperties: false
       properties:
@@ -1461,6 +1407,17 @@ components:
           type:
             - array
             - "null"
+      type: object
+    SteamInputDBInfo:
+      additionalProperties: false
+      properties:
+        is_admin:
+          type: boolean
+        registered_at:
+          format: date-time
+          type: string
+      required:
+        - registered_at
       type: object
     StoreBrowseFilterFailure:
       additionalProperties: false
@@ -2192,6 +2149,62 @@ components:
         type:
           type: string
       type: object
+    UserInfoResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/UserInfoResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        avatar:
+          type: string
+        avatarframe:
+          $ref: "#/components/schemas/AvatarFrame"
+        avatarfull:
+          type: string
+        avatarhash:
+          type: string
+        avatarmedium:
+          type: string
+        communityvisibilitystate:
+          format: int64
+          type: integer
+        lastlogoff:
+          format: date-time
+          type: string
+        loccountrycode:
+          type: string
+        mini_profile_background:
+          $ref: "#/components/schemas/MiniProfileBackground"
+        personaname:
+          type: string
+        primaryclanid:
+          type: string
+        profilebackground:
+          type: string
+        profileurl:
+          type: string
+        steam_input_db_info:
+          $ref: "#/components/schemas/SteamInputDBInfo"
+        timecreated:
+          format: date-time
+          type: string
+      required:
+        - communityvisibilitystate
+        - personaname
+        - profileurl
+        - avatar
+        - avatarmedium
+        - avatarfull
+        - avatarhash
+        - lastlogoff
+        - primaryclanid
+        - timecreated
+        - loccountrycode
+      type: object
   securitySchemes:
     Steam OpenID:
       flows:
@@ -2730,7 +2743,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PlayerInfo"
+                $ref: "#/components/schemas/UserInfoResponse"
           description: OK
         "400":
           content:

@@ -13,6 +13,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/api/ctx"
 	"github.com/Alia5/steaminputdb.com/api/memcache"
 	"github.com/Alia5/steaminputdb.com/api/steam/auth"
+	"github.com/Alia5/steaminputdb.com/db"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -34,6 +35,16 @@ type PlayerInfo struct {
 	MiniProfileBackground    *MiniProfileBackground `json:"mini_profile_background,omitempty"`
 }
 
+type SteamInputDBInfo struct {
+	IsAdmin      *bool     `json:"is_admin,omitempty,omitzero"`
+	RegisteredAt time.Time `json:"registered_at"`
+}
+
+type UserInfoResponse struct {
+	PlayerInfo
+	SteamInputDBInfo *SteamInputDBInfo `json:"steam_input_db_info,omitempty,omitzero"`
+}
+
 type AvatarFrame struct {
 	Small *string `json:"small"`
 	Large *string `json:"large"`
@@ -46,7 +57,7 @@ type MiniProfileBackground struct {
 }
 
 type Response struct {
-	Body PlayerInfo
+	Body UserInfoResponse
 }
 
 type UserInfoRequest struct {
@@ -56,7 +67,7 @@ type UserInfoRequest struct {
 	MiniProfileBackground bool   `query:"include_mini_profile_background,omitempty" default:"false"`
 }
 
-func RegisterRoutes(a huma.API, opts ...bool) {
+func RegisterRoutes(a huma.API, dal db.DAL, opts ...bool) {
 	var useMemCache bool
 	if len(opts) > 0 {
 		useMemCache = opts[0]
@@ -89,7 +100,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 				var ok bool
 				steamID, ok = c.Value(ctx.KeySteamID).(string)
 				if !ok || steamID == "" {
-					return nil, huma.Error401Unauthorized("no authentication token provided")
+					return nil, huma.Error401Unauthorized("authentication error")
 				}
 			} else {
 				steamID = req.UserID
@@ -120,8 +131,8 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 			}
 			player := info.Response.Players[0]
 
-			res := &Response{
-				Body: PlayerInfo{
+			infoResp := UserInfoResponse{
+				PlayerInfo: PlayerInfo{
 					CommunityVisibilityState: player.Communityvisibilitystate,
 					PersonaName:              player.Personaname,
 					ProfileURL:               player.Profileurl,
@@ -136,10 +147,26 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 				},
 			}
 
+			res := &Response{
+				Body: infoResp,
+			}
+
 			steamID64, err := strconv.ParseUint(steamID, 10, 64)
 			if err != nil {
 				slog.Error("failed to parse steamID to uint64", "error", err, "steamID", steamID)
 				return res, nil
+			}
+
+			if req.UserID == "" {
+				userInfo, err := dal.SteamUser().Get(c, steamID64)
+				if err == nil {
+					infoResp.SteamInputDBInfo = &SteamInputDBInfo{
+						RegisteredAt: userInfo.Timestamps.CreatedAt,
+					}
+					if userInfo.IsAdmin {
+						infoResp.SteamInputDBInfo.IsAdmin = new(true)
+					}
+				}
 			}
 
 			wg := sync.WaitGroup{}

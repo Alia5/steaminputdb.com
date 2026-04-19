@@ -14,8 +14,8 @@ import (
 )
 
 func RegisterRoutes(a huma.API, dal db.DAL) {
-	login.RegisterRoutes(a)
-	user.RegisterRoutes(a)
+	login.RegisterRoutes(a, dal)
+	user.RegisterRoutes(a, dal)
 	appinfo.RegisterRoute(a, dal)
 	filedetails.RegisterRoute(a)
 }

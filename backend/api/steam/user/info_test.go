@@ -10,7 +10,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/api/steam/user"
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/steamapi"
-	"github.com/danielgtaylor/huma/v2/humatest"
+	sidbtest "github.com/Alia5/steaminputdb.com/testing"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 )
@@ -122,7 +122,8 @@ func TestSteamUserInfo(t *testing.T) {
 				},
 			}
 
-			_, api := humatest.New(t)
+			api, dal, err := sidbtest.MockAPI(t)
+			assert.NoError(t, err)
 
 			var steamAPIURL string
 			var steamAPIServer *httptest.Server
@@ -134,7 +135,7 @@ func TestSteamUserInfo(t *testing.T) {
 				steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", steamAPIURL)
 			}
 
-			user.RegisterRoutes(api)
+			user.RegisterRoutes(api, dal)
 
 			var token string
 			if tc.setupToken != nil {

@@ -1,3 +1,4 @@
+import type { components } from '$lib/api/openapi';
 import { log } from '$lib/log';
 import type { LayoutServerLoad } from './$types';
 
@@ -25,7 +26,10 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
         return res;
     }
     const decoded = atob(mid);
-    const payload = JSON.parse(decoded);
+    const payload = JSON.parse(decoded) as components['schemas']['UserInfoResponse'] & {
+        sub?: string;
+        is_admin?: boolean;
+    };
     const steamId = payload.sub as string | undefined;
 
     log.debug('Layout server load', 'steamid', steamId, 'payload', payload);

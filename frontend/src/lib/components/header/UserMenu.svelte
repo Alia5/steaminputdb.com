@@ -21,6 +21,8 @@ a {
 	place-items: center;
 	width: 2em;
 	aspect-ratio: 1 /1;
+	justify-self: center;
+	position: relative;
 
 	box-shadow: 0 0 1em -0.5em var(--color-primary);
 	border: 1px solid color-mix(in srgb, var(--color-primary), transparent 60%);

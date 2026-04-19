@@ -159,7 +159,7 @@ $effect(() => {
 		</div>
 		<nav>
 			{@render navcontent()}
-			{#if page.data.steamId}
+			{#if page.data.userInfo && page.data.steamId}
 				<div class="separator"></div>
 				<a href={resolve(`/user/${page.data.steamId}`)}>
 					<IconAccount style="width: 1.4em; height: 1.4em;" />

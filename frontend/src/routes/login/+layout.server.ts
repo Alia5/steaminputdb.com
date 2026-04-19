@@ -4,7 +4,7 @@ import type { PageData } from './$types';
 
 export const load: LayoutServerLoad = async ({ parent }) => {
     const data: PageData = await parent();
-    if (data.steamId) {
+    if (data.steamId && data.userInfo) {
         throw redirect(302, '/');
     }
     return data;

@@ -10,11 +10,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/Alia5/steaminputdb.com/api/steam/user"
 	"github.com/Alia5/steaminputdb.com/config"
+	"github.com/Alia5/steaminputdb.com/db"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -43,6 +45,7 @@ type OpenIDBody struct {
 type JWTClaims struct {
 	jwt.RegisteredClaims
 	user.PlayerInfo
+	IsAdmin *bool `json:"is_admin,omitempty,omitzero"`
 }
 
 type LoginResponse struct {
@@ -58,18 +61,18 @@ type Response struct {
 
 const jwtValidity = time.Hour * 24 * 30
 
-func RegisterWithURL(a huma.API, steamURL string) {
-	registerRoutes(a, steamURL)
+func RegisterWithURL(a huma.API, dal db.DAL, steamURL string) {
+	registerRoutes(a, dal, steamURL)
 }
 
-func RegisterRoutes(a huma.API) {
-	registerRoutes(a, steamLoginURL)
+func RegisterRoutes(a huma.API, dal db.DAL) {
+	registerRoutes(a, dal, steamLoginURL)
 }
 
 // TODO: create private endpoint for docs callback
 
-func registerRoutes(a huma.API, loginURL string) {
-	handler := handler(loginURL)
+func registerRoutes(a huma.API, dal db.DAL, loginURL string) {
+	handler := handler(dal, loginURL)
 	huma.Register(
 		a,
 		huma.Operation{
@@ -101,7 +104,7 @@ func registerRoutes(a huma.API, loginURL string) {
 	)
 }
 
-func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
+func handler(dal db.DAL, loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
 	return func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
 		params := url.Values{}
 
@@ -196,6 +199,7 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 			TimeCreated:              time.Unix(int64(playerSummaries.Response.Players[0].Timecreated), 0),
 			LocCountryCode:           playerSummaries.Response.Players[0].Loccountrycode,
 		}
+
 		claims := JWTClaims{
 			RegisteredClaims: jwt.RegisteredClaims{
 				Subject:   steamID,
@@ -204,6 +208,16 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(jwtValidity)),
 			},
 			PlayerInfo: playerInfo,
+		}
+
+		steamID64, err := strconv.ParseUint(steamID, 10, 64)
+		if err == nil {
+			userInfo, err := dal.SteamUser().Get(ctx, steamID64)
+			if err == nil {
+				if userInfo.IsAdmin {
+					claims.IsAdmin = new(true)
+				}
+			}
 		}
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

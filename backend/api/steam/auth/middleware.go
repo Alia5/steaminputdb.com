@@ -67,7 +67,6 @@ func ExtractSteamIDMiddleware(c huma.Context, next func(huma.Context)) {
 		return []byte(config.Parsed.JWTSecret), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}))
 	if err != nil || !token.Valid {
-		slog.Debug("invalid token", "error", err)
 		next(c)
 		return
 	}

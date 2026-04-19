@@ -26,7 +26,9 @@ import type { PageProps } from './$types';
 
 let { data }: PageProps = $props();
 
-const playerInfo = $derived(data.playerInfo as unknown as components['schemas']['PlayerInfo'] | undefined);
+const playerInfo = $derived(
+	data.playerInfo as unknown as components['schemas']['UserInfoResponse'] | undefined
+);
 
 const pageBGURL = $derived.by(() => {
 	if (!playerInfo?.profilebackground) {
