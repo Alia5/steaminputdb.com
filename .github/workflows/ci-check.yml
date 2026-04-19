@@ -133,6 +133,8 @@ jobs:
     backend-test:
         name: Backend Test
         runs-on: ubuntu-latest
+        env:
+            STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v6

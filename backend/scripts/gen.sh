@@ -40,3 +40,4 @@ protoc \
         "${PROTO_DIR}/steam/steammessages_base.proto" \
         "${PROTO_DIR}/steam/steammessages_clientserver_login.proto" \
         "${PROTO_DIR}/steam/steammessages_clientserver_appinfo.proto" \
+        "${PROTO_DIR}/steam/enums_clientserver.proto"
