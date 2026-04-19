@@ -67,18 +67,21 @@ func ExtractSteamIDMiddleware(c huma.Context, next func(huma.Context)) {
 		return []byte(config.Parsed.JWTSecret), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}))
 	if err != nil || !token.Valid {
+		slog.Debug("invalid token", "error", err)
 		next(c)
 		return
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
+		slog.Debug("invalid token claims")
 		next(c)
 		return
 	}
 
 	steamID, ok := claims["sub"].(string)
 	if !ok || steamID == "" {
+		slog.Debug("missing steamid in token claims")
 		next(c)
 		return
 	}

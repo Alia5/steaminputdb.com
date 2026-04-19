@@ -8,9 +8,9 @@ import (
 )
 
 type DAL interface {
-	GetAppInfo(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error)
-	InsertAppInfo(ctx context.Context, appInfo *models.AppInfo) error
-	UpdateAppInfo(ctx context.Context, appInfo *models.AppInfo) error
+	Get(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error)
+	Insert(ctx context.Context, appInfo *models.AppInfo) error
+	Update(ctx context.Context, appInfo *models.AppInfo) error
 }
 
 type dal struct {
@@ -29,7 +29,7 @@ type AppInfoInclude struct {
 	OfficialConfigs   bool
 }
 
-func (d *dal) GetAppInfo(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error) {
+func (d *dal) Get(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error) {
 	appInfo := &models.AppInfo{AppID: appID}
 	q := d.db.NewSelect().Model(appInfo).WherePK()
 
@@ -56,7 +56,7 @@ func (d *dal) GetAppInfo(ctx context.Context, appID uint32, include AppInfoInclu
 	return appInfo, nil
 }
 
-func (d *dal) InsertAppInfo(ctx context.Context, appInfo *models.AppInfo) error {
+func (d *dal) Insert(ctx context.Context, appInfo *models.AppInfo) error {
 	return d.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		_, err := tx.NewInsert().Model(appInfo).
 			On("CONFLICT (app_id) DO UPDATE").
@@ -142,7 +142,7 @@ func (d *dal) InsertAppInfo(ctx context.Context, appInfo *models.AppInfo) error 
 	})
 }
 
-func (d *dal) UpdateAppInfo(ctx context.Context, appInfo *models.AppInfo) error {
+func (d *dal) Update(ctx context.Context, appInfo *models.AppInfo) error {
 	return d.db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
 		_, err := tx.NewUpdate().Model(appInfo).WherePK().Exec(ctx)
 		if err != nil {

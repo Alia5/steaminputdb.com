@@ -2384,6 +2384,12 @@ paths:
             application/json:
               schema: {}
           description: OK
+        "403":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Forbidden
         "404":
           content:
             application/problem+json:

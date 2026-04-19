@@ -62,6 +62,11 @@ func init() {
 			return err
 		}
 
+		_, err = db.NewCreateTable().Model((*models.SteamUser)(nil)).Exec(ctx)
+		if err != nil {
+			return err
+		}
+
 		return nil
 	}, nil)
 }

@@ -12,8 +12,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Alia5/steaminputdb.com/api/ctx"
 	"github.com/Alia5/steaminputdb.com/api/memcache"
 	"github.com/Alia5/steaminputdb.com/api/search/games"
+	"github.com/Alia5/steaminputdb.com/api/steam/auth"
 	"github.com/Alia5/steaminputdb.com/db"
 	appinfodal "github.com/Alia5/steaminputdb.com/db/dal/appinfo"
 	"github.com/Alia5/steaminputdb.com/db/models"
@@ -37,10 +39,10 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 	cache := memcache.New(30*time.Minute, 1000)
 
 	sc := client.New()
-	ctx := context.Background()
-	if err := sc.Connect(ctx); err != nil {
+	bgCtx := context.Background()
+	if err := sc.Connect(bgCtx); err != nil {
 		slog.Error("steam client connect failed", "error", err)
-	} else if err := sc.Login(ctx, client.LoginDetails{Anonymous: true, Language: "english"}); err != nil {
+	} else if err := sc.Login(bgCtx, client.LoginDetails{Anonymous: true, Language: "english"}); err != nil {
 		slog.Error("steam client login failed", "error", err)
 	}
 
@@ -53,12 +55,40 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 			Summary:     "Get Steam app info",
 			Description: "Retrieve app information from Steam Store for a given app ID",
 			Errors: []int{
-				http.StatusBadGateway, http.StatusNotFound,
+				http.StatusBadGateway, http.StatusNotFound, http.StatusForbidden,
+			},
+			Middlewares: huma.Middlewares{
+				auth.ExtractSteamIDMiddleware,
 			},
 		},
 		func(c context.Context, req *AppInfoRequest) (*Response, error) {
 
-			if req.Raw && os.Getenv("DEV") != "1" {
+			advancedAuthorized := os.Getenv("DEV") == "1"
+			if !advancedAuthorized && (req.Raw || req.ForceRefresh) {
+				steamID, ok := c.Value(ctx.KeySteamID).(string)
+				if !ok || steamID == "" {
+					return nil, huma.Error403Forbidden("authentication error")
+				}
+
+				steamID64, err := strconv.ParseUint(steamID, 10, 64)
+				if err != nil {
+					return nil, huma.Error403Forbidden("invalid steam ID")
+				}
+
+				userInfo, err := dal.SteamUser().Get(c, steamID64)
+				if err != nil {
+					if errors.Is(err, sql.ErrNoRows) {
+						return nil, huma.Error403Forbidden("user not found")
+					}
+					return nil, huma.Error502BadGateway("database error", err)
+				}
+				if !userInfo.IsAdmin {
+					return nil, huma.Error403Forbidden("insufficient permissions")
+				}
+				advancedAuthorized = true
+			}
+
+			if req.Raw && !advancedAuthorized {
 				return nil, huma.Error403Forbidden("")
 			}
 
@@ -79,7 +109,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				}
 			}
 
-			dbInfo, dbErr := dal.AppInfo().GetAppInfo(c, req.AppID, appinfodal.AppInfoInclude{
+			dbInfo, dbErr := dal.AppInfo().Get(c, req.AppID, appinfodal.AppInfoInclude{
 				ControllerSupport: true,
 				Assets:            true,
 				Links:             true,
@@ -133,12 +163,12 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 			enrichModelFromPICS(appInfo, picsInfo)
 
 			if dbErr != nil {
-				if err := dal.AppInfo().InsertAppInfo(c, appInfo); err != nil {
+				if err := dal.AppInfo().Insert(c, appInfo); err != nil {
 					slog.Error("db insert failed", "error", err)
 					return nil, err
 				}
 			} else {
-				if err := dal.AppInfo().UpdateAppInfo(c, appInfo); err != nil {
+				if err := dal.AppInfo().Update(c, appInfo); err != nil {
 					slog.Error("db update failed", "error", err)
 					return nil, err
 				}
