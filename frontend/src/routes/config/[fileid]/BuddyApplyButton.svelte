@@ -164,6 +164,7 @@ let dialogOpen = $state(false);
 				<BPMSelect name="App" bind:value={selectedAppID}>
 					{#snippet children({ ...rest })}
 						<span>App:</span>
+						<BPMOption value={413080} {...rest}>Steam Controller Configs - Desktop</BPMOption>
 						{#each apps as app (app.appid)}
 							<BPMOption value={app.appid} {...rest}
 								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</BPMOption>
@@ -184,6 +185,7 @@ let dialogOpen = $state(false);
 				<label for="app">
 					<span>App</span>
 					<select id="app" name="app" bind:value={selectedAppID}>
+						<option value={413080}>Steam Controller Configs - Desktop</option>
 						{#each apps as app (app.appid)}
 							<option value={app.appid}
 								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</option>

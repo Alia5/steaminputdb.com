@@ -9,6 +9,7 @@ import { assetUrlBase, communityUrlBase, steamStoreUrlBase } from '$lib/steamapi
 import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
 import { fade } from 'svelte/transition';
+import IcoDesktop from '~icons/mdi/monitor';
 </script>
 
 {#snippet sectionHead({
@@ -44,7 +45,12 @@ import { fade } from 'svelte/transition';
 						alt="Icon"></enhanced:img>
 				</picture>
 			{:else}
-				<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+				<!-- KEEP! -->
+				{#if appInfo?.app_id !== 413080}
+					<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+				{:else}
+					<IcoDesktop />
+				{/if}
 			{/if}
 			{#if !appInfo && fallbackName}
 				<i>(Non Steam Shortcut)</i>
