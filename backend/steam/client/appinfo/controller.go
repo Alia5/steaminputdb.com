@@ -30,4 +30,3 @@ func (c ControllerCategory) String() string {
 	}
 	return fmt.Sprintf("Unknown (%d)", c)
 }
-

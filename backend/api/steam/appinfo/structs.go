@@ -43,5 +43,5 @@ type ControllerSupport struct {
 	SteamInputAPISupport *bool                         `json:"steam_input_api_support,omitempty"`
 }
 
-type configId uint64
-type officialConfigs map[steamtypes.ControllerType]configId
+type configID uint64
+type officialConfigs map[steamtypes.ControllerType]configID

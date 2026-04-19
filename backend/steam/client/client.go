@@ -177,7 +177,7 @@ func (c *client) Disconnect() {
 		c.heartbeat = nil
 	}
 	if c.conn != nil {
-		c.conn.close()
+		_ = c.conn.close()
 		c.conn = nil
 	}
 	select {
@@ -291,8 +291,8 @@ func (c *client) handlePacket(data []byte) error {
 func (c *client) handleEncryptRequest(pkt *packet) error {
 	r := bytes.NewReader(pkt.body)
 	var skip, universe uint32
-	binary.Read(r, binary.LittleEndian, &skip)
-	binary.Read(r, binary.LittleEndian, &universe)
+	_ = binary.Read(r, binary.LittleEndian, &skip)
+	_ = binary.Read(r, binary.LittleEndian, &universe)
 	if universe != eUniversePublic {
 		return fmt.Errorf("%w: %d", ErrUnexpectedUniverse, universe)
 	}
@@ -308,20 +308,20 @@ func (c *client) handleEncryptRequest(pkt *packet) error {
 		return err
 	}
 	buf := new(bytes.Buffer)
-	binary.Write(buf, binary.LittleEndian, uint32(EMsg_k_EMsgChannelEncryptResponse))
-	binary.Write(buf, binary.LittleEndian, jobIDNone)
-	binary.Write(buf, binary.LittleEndian, jobIDNone)
-	binary.Write(buf, binary.LittleEndian, encryptProtoVersion)
-	binary.Write(buf, binary.LittleEndian, encryptKeySize)
+	_ = binary.Write(buf, binary.LittleEndian, uint32(EMsg_k_EMsgChannelEncryptResponse))
+	_ = binary.Write(buf, binary.LittleEndian, jobIDNone)
+	_ = binary.Write(buf, binary.LittleEndian, jobIDNone)
+	_ = binary.Write(buf, binary.LittleEndian, encryptProtoVersion)
+	_ = binary.Write(buf, binary.LittleEndian, encryptKeySize)
 	buf.Write(enc)
-	binary.Write(buf, binary.LittleEndian, crc32.ChecksumIEEE(enc))
-	binary.Write(buf, binary.LittleEndian, uint32(0))
+	_ = binary.Write(buf, binary.LittleEndian, crc32.ChecksumIEEE(enc))
+	_ = binary.Write(buf, binary.LittleEndian, uint32(0))
 	return c.conn.write(buf.Bytes())
 }
 
 func (c *client) handleEncryptResult(pkt *packet) error {
 	var result int32
-	binary.Read(bytes.NewReader(pkt.body), binary.LittleEndian, &result)
+	_ = binary.Read(bytes.NewReader(pkt.body), binary.LittleEndian, &result)
 	if result != eResultOK {
 		err := fmt.Errorf("%w: %d", ErrEncryptionFailed, result)
 		select {
@@ -415,7 +415,7 @@ func getRandomCM(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	var result cmListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "", err

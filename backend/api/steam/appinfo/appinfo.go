@@ -404,13 +404,13 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {
 		},
 	}
 	if appInfo.Release.SteamReleaseDate != nil {
-		wrapper.AppItem.Release.SteamReleaseDate = *appInfo.Release.SteamReleaseDate
+		wrapper.Release.SteamReleaseDate = *appInfo.Release.SteamReleaseDate
 	}
 	if appInfo.Release.OriginalReleaseDate != nil {
-		wrapper.AppItem.Release.OriginalReleaseDate = *appInfo.Release.OriginalReleaseDate
+		wrapper.Release.OriginalReleaseDate = *appInfo.Release.OriginalReleaseDate
 	}
 	if appInfo.Assets != nil {
-		wrapper.AppItem.Assets = &steamapi.StoreItem_Assets{
+		wrapper.Assets = &steamapi.StoreItem_Assets{
 			AssetUrlFormat:     appInfo.Assets.AssetURLFormat,
 			MainCapsule:        appInfo.Assets.MainCapsule,
 			SmallCapsule:       appInfo.Assets.SmallCapsule,
@@ -434,7 +434,7 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {
 		for _, link := range appInfo.Links {
 			links = append(links, link.URL)
 		}
-		wrapper.AppItem.Links = &links
+		wrapper.Links = &links
 	}
 	if appInfo.ShortDescription != nil || len(appInfo.CreatorLinks) > 0 {
 		bi := &steamapi.StoreItem_BasicInfo{}
@@ -458,7 +458,7 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {
 				bi.Franchises = append(bi.Franchises, link)
 			}
 		}
-		wrapper.AppItem.BasicInfo = bi
+		wrapper.BasicInfo = bi
 	}
 	if appInfo.ControllerSupport != nil {
 		wrapper.ControllerSupport = &ControllerSupport{
@@ -473,7 +473,7 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {
 	if len(appInfo.OfficialConfigs) > 0 {
 		oc := make(officialConfigs, len(appInfo.OfficialConfigs))
 		for _, cfg := range appInfo.OfficialConfigs {
-			oc[cfg.ControllerType] = configId(cfg.ConfigID)
+			oc[cfg.ControllerType] = configID(cfg.ConfigID)
 		}
 		wrapper.OfficialConfigs = &oc
 	}

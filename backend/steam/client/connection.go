@@ -110,8 +110,8 @@ func (c *connection) write(data []byte) error {
 	}
 	c.mu.RUnlock()
 	buf := new(bytes.Buffer)
-	binary.Write(buf, binary.LittleEndian, uint32(len(data)))
-	binary.Write(buf, binary.LittleEndian, tcpMagic)
+	_ = binary.Write(buf, binary.LittleEndian, uint32(len(data)))
+	_ = binary.Write(buf, binary.LittleEndian, tcpMagic)
 	buf.Write(data)
 	_, err := c.conn.Write(buf.Bytes())
 	return err
@@ -143,8 +143,8 @@ func (c *connection) writeProtoMsg(eMsg EMsg, body proto.Message) error {
 		return err
 	}
 	buf := new(bytes.Buffer)
-	binary.Write(buf, binary.LittleEndian, uint32(eMsg)|protoMask)
-	binary.Write(buf, binary.LittleEndian, uint32(len(hdrBytes)))
+	_ = binary.Write(buf, binary.LittleEndian, uint32(eMsg)|protoMask)
+	_ = binary.Write(buf, binary.LittleEndian, uint32(len(hdrBytes)))
 	buf.Write(hdrBytes)
 	buf.Write(bodyBytes)
 	return c.write(buf.Bytes())
