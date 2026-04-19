@@ -38,6 +38,12 @@
             "labels": ["dependencies", "renovate", "decky-plugin"]
         },
         {
+            "description": "pin decky node/npm versions",
+            "matchFileNames": ["buddy-app-decky-plugin/**"],
+            "matchPackageNames": ["node", "pnpm"],
+            "enabled": false
+        },
+        {
             "description": "major approval",
             "matchUpdateTypes": ["major"],
             "dependencyDashboardApproval": true
