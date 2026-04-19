@@ -16,6 +16,7 @@ type AppInfoRequest struct {
 	Raw               bool   `query:"raw" default:"false"`
 	ControllerSupport bool   `query:"controller_support" default:"false"`
 	OfficialConfigs   bool   `query:"official_configs" default:"false"`
+	ForceRefresh      bool   `query:"force_refresh" default:"false"`
 }
 
 type responseBody interface {

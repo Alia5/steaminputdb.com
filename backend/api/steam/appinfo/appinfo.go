@@ -64,7 +64,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 
 			cacheKey := fmt.Sprint(req.AppID)
 
-			if useMemCache && !req.Raw {
+			if useMemCache && !req.Raw && !req.ForceRefresh {
 				cached, ok := memcache.Get[*AppInfoWrapper](cache, cacheKey)
 				if ok {
 					slog.Debug("returning cached app info", "app_id", req.AppID)
@@ -90,7 +90,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				return nil, huma.Error502BadGateway("database error", dbErr)
 			}
 
-			if dbErr == nil && time.Since(dbInfo.Timestamps.UpdatedAt) < dbMaxAge {
+			if dbErr == nil && !req.ForceRefresh && time.Since(dbInfo.Timestamps.UpdatedAt) < dbMaxAge {
 				wrapper := mapModelToResponse(dbInfo)
 				if useMemCache {
 					cache.Store(cacheKey, wrapper)
