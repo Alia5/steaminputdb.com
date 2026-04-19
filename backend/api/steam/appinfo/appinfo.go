@@ -359,27 +359,34 @@ func enrichModelFromPICS(appInfo *models.AppInfo, info *clientappinfo.Info) {
 
 	appInfo.OfficialConfigs = nil
 	for idStr, detail := range info.Config.SteamControllerConfigDetails {
-		branches := strings.Split(detail.EnabledBranches, ",")
-		hasDefault := false
-		for _, b := range branches {
-			if strings.TrimSpace(b) == "default" {
-				hasDefault = true
-				break
-			}
-		}
-		if !hasDefault {
-			continue
-		}
-		configID, err := strconv.ParseUint(idStr, 10, 64)
-		if err != nil {
-			continue
-		}
-		appInfo.OfficialConfigs = append(appInfo.OfficialConfigs, &models.OfficialSteamInputConfig{
-			AppID:          appInfo.AppID,
-			ControllerType: steamtypes.ControllerType(detail.ControllerType),
-			ConfigID:       configID,
-		})
+		appInfo.OfficialConfigs = appendConfigIfDefault(appInfo.OfficialConfigs, appInfo.AppID, idStr, detail)
 	}
+	for idStr, detail := range info.Config.SteamControllerTouchConfigDetails {
+		appInfo.OfficialConfigs = appendConfigIfDefault(appInfo.OfficialConfigs, appInfo.AppID, idStr, detail)
+	}
+}
+
+func appendConfigIfDefault(configs []*models.OfficialSteamInputConfig, appID uint32, idStr string, detail clientappinfo.ControllerConfigDetail) []*models.OfficialSteamInputConfig {
+	branches := strings.Split(detail.EnabledBranches, ",")
+	hasDefault := false
+	for _, b := range branches {
+		if strings.TrimSpace(b) == "default" {
+			hasDefault = true
+			break
+		}
+	}
+	if !hasDefault {
+		return configs
+	}
+	configID, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		return configs
+	}
+	return append(configs, &models.OfficialSteamInputConfig{
+		AppID:          appID,
+		ControllerType: steamtypes.ControllerType(detail.ControllerType),
+		ConfigID:       configID,
+	})
 }
 
 func mapModelToResponse(appInfo *models.AppInfo) *AppInfoWrapper {

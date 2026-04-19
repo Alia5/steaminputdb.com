@@ -8,7 +8,8 @@ type Info struct {
 }
 
 type Config struct {
-	SteamControllerConfigDetails map[string]ControllerConfigDetail `json:"steamcontrollerconfigdetails"`
+	SteamControllerConfigDetails      map[string]ControllerConfigDetail `json:"steamcontrollerconfigdetails"`
+	SteamControllerTouchConfigDetails map[string]ControllerConfigDetail `json:"steamcontrollertouchconfigdetails"`
 }
 
 type ControllerConfigDetail struct {
