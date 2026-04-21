@@ -631,6 +631,7 @@ section {
 	place-items: center;
 	position: relative;
 	isolation: isolate;
+	grid-template-columns: 1fr;
 	& > :first-child {
 		width: 100%;
 		display: grid;
@@ -700,10 +701,10 @@ section {
 		repeat(5, min-content)
 		minmax(6em, 1fr)
 		minmax(8em, auto);
-	grid-template-columns: 1fr minmax(12.5%, 46%) 1fr;
+	grid-template-columns: 1fr minmax(15.5%, 46%) 1fr;
 	/* --vertical-space: 0.4em; */
 	--vertical-space: 0;
-	min-width: 850px;
+	min-width: 650px;
 	max-height: 90dvh;
 	@media (orientation: portrait) {
 		grid-template-columns: 1fr minmax(10%, 20%) 1fr;
@@ -715,7 +716,7 @@ section {
 		max-height: unset;
 	}
 	@media (orientation: landscape) and (max-width: 1300px) {
-		grid-template-columns: 1fr minmax(10%, 30%) 1fr;
+		grid-template-columns: auto minmax(15.5%, 20%) auto;
 	}
 
 	& > * {
@@ -741,10 +742,14 @@ section {
 		width: 100%;
 		place-items: center;
 		padding: 0 1em;
+		overflow: clip;
+		overflow-clip-margin: 2em;
 		& :global(svg) {
 			max-height: 100%;
 			max-width: 100%;
 			opacity: 0.6;
+			overflow: clip;
+			overflow-clip-margin: 2em;
 		}
 	}
 	.lb {
@@ -907,10 +912,11 @@ section {
 		max-height: 18em;
 
 		@media (orientation: landscape) and (max-width: 1300px) {
+			display: flex;
 			gap: 0.5em;
-			grid-auto-columns: auto;
-			margin: 0 auto;
-			justify-self: center;
+			flex-flow: row nowrap;
+			margin: 0;
+			justify-content: space-between;
 		}
 
 		@media (orientation: portrait) {
