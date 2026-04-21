@@ -62,7 +62,7 @@ Next up is one of two things:
 
 Feel free to join on [Discord](https://discord.gg/hs34MtcHJY) and let me know which one you'd like to see first, or if you have any other suggestions!     
 
-<style>
+<style lang="postcss">
     strong {
         color: var(--highlight-color);
     }

@@ -15,6 +15,3 @@ const onclick = () => {};
 <div bind:this={container} {...props} data-sidb-button-bpm aria-label="SteamInputDB" {onclick}>
 	<Logo />
 </div>
-
-<style>
-</style>

@@ -38,7 +38,7 @@ const onclick = () => {
 	<Logo />
 </div>
 
-<style>
+<style lang="postcss">
 div {
 	&:hover,
 	&:focus-visible {

@@ -150,7 +150,9 @@ If you aren't a developer, feel free to contribute in any way you can! Whether t
 </div>
 
 </div>
-<style>
+
+
+<style lang="postcss">
 
 .primary {
     color: var(--color-primary);
@@ -165,6 +167,7 @@ em {
     place-items: center;
     width: 100%;
     margin-bottom: 2em;
+    
     & > :first-child {
         width: 70%;
     }

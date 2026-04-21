@@ -5,9 +5,8 @@ const config = {
     plugins: [
         presetEnv({
             autoprefixer: true,
-            stage: 3,
             features: {
-                'nesting-rules': true
+                'nesting-rules': true,
             },
             browsers: [
 				"> 0.2% and not dead"

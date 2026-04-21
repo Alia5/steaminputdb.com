@@ -42,7 +42,7 @@ const ogimgSrc = "/ogimage.png";
 - Filter support for **DualSense Edge** + **8BitDo Controllers**
 
 
-<style>
+<style lang="postcss">
     strong {
         color: var(--highlight-color);
     }

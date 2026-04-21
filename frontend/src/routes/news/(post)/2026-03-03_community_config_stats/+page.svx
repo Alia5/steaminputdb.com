@@ -122,7 +122,7 @@ Last but not least, here is what I changed today, just mere two days after the i
 
 You can find the previous changelog [here](/news/2026-03-02_steaminputdb_updates)
 
-<style>
+<style lang="postcss">
     strong {
         color: var(--highlight-color);
     }
