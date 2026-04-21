@@ -619,6 +619,14 @@ section {
 	width: 100%;
 	padding: 1em;
 
+	@media (orientation: landscape) and (max-width: 1300px) {
+		font-size: 0.8em;
+		& :global(svg):not(.ctrl > :global(svg)) {
+			width: 1.8em;
+			height: 1.8em;
+		}
+	}
+
 	display: grid;
 	place-items: center;
 	position: relative;
@@ -705,6 +713,9 @@ section {
 			minmax(6em, 1fr)
 			fit-content;
 		max-height: unset;
+	}
+	@media (orientation: landscape) and (max-width: 1300px) {
+		grid-template-columns: 1fr minmax(10%, 33%) 1fr;
 	}
 
 	& > * {
