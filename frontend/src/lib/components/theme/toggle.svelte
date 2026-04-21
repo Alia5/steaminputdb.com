@@ -85,17 +85,6 @@ onMount(() => {
 <style lang="postcss">
 .wrapper {
 	position: relative;
-	&::view-transition-old(theme),
-	&::view-transition-old(theme-icon) {
-		animation-name: none !important;
-		animation: none !important;
-	}
-
-	&::view-transition-new(theme),
-	&::view-transition-new(theme-icon) {
-		animation-name: none !important;
-		animation: none !important;
-	}
 }
 
 .icon {
@@ -118,7 +107,6 @@ onMount(() => {
 		padding: 0.1em;
 	}
 	transition: left var(--transition-duration) var(--default-ease);
-	view-transition-name: theme-icon;
 }
 
 input[type='checkbox']:is(.toggle) {
@@ -134,7 +122,6 @@ input[type='checkbox']:is(.toggle) {
 	&::after {
 		content: '';
 		background-color: var(--inverse-text-color);
-		view-transition-name: theme;
 	}
 	&:checked {
 		&::after {
