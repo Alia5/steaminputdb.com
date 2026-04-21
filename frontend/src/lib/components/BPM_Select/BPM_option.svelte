@@ -47,6 +47,7 @@ onMount(() => {
 	<button
 		type="button"
 		class={'bpm-option' + (selected === value ? ' selected' : '')}
+		autofocus={selected === value}
 		onclick={() => {
 			selected = value;
 			onselected?.(value);
