@@ -620,10 +620,10 @@ section {
 	padding: 1em;
 
 	@media (orientation: landscape) and (max-width: 1300px) {
-		font-size: 0.8em;
+		font-size: 0.78em;
 		& :global(svg):not(.ctrl > :global(svg)) {
-			width: 1.8em;
-			height: 1.8em;
+			width: 1.6em;
+			height: 1.6em;
 		}
 	}
 
@@ -715,7 +715,7 @@ section {
 		max-height: unset;
 	}
 	@media (orientation: landscape) and (max-width: 1300px) {
-		grid-template-columns: 1fr minmax(10%, 33%) 1fr;
+		grid-template-columns: 1fr minmax(10%, 30%) 1fr;
 	}
 
 	& > * {
@@ -905,6 +905,14 @@ section {
 		overflow: hidden;
 		gap: 1em;
 		max-height: 18em;
+
+		@media (orientation: landscape) and (max-width: 1300px) {
+			gap: 0.5em;
+			grid-auto-columns: auto;
+			margin: 0 auto;
+			justify-self: center;
+		}
+
 		@media (orientation: portrait) {
 			grid-auto-flow: row;
 			grid-auto-rows: min-content;
