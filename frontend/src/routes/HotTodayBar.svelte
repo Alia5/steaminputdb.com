@@ -137,19 +137,21 @@ $effect(() => {
 
 	overflow-x: auto;
 	width: 100%;
+	height: fit-content;
 }
 
 .thumb {
 	aspect-ratio: 2 / 3;
 	width: 100%;
-	height: 100%;
+	height: fit-content;
+	overflow: hidden;
 
 	& picture,
-	& img {
+	& :global(img) {
 		object-fit: cover;
 		object-position: center;
 		width: 100%;
-		height: 100%;
+		height: auto;
 		overflow: hidden;
 	}
 
@@ -216,6 +218,8 @@ a {
 		justify-content: start;
 		width: 100%;
 		filter: drop-shadow(1px 0.1em 4px rgb(0 0 0 /1)) drop-shadow(0 0 8px rgb(0 0 0 / 1));
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	& span :global(svg) {
