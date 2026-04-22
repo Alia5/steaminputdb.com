@@ -13,9 +13,12 @@ import (
 	"io"
 	"log/slog"
 	mrand "math/rand/v2"
+	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"google.golang.org/protobuf/proto"
@@ -43,6 +46,7 @@ var (
 	ErrLoginFailed        = errors.New("login failed")
 	ErrNoCMServers        = errors.New("no CM servers returned")
 	ErrDisconnected       = errors.New("disconnected")
+	discoverCM            = getRandomCM
 )
 
 type Client interface {
@@ -96,7 +100,7 @@ func (c *client) Connect(ctx context.Context) error {
 
 	ctx, cancel := context.WithCancel(ctx)
 
-	addr, err := getRandomCM(ctx)
+	addr, err := discoverCM(ctx)
 	if err != nil {
 		cancel()
 		return fmt.Errorf("discover CM: %w", err)
@@ -225,7 +229,7 @@ func (c *client) LoggedIn() bool {
 
 func (c *client) SendMessage(ctx context.Context, reqEMsg EMsg, req, resp proto.Message) error {
 	pkt, err := c.sendAndWait(ctx, reqEMsg, req)
-	if errors.Is(err, ErrDisconnected) {
+	if errors.Is(err, ErrDisconnected) || isDisconnectError(err) {
 		if c.autoReconnect.Load() {
 			if rerr := c.doReconnect(ctx); rerr != nil {
 				return rerr
@@ -292,6 +296,15 @@ func (c *client) sendAndWait(ctx context.Context, reqEMsg EMsg, req proto.Messag
 	}
 	if err := conn.writeProtoMsg(reqEMsg, req, jobID); err != nil {
 		cleanup()
+		if isDisconnectError(err) {
+			c.mu.Lock()
+			stillOwner := c.conn == conn
+			c.mu.Unlock()
+			if stillOwner {
+				c.Disconnect()
+			}
+			return nil, ErrDisconnected
+		}
 		return nil, err
 	}
 	select {
@@ -304,6 +317,23 @@ func (c *client) sendAndWait(ctx context.Context, reqEMsg EMsg, req proto.Messag
 		cleanup()
 		return nil, ErrDisconnected
 	}
+}
+
+func isDisconnectError(err error) bool {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, ErrDisconnected) ||
+		errors.Is(err, net.ErrClosed) ||
+		errors.Is(err, io.EOF) ||
+		errors.Is(err, syscall.EPIPE) ||
+		errors.Is(err, syscall.ECONNRESET) {
+		return true
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "use of closed network connection") ||
+		strings.Contains(msg, "broken pipe") ||
+		strings.Contains(msg, "connection reset by peer")
 }
 
 func (c *client) readLoop(conn *connection) {
