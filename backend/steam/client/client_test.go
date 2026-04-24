@@ -1,14 +1,19 @@
 package client
 
 import (
+	"bytes"
 	"context"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
 	"net"
+	"sync"
 	"syscall"
 	"testing"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 )
 
 func TestIsDisconnectError(t *testing.T) {
@@ -157,4 +162,165 @@ func TestSteamClient_OutageAndRecoveryOnSameClient(t *testing.T) {
 			t.Fatalf("getAppInfo failed: %v", lastErr)
 		}
 	}
+}
+
+func TestDoReconnectDoesNotDisconnectOnInternalTimeoutCancel(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen failed: %v", err)
+	}
+	t.Cleanup(func() { _ = ln.Close() })
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		conn, err := ln.Accept()
+		if err != nil {
+			return
+		}
+		defer func() { _ = conn.Close() }()
+
+		encryptResult := bytes.NewBuffer(nil)
+		if err := binary.Write(encryptResult, binary.LittleEndian, int32(eResultOK)); err != nil {
+			return
+		}
+		if err := writeProtoBodyPacket(conn, EMsg_k_EMsgChannelEncryptResult, encryptResult.Bytes()); err != nil {
+			return
+		}
+
+		for {
+			payload, err := readFramedPacket(conn)
+			if err != nil {
+				return
+			}
+			pkt, err := parsePacket(payload)
+			if err != nil {
+				return
+			}
+			if pkt.eMsg == EMsg_k_EMsgClientLogon {
+				if err := writeProtoPacket(conn, EMsg_k_EMsgClientLogOnResponse, &CMsgProtoBufHeader{}, &CMsgClientLogonResponse{Eresult: new(eResultOK), HeartbeatSeconds: new(defaultHeartbeat)}); err != nil {
+					return
+				}
+			}
+		}
+	}()
+	t.Cleanup(wg.Wait)
+
+	oldDiscover := discoverCM
+	discoverCM = func(context.Context) (string, error) {
+		return ln.Addr().String(), nil
+	}
+	t.Cleanup(func() { discoverCM = oldDiscover })
+
+	sc, ok := New().(*client)
+	if !ok {
+		t.Fatalf("client init failed")
+	}
+	t.Cleanup(sc.Disconnect)
+
+	details := LoginDetails{Anonymous: true, Language: "english"}
+	sc.EnableAutoReconnect(details, 2*time.Second)
+
+	if err := sc.doReconnect(context.Background()); err != nil {
+		t.Fatalf("doReconnect failed: %v", err)
+	}
+
+	if !sc.Connected() {
+		t.Fatalf("client should remain connected after doReconnect")
+	}
+	if !sc.LoggedIn() {
+		t.Fatalf("client should remain logged in after doReconnect")
+	}
+}
+
+func readFramedPacket(conn net.Conn) ([]byte, error) {
+	var hdr [8]byte
+	if _, err := io.ReadFull(conn, hdr[:]); err != nil {
+		return nil, err
+	}
+	pLen := binary.LittleEndian.Uint32(hdr[:4])
+	if binary.LittleEndian.Uint32(hdr[4:]) != tcpMagic {
+		return nil, errInvalidTCPMagic
+	}
+	payload := make([]byte, pLen)
+	if _, err := io.ReadFull(conn, payload); err != nil {
+		return nil, err
+	}
+	return payload, nil
+}
+
+func writeProtoPacket(conn net.Conn, eMsg EMsg, hdr *CMsgProtoBufHeader, body proto.Message) error {
+	hdrBytes, err := proto.Marshal(hdr)
+	if err != nil {
+		return err
+	}
+	bodyBytes, err := proto.Marshal(body)
+	if err != nil {
+		return err
+	}
+	payload := bytes.NewBuffer(nil)
+	if err := binary.Write(payload, binary.LittleEndian, uint32(eMsg)|protoMask); err != nil {
+		return err
+	}
+	if err := binary.Write(payload, binary.LittleEndian, uint32(len(hdrBytes))); err != nil {
+		return err
+	}
+	payload.Write(hdrBytes)
+	payload.Write(bodyBytes)
+
+	framed := bytes.NewBuffer(nil)
+	if err := binary.Write(framed, binary.LittleEndian, uint32(payload.Len())); err != nil {
+		return err
+	}
+	if err := binary.Write(framed, binary.LittleEndian, tcpMagic); err != nil {
+		return err
+	}
+	framed.Write(payload.Bytes())
+
+	_, err = conn.Write(framed.Bytes())
+	return err
+}
+
+func writeRawPacket(conn net.Conn, eMsg EMsg, body []byte) error {
+	payload := bytes.NewBuffer(nil)
+	if err := binary.Write(payload, binary.LittleEndian, uint32(eMsg)); err != nil {
+		return err
+	}
+	payload.Write(body)
+
+	framed := bytes.NewBuffer(nil)
+	if err := binary.Write(framed, binary.LittleEndian, uint32(payload.Len())); err != nil {
+		return err
+	}
+	if err := binary.Write(framed, binary.LittleEndian, tcpMagic); err != nil {
+		return err
+	}
+	framed.Write(payload.Bytes())
+
+	_, err := conn.Write(framed.Bytes())
+	return err
+}
+
+func writeProtoBodyPacket(conn net.Conn, eMsg EMsg, body []byte) error {
+	payload := bytes.NewBuffer(nil)
+	if err := binary.Write(payload, binary.LittleEndian, uint32(eMsg)|protoMask); err != nil {
+		return err
+	}
+	if err := binary.Write(payload, binary.LittleEndian, uint32(0)); err != nil {
+		return err
+	}
+	payload.Write(body)
+
+	framed := bytes.NewBuffer(nil)
+	if err := binary.Write(framed, binary.LittleEndian, uint32(payload.Len())); err != nil {
+		return err
+	}
+	if err := binary.Write(framed, binary.LittleEndian, tcpMagic); err != nil {
+		return err
+	}
+	framed.Write(payload.Bytes())
+
+	_, err := conn.Write(framed.Bytes())
+	return err
 }

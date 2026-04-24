@@ -115,17 +115,9 @@ func (c *client) Connect(ctx context.Context) error {
 	c.mu.Lock()
 	c.cancel = cancel
 	c.conn = conn
-	done := c.done
 	c.mu.Unlock()
 
 	go c.readLoop(conn)
-	go func() {
-		select {
-		case <-ctx.Done():
-			c.Disconnect()
-		case <-done:
-		}
-	}()
 	select {
 	case err := <-c.encrypted:
 		if err != nil {
