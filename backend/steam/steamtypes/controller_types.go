@@ -74,6 +74,7 @@ const (
 	ControllerTypeNumberSteamController2015     ControllerTypeNumber = 2
 	ControllerTypeNumberSteamController         ControllerTypeNumber = 3
 	ControllerTypeNumberSteamDeck               ControllerTypeNumber = 4
+	ControllerTypeNumberSteamController2        ControllerTypeNumber = 10
 	ControllerTypeNumberFrontPanelBoard         ControllerTypeNumber = 20
 	ControllerTypeNumberUnknownNonSteam         ControllerTypeNumber = 30
 	ControllerTypeNumberXbox360                 ControllerTypeNumber = 31
@@ -101,6 +102,7 @@ var eControllerTypeMap = map[ControllerTypeNumber]ControllerType{
 	ControllerTypeNumberSteamControllerHeadcrab: ControllerTypeSteamControllerHeadcrab,
 	ControllerTypeNumberSteamController2015:     ControllerTypeSteamController2015,
 	ControllerTypeNumberSteamController:         ControllerTypeSteamController,
+	ControllerTypeNumberSteamController2:        ControllerTypeSteamController,
 	ControllerTypeNumberSteamDeck:               ControllerTypeSteamDeck,
 	ControllerTypeNumberXbox360:                 ControllerTypeXbox360,
 	ControllerTypeNumberXboxOne:                 ControllerTypeXboxOne,
