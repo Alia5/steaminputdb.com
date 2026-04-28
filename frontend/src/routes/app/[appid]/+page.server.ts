@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
                         official_configs: true
                     }
                 }
-            }) as typeof infoResp;
+            });
         } catch (err) {
             log.error('Failed to fetch app details', 'app_id', app_id, 'error', err);
             error(500, {

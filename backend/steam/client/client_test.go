@@ -182,7 +182,7 @@ func TestDoReconnectDoesNotDisconnectOnInternalTimeoutCancel(t *testing.T) {
 		defer func() { _ = conn.Close() }()
 
 		encryptResult := bytes.NewBuffer(nil)
-		if err := binary.Write(encryptResult, binary.LittleEndian, int32(eResultOK)); err != nil {
+		if err := binary.Write(encryptResult, binary.LittleEndian, eResultOK); err != nil {
 			return
 		}
 		if err := writeProtoBodyPacket(conn, EMsg_k_EMsgChannelEncryptResult, encryptResult.Bytes()); err != nil {
@@ -279,26 +279,6 @@ func writeProtoPacket(conn net.Conn, eMsg EMsg, hdr *CMsgProtoBufHeader, body pr
 	framed.Write(payload.Bytes())
 
 	_, err = conn.Write(framed.Bytes())
-	return err
-}
-
-func writeRawPacket(conn net.Conn, eMsg EMsg, body []byte) error {
-	payload := bytes.NewBuffer(nil)
-	if err := binary.Write(payload, binary.LittleEndian, uint32(eMsg)); err != nil {
-		return err
-	}
-	payload.Write(body)
-
-	framed := bytes.NewBuffer(nil)
-	if err := binary.Write(framed, binary.LittleEndian, uint32(payload.Len())); err != nil {
-		return err
-	}
-	if err := binary.Write(framed, binary.LittleEndian, tcpMagic); err != nil {
-		return err
-	}
-	framed.Write(payload.Bytes())
-
-	_, err := conn.Write(framed.Bytes())
 	return err
 }
 

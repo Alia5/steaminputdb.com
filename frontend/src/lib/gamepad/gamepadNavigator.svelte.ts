@@ -285,7 +285,7 @@ class gamepadNavigator {
             if (navDirection !== this.navigationDirection) {
                 this.navigationDirection = navDirection;
                 if (navDirection) {
-                    this.onNavEvent({ ...gp, direction: navDirection } as GamepadNavEvent);
+                    this.onNavEvent({ ...gp, direction: navDirection });
                 }
             }
             return acc;

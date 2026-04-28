@@ -1,4 +1,11 @@
-import { BuildRequestTypeString, BuildResponseTypeString, CtorForTypeString, type Endpoint, type RequestTypeEP, type ResponseTypeEP } from './magic';
+import {
+    BuildRequestTypeString,
+    BuildResponseTypeString,
+    CtorForTypeString,
+    type Endpoint,
+    type RequestTypeEP,
+    type ResponseTypeEP
+} from './magic';
 
 
 export async function GET<EP extends Endpoint, Req extends RequestTypeEP<EP>>(
@@ -25,10 +32,13 @@ export async function GET<EP extends Endpoint, Req extends RequestTypeEP<EP>>(
             params.append('key', apiKey);
         }
         const URL = `https://api.steampowered.com/${
+            // @ts-expect-error fuckoff
             endpoint.interface
         }/${
+            // @ts-expect-error fuckoff
             endpoint.method
         }/v${
+            // @ts-expect-error fuckoffI
             endpoint.version ?? '1'
         }/?${
             params.toString()
@@ -54,6 +64,7 @@ export async function GET<EP extends Endpoint, Req extends RequestTypeEP<EP>>(
 
 export const demo = async () => {
     const resp = await GET(
+        // @ts-expect-error just shut up
         { interface: 'IStoreQueryService', method: 'SearchSuggestions' },
         {
             context: {

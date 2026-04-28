@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
                         include_profile_background: true
                     }
                 }
-            }) as typeof infoResp;
+            });
         } catch (err) {
             log.error('Failed to fetch user details', 'user_id', user_id, 'error', err);
             error(500, {
