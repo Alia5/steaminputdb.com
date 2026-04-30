@@ -28,7 +28,7 @@
         "@iconify/json": "^2.2.464",
         "@iconify/svelte": "^5.2.1",
         "@playwright/test": "^1.59.1",
-        "@poppanator/sveltekit-svg": "^6.0.1",
+        "@poppanator/sveltekit-svg": "^7.0.0",
         "@stylistic/eslint-plugin": "^5.10.0",
         "@svelte-put/inline-svg": "^4.0.2",
         "@svelte-put/swipeable": "^1.1.0",
