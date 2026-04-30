@@ -12,10 +12,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const goTmpl = (): PluginOption => ({
     name: 'go-tmpl-param',
     generateBundle(_, bundle) {
+        console.log('Processing goTmpl in generateBundle');
         Object.values(bundle)
             .filter((c): c is typeof c & { type: 'chunk' } => c.type === 'chunk')
             .forEach((chunk) => {
-                chunk.code = chunk.code.replace(/goTmpl\(["'](.+?)["']\)/g, '<<%$1%>>');
+                chunk.code = chunk.code.replace(/goTmpl\(["'`](.+?)["'`]\)/g, '<<%$1%>>');
                 chunk.code = chunk.code.replace(/,(<<%\s*(?:if\b|else\b|end\b)[^%]*%>>)/g, '$1');
                 chunk.code = chunk.code.replace(/(<<%\s*(?:if\b|else\b|end\b)[^%]*%>>),/g, '$1');
             });
@@ -36,8 +37,10 @@ if (!process.env.__VITE_CHILD_BUILD) {
                 configFile: resolve(__dirname, 'vite.config.ts'),
                 build: {
                     emptyOutDir: false,
-                    rollupOptions: {
-                        input: { [name]: path }
+                    rolldownOptions: {
+                        input: {
+                            [name]: path
+                        }
                     }
                 }
             })
