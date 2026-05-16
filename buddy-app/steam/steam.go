@@ -1,7 +1,6 @@
 package steam
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"errors"
@@ -9,7 +8,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -133,62 +131,6 @@ func getCefDebugPortLinux() uint16 {
 
 			return uint16(port)
 		}
-	}
-
-	return defaultPort
-}
-
-func getCefDebugPortWindows(ctx context.Context) uint16 {
-	const defaultPort uint16 = 8080
-	const prefix = "--remote-debugging-port="
-
-	cmd := exec.CommandContext(
-		ctx,
-		"wmic",
-		"process",
-		"where",
-		"name='steamwebhelper.exe'",
-		"get",
-		"CommandLine",
-		"/value",
-	)
-
-	out, err := cmd.Output()
-	if err != nil {
-		slog.Error("Failed to query steamwebhelper command lines", "error", err)
-		return defaultPort
-	}
-
-	scanner := bufio.NewScanner(strings.NewReader(string(out)))
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if !strings.HasPrefix(line, "CommandLine=") {
-			continue
-		}
-
-		cmdline := strings.TrimSpace(strings.TrimPrefix(line, "CommandLine="))
-		if cmdline == "" {
-			continue
-		}
-
-		for arg := range strings.FieldsSeq(cmdline) {
-			if !strings.HasPrefix(arg, prefix) {
-				continue
-			}
-
-			portStr := strings.TrimPrefix(arg, prefix)
-			port, parseErr := strconv.Atoi(portStr)
-			if parseErr != nil || port <= 0 || port > 65535 {
-				continue
-			}
-
-			return uint16(port)
-		}
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		slog.Error("Failed to parse steamwebhelper command lines", "error", err)
 	}
 
 	return defaultPort
