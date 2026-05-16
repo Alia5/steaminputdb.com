@@ -1,6 +1,7 @@
 package steam
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"errors"
@@ -8,7 +9,10 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,6 +32,15 @@ type TabInfo struct {
 func GetCEFTabs(ctx context.Context, cfg *appconfig.Steam) ([]TabInfo, error) {
 	if cfg == nil || cfg.CEFRemoteDebugPort == 0 {
 		return nil, errors.New("CEF remote debug port not configured")
+	}
+
+	if cfg.CEFRemoteDebugPort == 8080 {
+		// find if user is running millenium and detect cef debug port
+		port := GetCefDebugPort(ctx)
+		if port != 8080 {
+			slog.Info("Likely running millenium...", "CEF Remote port", port)
+			cfg.CEFRemoteDebugPort = port
+		}
 	}
 
 	url := fmt.Sprintf("http://localhost:%d/json", cfg.CEFRemoteDebugPort)
@@ -53,6 +66,132 @@ func GetCEFTabs(ctx context.Context, cfg *appconfig.Steam) ([]TabInfo, error) {
 	}
 
 	return tabs, nil
+}
+
+func GetCefDebugPort(ctx context.Context) uint16 {
+	if runtime.GOOS == "linux" {
+		return getCefDebugPortLinux()
+	}
+
+	if runtime.GOOS == "windows" {
+		return getCefDebugPortWindows(ctx)
+	}
+
+	slog.Error("CEF debug port detection is unsupported on this OS", "os", runtime.GOOS)
+	return 8080
+}
+
+func getCefDebugPortLinux() uint16 {
+	const defaultPort uint16 = 8080
+	const prefix = "--remote-debugging-port="
+
+	entries, err := os.ReadDir("/proc")
+	if err != nil {
+		slog.Error("Failed to inspect /proc for steamwebhelper", "error", err)
+		return defaultPort
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		pid := entry.Name()
+		_, parseErr := strconv.Atoi(pid)
+		if parseErr != nil {
+			continue
+		}
+
+		commPath := filepath.Join("/proc", pid, "comm")
+		comm, readErr := os.ReadFile(commPath)
+		if readErr != nil {
+			continue
+		}
+
+		name := strings.ToLower(strings.TrimSpace(string(comm)))
+		if name != "steamwebhelper" {
+			continue
+		}
+
+		cmdlinePath := filepath.Join("/proc", pid, "cmdline")
+		cmdline, readErr := os.ReadFile(cmdlinePath)
+		if readErr != nil || len(cmdline) == 0 {
+			continue
+		}
+
+		args := strings.FieldsSeq(strings.ReplaceAll(string(cmdline), "\x00", " "))
+		for arg := range args {
+			if !strings.HasPrefix(arg, prefix) {
+				continue
+			}
+
+			portStr := strings.TrimPrefix(arg, prefix)
+			port, parseErr := strconv.Atoi(portStr)
+			if parseErr != nil || port <= 0 || port > 65535 {
+				continue
+			}
+
+			return uint16(port)
+		}
+	}
+
+	return defaultPort
+}
+
+func getCefDebugPortWindows(ctx context.Context) uint16 {
+	const defaultPort uint16 = 8080
+	const prefix = "--remote-debugging-port="
+
+	cmd := exec.CommandContext(
+		ctx,
+		"wmic",
+		"process",
+		"where",
+		"name='steamwebhelper.exe'",
+		"get",
+		"CommandLine",
+		"/value",
+	)
+
+	out, err := cmd.Output()
+	if err != nil {
+		slog.Error("Failed to query steamwebhelper command lines", "error", err)
+		return defaultPort
+	}
+
+	scanner := bufio.NewScanner(strings.NewReader(string(out)))
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if !strings.HasPrefix(line, "CommandLine=") {
+			continue
+		}
+
+		cmdline := strings.TrimSpace(strings.TrimPrefix(line, "CommandLine="))
+		if cmdline == "" {
+			continue
+		}
+
+		for arg := range strings.FieldsSeq(cmdline) {
+			if !strings.HasPrefix(arg, prefix) {
+				continue
+			}
+
+			portStr := strings.TrimPrefix(arg, prefix)
+			port, parseErr := strconv.Atoi(portStr)
+			if parseErr != nil || port <= 0 || port > 65535 {
+				continue
+			}
+
+			return uint16(port)
+		}
+	}
+
+	err = scanner.Err()
+	if err != nil {
+		slog.Error("Failed to parse steamwebhelper command lines", "error", err)
+	}
+
+	return defaultPort
 }
 
 func CEFRemoteDebugReachable(ctx context.Context, cfg *appconfig.Steam) bool {

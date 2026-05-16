@@ -6,13 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"strings"
 	"text/template"
 	"time"
 
 	appconfig "github.com/Alia5/steaminputdb.com/buddy-app/config"
 	"github.com/Alia5/steaminputdb.com/buddy-app/steam"
-	"golang.org/x/net/websocket"
+	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 )
 
 const DefaultInjectTab = "SharedJSContext"
@@ -89,24 +91,24 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 		return nil, ErrCEFTabNotFound
 	}
 
-	ws, err := websocket.Dial(webSocketDebugURL, "", "http://localhost/")
+	ws, _, err := websocket.Dial(ctx, webSocketDebugURL, &websocket.DialOptions{HTTPHeader: http.Header{}})
 	if err != nil {
 		slog.Debug("executeJs: websocket dial failed", "err", err)
 		return nil, fmt.Errorf("%w: %w", ErrCEFRemoteDebugUnreachable, err)
 	}
-	defer ws.Close()
+	defer ws.CloseNow()
 	slog.Debug("executeJs: websocket connected")
 
 	go func() {
 		<-ctx.Done()
 		slog.Debug("executeJs: context cancelled, closing websocket")
-		_ = ws.Close()
+		_ = ws.CloseNow()
 	}()
 
 	request := NewExecutePayload(js)
 	slog.Debug("executeJs: sending payload", "id", request.ID)
 
-	if err := websocket.JSON.Send(ws, request); err != nil {
+	if err := wsjson.Write(ctx, ws, request); err != nil {
 		slog.Debug("executeJs: failed to send payload", "err", err)
 		return nil, fmt.Errorf("%w: %w", ErrFailedToExecuteJs, err)
 	}
@@ -121,7 +123,7 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 		}
 
 		var raw map[string]any
-		if err := websocket.JSON.Receive(ws, &raw); err != nil {
+		if err := wsjson.Read(ctx, ws, &raw); err != nil {
 			slog.Debug("executeJs: receive error", "err", err)
 			return nil, fmt.Errorf("%w: %w", ErrCEFResponseReadFailed, err)
 		}

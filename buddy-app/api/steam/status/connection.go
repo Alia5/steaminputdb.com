@@ -46,13 +46,16 @@ func RegisterRoutes(a huma.API, dal *db.DAL, cfg *appconfig.Config) {
 				return nil, huma.Error412PreconditionFailed("", err)
 			}
 
+			steamRunning := steam.ClientRunning()
 			debugReachable := false
-			if debugFilePresent {
+			if steamRunning || debugFilePresent {
 				debugReachable = steam.CEFRemoteDebugReachable(ctx, &cfg.Steam)
 			}
-			steamRunning := debugReachable
-			if steamRunning == false {
-				steamRunning = steam.ClientRunning()
+			if !steamRunning && debugReachable {
+				steamRunning = true
+			}
+			if debugReachable {
+				debugFilePresent = true
 			}
 
 			return &responseBody{
