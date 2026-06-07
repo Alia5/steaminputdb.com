@@ -69,18 +69,19 @@ export const gyroButtonFlags: Record<number, string> = {
     17: 'left_trigger_click',
     18: 'right_trigger_edge',
     19: 'left_bumper',
-    20: 'right_trigger_click',
+    20: 'right_joystick_click',
     21: 'right_bumper',
     22: 'button_escape',
     23: 'right_stick_deflect',
     24: 'joystick_deflect',
     25: 'button_menu',
+    26: 'right_trackpad_touch',
     30: 'left_stick_deflect',
     41: 'button_back_left_upper',
     42: 'button_back_right_upper',
     43: 'button_back_left',
-    44: 'Grip Touch (Left?)',
-    45: 'Grip Touch (Right?)',
+    44: 'grip_sense_left',
+    45: 'grip_sense_right',
     47: 'button_back_right'
 };
 
