@@ -194,7 +194,7 @@ func main() {
 	defer stop()
 
 	if cfg.TrayDisplay {
-		go buddytray.Run(dal, &cfg.Steam, stop)
+		buddytray.Run(sigCtx, dal, &cfg.Steam, stop)
 	}
 
 	uimods.Init(&cfg, dal)

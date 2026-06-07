@@ -30,8 +30,10 @@ var trayIconICO []byte
 //go:embed icon.png
 var trayIconPNG []byte
 
-func Run(dal *db.DAL, cfg *config.Steam, shutdown func()) {
-	systray.Run(func() {
+func Run(ctx context.Context, dal *db.DAL, cfg *config.Steam, shutdown func()) {
+	go systray.Run(func() {
+		runtime.LockOSThread()
+
 		if runtime.GOOS == "windows" {
 			systray.SetIcon(trayIconICO)
 		} else {
@@ -64,6 +66,8 @@ func Run(dal *db.DAL, cfg *config.Steam, shutdown func()) {
 		go func() {
 			for {
 				select {
+				case <-ctx.Done():
+					return
 				case <-showUIItem.ClickedCh:
 					openBrowser(dal, cfg, uiURL)
 				case <-autoStartItem.ClickedCh:
