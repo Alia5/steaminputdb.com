@@ -91,7 +91,9 @@ export const glyphMaps: Record<string, Record<string, string>> = {
 		button_back_left_upper: 'sc_l4.svg',
 		button_back_left: 'sc_l5.svg',
 		button_back_right_upper: 'sc_r4.svg',
-		button_back_right: 'sc_r5.svg'
+		button_back_right: 'sc_r5.svg',
+		grip_sense_left: 'sd_lgrip.svg',
+		grip_sense_right: 'sd_rgrip.svg'
 	},
 	controller_ps5: {
 		left_bumper: 'ps5_l1.svg',
@@ -134,7 +136,11 @@ export const glyphMaps: Record<string, Record<string, string>> = {
 		dpad_dpad_east: 'ps_dpad_right.svg',
 		dpad_dpad: 'ps_dpad.svg',
 		left_joystick_click: 'shared_l3.svg',
-		right_joystick_click: 'shared_r3.svg'
+		right_joystick_click: 'shared_r3.svg',
+		button_back_left_upper: 'ps_lb.svg',
+		button_back_left: 'ps_lfn.svg',
+		button_back_right_upper: 'ps_rb.svg',
+		button_back_right: 'ps_rfn.svg'
 	},
 	controller_ps4: {
 		left_bumper: 'ps4_l1.svg',
@@ -275,7 +281,11 @@ export const glyphMaps: Record<string, Record<string, string>> = {
 		button_back_left_upper: 'sd_l4.svg',
 		button_back_left: 'sd_l5.svg',
 		button_back_right_upper: 'sd_r4.svg',
-		button_back_right: 'sd_r5.svg'
+		button_back_right: 'sd_r5.svg',
+		grip_sense_left: 'sd_lgrip.svg',
+		grip_sense_right: 'sd_rgrip.svg',
+		button_leftauxcapsense: 'sd_lgrip.svg',
+		button_rightauxcapsense: 'sd_rgrip.svg'
 	}
 };
 

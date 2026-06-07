@@ -256,7 +256,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 		trackpads: true
 	},
 	controller_triton: {
-		trackpads: true
+		trackpads: true,
+		capsense: true
 	},
 	controller_neptune: {
 		trackpads: true
@@ -284,7 +285,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 				{#each Object.entries(actions) as [key, action] (key)}
 					{@const title = action?.title?.startsWith('#') ? key : action?.title}
 					<button data-selected={key === selectedSetName} onclick={() => (selectedSetName = key)}
-						>{title}</button>
+						>{title}</button
+					>
 					{#each Object.entries(actionLayers || {}).filter(([, v]) => {
 						return v.parent_set_name === key;
 					}) as [layer_key, layer] (layer_key)}
@@ -293,14 +295,16 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 							onclick={() => (selectedSetName = layer_key)}
 							><Icon icon="mdi:layers-triple" width="1.2em" />
 							{title}:
-							{layer.title?.startsWith('#') ? key : layer.title}</button>
+							{layer.title?.startsWith('#') ? key : layer.title}</button
+						>
 					{/each}
 				{/each}
 			{:else}
 				{#each presets as preset (preset.name)}
 					<button
 						data-selected={preset.name === selectedSetName}
-						onclick={() => (selectedSetName = preset.name)}>
+						onclick={() => (selectedSetName = preset.name)}
+					>
 						{actionLayers?.[preset.name]?.title ?? preset.name}
 					</button>
 				{/each}
@@ -320,7 +324,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 		<span
 			>{group.settings?.gyro_button_invert == '1'
 				? 'Hold to disable Gyro'
-				: 'Hold to enable Gyro'}</span>
+				: 'Hold to enable Gyro'}</span
+		>
 	{:else if !group.settings?.gyro_ratchet_button_mask}
 		<span>Always On</span>
 	{/if}
@@ -442,7 +447,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 				{/if}
 				{#if group.settings?.output_trigger}
 					<span class="analog"
-						>{group.settings.output_trigger == '1' ? 'Left' : 'Right'} Analog Trigger</span>
+						>{group.settings.output_trigger == '1' ? 'Left' : 'Right'} Analog Trigger</span
+					>
 				{/if}
 				{#if group.settings?.output_joystick}
 					{@const joystickLabels: Record<string, string> = {
@@ -454,7 +460,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 					}}
 					<span
 						>Output: {joystickLabels[group.settings.output_joystick] ??
-							`Joystick ${group.settings.output_joystick}`}</span>
+							`Joystick ${group.settings.output_joystick}`}</span
+					>
 				{/if}
 				{#if source === 'gyro' && !isModeshift}
 					{@render gyroPreview(group, findGyroButton())}
@@ -503,6 +510,10 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 		{@render mappingPreview('switch', 'button_back_left', 'l5')}
 		{@render mappingPreview('switch', 'button_back_right_upper', 'r4')}
 		{@render mappingPreview('switch', 'button_back_right', 'r5')}
+		{#if optionalDevices[selectedController]?.capsense === true}
+			{@render mappingPreview('switch', 'button_leftauxcapsense', 'capsense_left')}
+			{@render mappingPreview('switch', 'button_rightauxcapsense', 'capsense_right')}
+		{/if}
 		{@render mappingPreview('switch', 'button_menu', 'select')}
 		{#if optionalDevices[selectedController]?.trackpads === true}
 			{@render sourcePreview('left_trackpad', 'lpad')}
@@ -539,7 +550,8 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 					arrow: true,
 
 					arrowFollowCursor: true
-				})}>
+				})}
+			>
 				<em>Beta</em>
 				<IconHelp style="width: 1.6em; height: 1.6em;" />
 			</p>
@@ -550,11 +562,13 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 						<BPMOption value="controller_neptune" {...rest}>Steam Deck</BPMOption>
 						<BPMOption value="controller_triton" {...rest}>Steam Controller</BPMOption>
 						<BPMOption value="controller_steamcontroller_gordon" {...rest}
-							>Steam Controller (2015)</BPMOption>
+							>Steam Controller (2015)</BPMOption
+						>
 						<BPMOption value="controller_ps5" {...rest}>DualSense / DualSense Edge</BPMOption>
 						<BPMOption value="controller_ps4" {...rest}>DualShock 4</BPMOption>
 						<BPMOption value="controller_switch_pro" {...rest}
-							>Switch (1/2) Pro / 8BitDo</BPMOption>
+							>Switch (1/2) Pro / 8BitDo</BPMOption
+						>
 						<BPMOption value="controller_xboxone" {...rest}>XBox One / Elite</BPMOption>
 						<BPMOption value="controller_generic" {...rest}>Other</BPMOption>
 						<IcoDropDown />
@@ -690,13 +704,14 @@ section {
 	padding-top: 0em;
 	padding-bottom: 1em;
 	grid-template-areas:
-		'lb      ctrl   rb'
-		'lt      ctrl   rt'
-		'l4      ctrl   r4'
-		'l5      ctrl   r5'
-		'select  ctrl   start'
-		'lpad    ctrl   rpad'
-		'last    last   last';
+		'lb                 ctrl    rb'
+		'lt                 ctrl    rt'
+		'l4                 ctrl    r4'
+		'l5                 ctrl    r5'
+		'capsense_left      ctrl    capsense_right'
+		'select             ctrl    start'
+		'lpad               ctrl    rpad'
+		'last               last    last';
 	grid-template-rows:
 		repeat(5, min-content)
 		minmax(6em, 1fr)
@@ -805,6 +820,12 @@ section {
 	.r5 {
 		grid-area: r5;
 	}
+	.capsense_left {
+		grid-area: capsense_left;
+	}
+	.capsense_right {
+		grid-area: capsense_right;
+	}
 	.select {
 		grid-area: select;
 	}
@@ -818,6 +839,8 @@ section {
 	.r4,
 	.l5,
 	.r5,
+	.capsense_left,
+	.capsense_right,
 	.select,
 	.start {
 		display: grid;
@@ -834,6 +857,7 @@ section {
 	.lb,
 	.l4,
 	.l5,
+	.capsense_left,
 	.select {
 		justify-items: end;
 		grid-template-columns: auto min-content;
@@ -845,6 +869,7 @@ section {
 	.rb,
 	.r4,
 	.r5,
+	.capsense_right,
 	.start {
 		grid-template-columns: min-content auto;
 		& :global(> :last-child) {
@@ -861,6 +886,8 @@ section {
 	.r4,
 	.l5,
 	.r5,
+	.capsense_left,
+	.capsense_right,
 	.select,
 	.start {
 		padding-bottom: var(--vertical-space);
