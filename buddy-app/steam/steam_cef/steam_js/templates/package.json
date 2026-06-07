@@ -11,24 +11,24 @@
         "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
     },
     "devDependencies": {
-        "@eslint/compat": "^2.0.5",
+        "@eslint/compat": "^2.1.0",
         "@eslint/eslintrc": "^3.3.5",
         "@eslint/js": "^10.0.1",
         "@poppanator/sveltekit-svg": "^7.0.0",
         "@stylistic/eslint-plugin": "^5.10.0",
-        "@sveltejs/vite-plugin-svelte": "^7.0.0",
+        "@sveltejs/vite-plugin-svelte": "^7.1.2",
         "@tsconfig/svelte": "^5.0.8",
-        "@types/node": "^25.6.0",
+        "@types/node": "^25.9.2",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-prettier": "^5.5.5",
-        "eslint-plugin-svelte": "^3.17.1",
+        "eslint-plugin-prettier": "^5.5.6",
+        "eslint-plugin-svelte": "^3.19.0",
         "prettier": "^3.8.3",
-        "prettier-plugin-svelte": "^3.5.1",
-        "svelte": "^5.55.5",
-        "svelte-check": "^4.4.6",
-        "svelte-eslint-parser": "^1.6.0",
+        "prettier-plugin-svelte": "^4.1.0",
+        "svelte": "^5.56.2",
+        "svelte-check": "^4.6.0",
+        "svelte-eslint-parser": "^1.8.0",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.1",
-        "vite": "^8.0.10"
+        "typescript-eslint": "^8.60.1",
+        "vite": "^8.0.16"
     }
 }

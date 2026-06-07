@@ -8,8 +8,8 @@ Building/Deving the site is only done in a Linux environment, so if you are runn
 
 ### Requirements
 
-- Go 1.26.2+
-- NodeJS 25+
+- Go 1.26+
+- NodeJS 26+
 - Git (obviously)
 - Protocol Buffers Compiler (protoc)  
   https://protobuf.dev/installation/
@@ -93,8 +93,8 @@ The Buddy-App does build on Windows, but it is recommended to use a linux enviro
 
 ### Requirements
 
-- Go 1.26.2+
-- NodeJS 25+
+- Go 1.26+
+- NodeJS 26+
 - Optional but reccomended:  
   - air (for hot reloading)  
     go install github.com/air-verse/air@latest
