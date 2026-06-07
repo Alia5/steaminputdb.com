@@ -7,11 +7,9 @@ import '../../../../css/md.pcss';
 import AboutBuddy from './about-buddy.svx';
 
 import { browser } from '$app/environment';
-import IcoAlert from '~icons/mdi/alert';
 import IcoGitHub from '~icons/mdi/github';
 import IcoLinux from '~icons/mdi/linux';
 import IcoWindows from '~icons/mdi/windows';
-import IcoSteamDeck from '~icons/simple-icons/steamdeck';
 
 interface GitHubRelease {
 	tag_name: string;
@@ -60,20 +58,24 @@ const fetchReleases = async () => {
 	<title>SteamInputDB | Buddy App Downloads and Installation</title>
 	<meta
 		name="description"
-		content="Community-driven database of Steam Input configurations using the Steam API." />
+		content="Community-driven database of Steam Input configurations using the Steam API."
+	/>
 	<meta
 		name="keywords"
-		content="Steam Input DB, Buddy, Buddy-App, Buddy App, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets" />
+		content="Steam Input DB, Buddy, Buddy-App, Buddy App, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets"
+	/>
 	<meta
 		name="robots"
-		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+	/>
 
 	<meta property="og:site_name" content="SteamInputDB - BuddyApp" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="SteamInputDB - BuddyApp" />
 	<meta
 		property="og:description"
-		content="SteamInputDB-Buddy is an official buddy-app for SteamInputDB that provides direct integration into the Steam client " />
+		content="SteamInputDB-Buddy is an official buddy-app for SteamInputDB that provides direct integration into the Steam client "
+	/>
 	<meta property="og:url" content="https://www.steaminputdb.com/buddy-app/install" />
 	<meta property="og:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta property="og:image:alt" content="SteamInputDB preview image" />
@@ -82,7 +84,8 @@ const fetchReleases = async () => {
 	<meta name="twitter:title" content="SteamInputDB - BuddyApp" />
 	<meta
 		name="twitter:description"
-		content="SteamInputDB-Buddy is an official buddy-app for SteamInputDB that provides direct integration into the Steam client " />
+		content="SteamInputDB-Buddy is an official buddy-app for SteamInputDB that provides direct integration into the Steam client "
+	/>
 	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
 </svelte:head>
@@ -95,28 +98,6 @@ const fetchReleases = async () => {
 
 	<section id="install">
 		<h2>Downloads | Installation</h2>
-		<div class="box alert card glass">
-			<strong class="card glass"><IcoSteamDeck /> Decky users <IcoAlert /> </strong>
-			<div style="display: grid; gap: 0.5em;">
-				<span>
-					If you are using a Steam Deck, we offer a Decky-Plugin as alternative installation method.</span>
-				<span>
-					The Decky-Plugin is not currently available in the Decky store, <strong>you</strong> can
-					speed up the review-process by commenting
-					<a
-						href="https://github.com/SteamDeckHomebrew/decky-plugin-database/pull/1023"
-						target="_blank"
-						rel="external">here</a
-					></span>
-				<span>
-					In the meantime, <a
-						href="https://github.com/Alia5/steaminputdb.com/releases"
-						target="_blank"
-						rel="external">GitHub releases</a>
-					include the Decky-Loader plugin <code style="padding: 0.1em 0.33em">.zip</code>-File for
-					manual installation.</span>
-			</div>
-		</div>
 		{#if !isMobile}
 			<h3>Automatic installation</h3>
 			<p>
@@ -141,7 +122,8 @@ const fetchReleases = async () => {
 				</strong>
 				<code
 					{@attach selectAllHandler()}
-					style="border: none; box-shadow: none; outline: none; user-select: all; background: transparent; width: 100%; display: block; font-size: 1.2em; padding: 0.5em 1em;">
+					style="border: none; box-shadow: none; outline: none; user-select: all; background: transparent; width: 100%; display: block; font-size: 1.2em; padding: 0.5em 1em;"
+				>
 					{#if isWindows}
 						irm https://www.steaminputdb.com/buddy-app/install.ps1 | iex
 					{/if}
@@ -170,7 +152,8 @@ const fetchReleases = async () => {
 								target="_blank"
 								rel="external"
 								style="background-color: color(from var(--color-primary) srgb r g b / 0.7);"
-								class="button">
+								class="button"
+							>
 								{#if isWindows}
 									<IcoWindows />
 								{:else if isLinux}
@@ -191,7 +174,8 @@ const fetchReleases = async () => {
 								target="_blank"
 								rel="external"
 								style="background-color: color(from var(--highlight-color) srgb r g b / 0.33); font-size: 1.2em;"
-								class="button">
+								class="button"
+							>
 								{#if isWindows}
 									<IcoWindows />
 								{:else if isLinux}
@@ -234,7 +218,8 @@ const fetchReleases = async () => {
 			target="_blank"
 			rel="external"
 			style="font-size: 1.1em; font-weight: normal; margin-top: 1em;"
-			class="button"><IcoGitHub /> View all releases on GitHub</a>
+			class="button"><IcoGitHub /> View all releases on GitHub</a
+		>
 	</div>
 {/snippet}
 
