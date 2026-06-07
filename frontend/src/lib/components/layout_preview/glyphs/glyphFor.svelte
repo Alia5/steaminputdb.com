@@ -79,6 +79,20 @@ export const glyphMaps: Record<string, Record<string, string>> = {
 		right_click: 'sd_rtrackpad_click.svg',
 		right_trackpad_touch: 'sd_rtrackpad_ring.svg'
 	},
+	controller_triton: {
+		left_bumper: 'sc_l1.svg',
+		right_bumper: 'sc_r1.svg',
+		left_trigger_edge: 'sc_l2_half.svg',
+		right_trigger_edge: 'sc_r2_half.svg',
+		left_trigger_click: 'sc_l2.svg',
+		right_trigger_click: 'sc_r2.svg',
+		left_trigger: 'sc_l2.svg',
+		right_trigger: 'sc_r2.svg',
+		button_back_left_upper: 'sc_l4.svg',
+		button_back_left: 'sc_l5.svg',
+		button_back_right_upper: 'sc_r4.svg',
+		button_back_right: 'sc_r5.svg'
+	},
 	controller_ps5: {
 		left_bumper: 'ps5_l1.svg',
 		right_bumper: 'ps5_r1.svg',
@@ -270,7 +284,8 @@ glyphMaps.fallback = {
 	...glyphMaps.fallback
 };
 glyphMaps.controller_triton = {
-	...glyphMaps.controller_neptune
+	...glyphMaps.controller_neptune,
+	...glyphMaps.controller_triton
 };
 glyphMaps.controller_ps5_edge = {
 	...glyphMaps.controller_ps5
