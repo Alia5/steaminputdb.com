@@ -99,6 +99,8 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 	defer ws.CloseNow()
 	slog.Debug("executeJs: websocket connected")
 
+	ws.SetReadLimit(10 * 1024 * 1024)
+
 	go func() {
 		<-ctx.Done()
 		slog.Debug("executeJs: context cancelled, closing websocket")
