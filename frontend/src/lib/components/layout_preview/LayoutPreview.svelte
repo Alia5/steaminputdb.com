@@ -590,6 +590,7 @@ const optionalDevices: Record<string, Record<string, boolean | undefined>> = {
 					<IcoDropDown />
 				</label>
 			{/if}
+			<span>Best viewed on Desktop</span>
 		</div>
 		<svelte:boundary>
 			{#if parsedVdf}
@@ -1016,15 +1017,25 @@ section {
 }
 
 .info {
-	display: flex;
+	display: grid;
+	grid-template-columns: auto auto;
 	justify-content: space-between;
 	align-items: center;
-	gap: 1em;
+	columns-gap: 1em;
+	row-gap: 0.5em;
 	padding: 1em;
 	& > :first-child {
 		display: flex;
 		align-items: center;
 		gap: 0.5em;
+	}
+
+	& > :last-child:is(span) {
+		grid-column: 1 / -1;
+		grid-row: 2;
+		@media (orientation: landscape) {
+			display: none;
+		}
 	}
 }
 
