@@ -9,6 +9,7 @@ import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
 import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
 import Gordon from '$lib/assets/steam_controller_type_svgs/steam.svg?component';
+import SteamFramePair from '$lib/assets/steam_controller_type_svgs/steamframe_pair.svg?component';
 import SwitchPro from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
 import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component';
 import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
@@ -22,6 +23,8 @@ import Icon from '@iconify/svelte';
 		<Triton width="1.2em" />
 	{:else if item.controller_type === 'controller_steamcontroller_gordon'}
 		<Gordon width="1.2em" />
+	{:else if item.controller_type === 'controller_steamframe_pair'}
+		<SteamFramePair width="1.2em" />
 	{:else if item.controller_type === 'controller_ps5'}
 		<PS5 width="1.2em" />
 	{:else if item.controller_type === 'controller_ps5_edge'}

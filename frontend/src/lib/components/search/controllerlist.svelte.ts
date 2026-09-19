@@ -3,6 +3,7 @@ import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
 import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
 import Gordon from '$lib/assets/steam_controller_type_svgs/steam.svg?component';
+import SteamFramePair from '$lib/assets/steam_controller_type_svgs/steamframe_pair.svg?component';
 import SwitchPro from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
 import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component';
 import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
@@ -28,6 +29,11 @@ export const CONTROLLER_LIST = [
         type: 'controller_neptune',
         icon: IconSD,
         niceName: 'Steam Deck'
+    },
+    {
+        type: 'controller_steamframe_pair',
+        icon: SteamFramePair,
+        niceName: 'Steam Frame Controller Pair'
     },
     {
         type: 'controller_ps5',

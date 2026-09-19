@@ -99,7 +99,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			placeholder="SteamInput configuration..."
 			disabled={disabled}
 			bind:value={values.searchtext}
-			inlineButton={false} />
+			inlineButton={false}
+		/>
 		<button type="submit" disabled={disabled}>Search</button>
 		{#if isSteamBigPicture}
 			<BPMSelect
@@ -109,7 +110,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 					values['sort-by'] = v;
 					changeSubmitHandler();
 				}}
-				disabled={disabled}>
+				disabled={disabled}
+			>
 				{#snippet children({ ...rest })}
 					<span>Sort by:</span>
 					{#if !values['sort-by']}
@@ -125,7 +127,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 					<BPMOption value="total_playtime" {...rest}>Total playtime</BPMOption>
 					<BPMOption value="avg_playtime_trend" {...rest}>Average playtime trend</BPMOption>
 					<BPMOption value="lifetime_avg_playtime" {...rest}
-						>Average playtime since upload</BPMOption>
+						>Average playtime since upload</BPMOption
+					>
 					<BPMOption value="playtime_sessions_trend" {...rest}>Sessions trend (30 days)</BPMOption>
 					<BPMOption value="lifetime_playtime_sessions" {...rest}>Lifetime sessions</BPMOption>
 					<IcoDropdown />
@@ -139,7 +142,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 				name="sort-by"
 				disabled={disabled}
 				bind:value={values['sort-by']}
-				onchange={changeSubmitHandler}>
+				onchange={changeSubmitHandler}
+			>
 				<option value="vote">Rank</option>
 				<option value="publication">Date</option>
 				<option value="trend">Trend (30 days)</option>
@@ -173,7 +177,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			<Icon icon="mdi:chevron-up" height="1.8em" />
 		{:else}
 			<Icon icon="mdi:chevron-down" height="1.8em" />
-		{/if}</button>
+		{/if}</button
+	>
 	{#if showAdvancedFilters}
 		<fieldset
 			id="controller-type"
@@ -197,7 +202,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 					});
 				}
 			}}
-			disabled={disabled}>
+			disabled={disabled}
+		>
 			<legend><span>Controller Type</span></legend>
 
 			{#if browser && document.cookie?.includes('buddy-app=enabled') && BuddyState.reachable}
@@ -308,7 +314,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 					{:else}
 						<Icon icon="mdi:chevron-down" height="1.6em" />
 					{/if}
-				</button></legend>
+				</button></legend
+			>
 			{#if showFeatureFilter}
 				{@render featurefilters(values)}
 			{/if}
@@ -318,7 +325,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 		<fieldset
 			id="excluded-features"
 			transition:slide={{ duration: 196, easing: cubicInOut }}
-			disabled={disabled}>
+			disabled={disabled}
+		>
 			<legend>
 				<button
 					type="button"
@@ -332,7 +340,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 					{:else}
 						<Icon icon="mdi:chevron-down" height="1.6em" />
 					{/if}
-				</button></legend>
+				</button></legend
+			>
 			{#if showExcludedFeatureFilter}
 				{@render featurefilters(values, 'exclude_')}
 			{/if}
@@ -357,7 +366,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 				name="controller_type"
 				value={controller.type}
 				bind:group={values['controller_type'] as string}
-				onchange={changeSubmitHandler} />
+				onchange={changeSubmitHandler}
+			/>
 			<controller.icon style="width: 1.2em; height: 1.2em;" />
 			<span> {controller.niceName} </span>
 		</label>
@@ -371,7 +381,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_gamepad`}
 			name={`${prefix}feature_gamepad`}
 			bind:checked={bindMap[`${prefix}feature_gamepad`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="mdi:controller" width="1.2em" />
 		<span>Gamepad Inputs</span>
 	</label>
@@ -382,7 +393,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_keyboard`}
 			name={`${prefix}feature_keboard`}
 			bind:checked={bindMap[`${prefix}feature_keboard`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="mdi:keyboard" width="1.2em" />
 		<span>Keyboard Inputs</span>
 	</label>
@@ -392,7 +404,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_mouse`}
 			name={`${prefix}feature_mouse`}
 			bind:checked={bindMap[`${prefix}feature_mouse`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="mdi:mouse" width="1.2em" />
 		<span>Mouse Inputs</span>
 	</label>
@@ -402,7 +415,8 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_gyro`}
 			name={`${prefix}feature_gyro`}
 			bind:checked={bindMap[`${prefix}feature_gyro`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="game-icons:gyroscope" width="1.2em" />
 		<span>Gyro Inputs</span>
 	</label>
@@ -412,19 +426,22 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_touchmenu`}
 			name={`${prefix}feature_touchmenu`}
 			bind:checked={bindMap[`${prefix}feature_touchmenu`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="mdi:gesture-touch" width="1.2em" />
 		<span>Touch Menus</span>
 	</label>
 	<label
 		for={`${prefix}feature_radialmenu`}
-		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+		transition:slide|global={{ duration: 196, easing: cubicInOut }}
+	>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_radialmenu`}
 			name={`${prefix}feature_radialmenu`}
 			bind:checked={bindMap[`${prefix}feature_radialmenu`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="material-symbols:joystick" width="1.2em" />
 		<span>Radial Menus</span>
 	</label>
@@ -434,19 +451,22 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_modeshift`}
 			name={`${prefix}feature_modeshift`}
 			bind:checked={bindMap[`${prefix}feature_modeshift`] as boolean}
-			onchange={changeSubmitHandler} />
-		<Icon icon="material-symbols:layers-rounded" width="1.2em" />
+			onchange={changeSubmitHandler}
+		/>
+		<Icon icon="mdi:set-right" width="1.2em" />
 		<span>Mode Shifts</span>
 	</label>
 	<label
 		for={`${prefix}feature_mouseregion`}
-		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+		transition:slide|global={{ duration: 196, easing: cubicInOut }}
+	>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_mouseregion`}
 			name={`${prefix}feature_mouseregion`}
 			bind:checked={bindMap[`${prefix}feature_mouseregion`] as boolean}
-			onchange={changeSubmitHandler} />
+			onchange={changeSubmitHandler}
+		/>
 		<Icon icon="fluent:cursor-hover-16-filled" width="1.2em" />
 		<span>Mouse Regions</span>
 	</label>
@@ -456,8 +476,9 @@ let isSteamBigPicture = $derived(browser ? navigator?.userAgent?.includes('Steam
 			id={`${prefix}feature_actionset`}
 			name={`${prefix}feature_actionset`}
 			bind:checked={bindMap[`${prefix}feature_actionset`] as boolean}
-			onchange={changeSubmitHandler} />
-		<Icon icon="mdi:set-right" width="1.2em" />
+			onchange={changeSubmitHandler}
+		/>
+		<Icon icon="material-symbols:layers-rounded" width="1.2em" />
 		<span>Action Sets</span>
 	</label>
 {/snippet}
@@ -469,8 +490,6 @@ form {
 	width: 100%;
 	gap: 1em;
 	backdrop-filter: blur(12px);
-
-	max-width: calc(100dvw -2em);
 
 	& > :first-child {
 		width: 100%;
