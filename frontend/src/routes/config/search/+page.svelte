@@ -144,10 +144,12 @@ afterNavigate(() => {
 	<title>SteamInputDB - Config Search</title>
 	<meta
 		name="keywords"
-		content="Steam Input DB, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets" />
+		content="Steam Input DB, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets"
+	/>
 	<meta
 		name="robots"
-		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+	/>
 
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
@@ -155,7 +157,8 @@ afterNavigate(() => {
 	<meta name="description" content="Search for Steam Input configurations for Steam and non Steam games" />
 	<meta
 		property="og:description"
-		content="Search for Steam Input configurations for Steam and non Steam games" />
+		content="Search for Steam Input configurations for Steam and non Steam games"
+	/>
 	<meta property="og:url" content="https://www.steaminputdb.com/" />
 	<meta property="og:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta property="og:image:alt" content="SteamInputDB preview image" />
@@ -163,11 +166,12 @@ afterNavigate(() => {
 	<meta name="twitter:title" content="SteamInputDB - Config Search" />
 	<meta
 		name="twitter:description"
-		content="Search for Steam Input configurations for Steam and non Steam games" />
+		content="Search for Steam Input configurations for Steam and non Steam games"
+	/>
 	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
 
-	<svelte:element this={'script'} type="application/ld+json">{createHomeSchemaJsonLd()}</svelte:element>
+	<svelte:element this={"script"} type="application/ld+json">{createHomeSchemaJsonLd()}</svelte:element>
 </svelte:head>
 
 <svelte:window
@@ -190,7 +194,8 @@ afterNavigate(() => {
 	}}
 	onscroll={() => {
 		showBackToTop = window.scrollY > window.innerHeight;
-	}} />
+	}}
+/>
 
 <main>
 	<search>
@@ -200,13 +205,15 @@ afterNavigate(() => {
 			method="GET"
 			bind:values={formValues}
 			submitOnChange={true}
-			showTotalCount={results?.total} />
+			showTotalCount={results?.total}
+		/>
 		<div class="results">
 			{#if loading}
 				<div
 					class="loading"
 					in:fade|global={{ duration: 196, easing: cubicOut }}
-					out:fade|global={{ duration: 196, easing: cubicIn }}>
+					out:fade|global={{ duration: 196, easing: cubicIn }}
+				>
 					<Spinner size="12em" />
 				</div>
 			{/if}
@@ -216,7 +223,8 @@ afterNavigate(() => {
 					class={searchError ? 'error' : ''}
 					in:fade|global={{ duration: 196, easing: cubicOut }}
 					out:fade|global={{ duration: 196, easing: cubicIn }}
-					onintrostartcapture={findEyes}>
+					onintrostartcapture={findEyes}
+				>
 					{#if hasSearched && !searchError}
 						<span>No results found</span>
 					{/if}
@@ -235,7 +243,8 @@ afterNavigate(() => {
 						height="100%"
 						--eyes-color="black"
 						--eyes-white-color="var(--text-color-dark)"
-						--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
+						--eyes-border-color="light-dark(var(--text-color-light), transparent)"
+					/>
 				</div>
 			{/if}
 			{#if !searchError}
@@ -245,7 +254,8 @@ afterNavigate(() => {
 							class="plain"
 							style={loading ? 'pointer-events: none; opacity: 0.4;' : ''}
 							href={resolve(`/config/${item.file_id}`)}
-							transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+							transition:slide|global={{ duration: 196, easing: cubicInOut }}
+						>
 							<div class="thumb">
 								{#if infoAppIdMap?.[item.app_id || 0]}
 									{@const assets = infoAppIdMap[item.app_id || 0]!.assets!}
@@ -309,7 +319,8 @@ afterNavigate(() => {
 							id="load-more-trigger"
 							{@attach intersectionObserver(() => {
 								loadMore();
-							})}>
+							})}
+						>
 							<Spinner size="12em" />
 						</div>
 					{/if}
@@ -322,7 +333,8 @@ afterNavigate(() => {
 				in:fly={{ y: '2dvh', duration: 196, easing: cubicOut }}
 				id="back-to-top"
 				{@attach tooltip({ content: 'Back to top' })}
-				onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+				onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+			>
 				<Icon icon="mdi:arrow-up" width="1.5em" />
 			</button>
 		{/if}
@@ -333,6 +345,7 @@ afterNavigate(() => {
 main {
 	display: grid;
 	place-items: center;
+	padding: 0 1em;
 }
 
 search {

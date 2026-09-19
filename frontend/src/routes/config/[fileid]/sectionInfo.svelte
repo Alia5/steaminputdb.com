@@ -51,7 +51,8 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 						{@attach selectAllHandler(
 							`outline: 1px solid transparent;
                                         background: rgb(128 128 128 / 0.10);`
-						)}>{fileInfo.file_url}</code>
+						)}>{fileInfo.file_url}</code
+					>
 				</dd>
 			{/if}
 			{#if fileInfo.file_name}
@@ -61,7 +62,8 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 						{@attach selectAllHandler(
 							`outline: 1px solid transparent;
                                         background: rgb(128 128 128 / 0.10);`
-						)}>{fileInfo.file_name}</code>
+						)}>{fileInfo.file_name}</code
+					>
 				</dd>
 			{/if}
 			{#if fileInfo.file_size}
@@ -150,7 +152,8 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 								>{formatDistance(
 									new Date(fileInfo.playtime_seconds * 1000),
 									new Date(0)
-								)}</span>
+								)}</span
+							>
 							<span>combined playtime in</span>
 							<span>{fileInfo.playtime_sessions ?? 0}</span> <span>sessions</span>
 							<i>(all users - last 14 days)</i>
@@ -159,7 +162,8 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 								>{formatDistance(
 									new Date((fileInfo.lifetime_playtime_seconds ?? 0) * 1000),
 									new Date(0)
-								)}</span>
+								)}</span
+							>
 							<span>combined playtime in</span>
 							<span>{fileInfo.lifetime_playtime_sessions ?? 0}</span> <span>sessions</span>
 							<i>(all users - since upload)</i>
@@ -221,7 +225,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			margin: auto;
 			gap: 1em;
 			width: 100%;
-			grid-template-columns: repeat(auto-fit, minmax(calc(var(--width) -1em), auto));
+			grid-template-columns: repeat(auto-fit, minmax(calc(var(--width) - 1em), auto));
 			:global(> *) {
 				width: 100%;
 				padding: 1em;

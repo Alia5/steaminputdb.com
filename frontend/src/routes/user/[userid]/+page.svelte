@@ -159,31 +159,34 @@ onMount(() => {
 	<meta property="og:title" content="SteamInputDB | {playerInfo?.personaname ?? page.params.userid} " />
 	<meta
 		name="description"
-		content="Search for Steam Input configurations from {playerInfo?.personaname ??
-			page.params.userid}" />
+		content="Search for Steam Input configurations from {playerInfo?.personaname ?? page.params.userid}"
+	/>
 	<meta
 		property="og:description"
-		content="Search for Steam Input configurations from {playerInfo?.personaname ??
-			page.params.userid}" />
+		content="Search for Steam Input configurations from {playerInfo?.personaname ?? page.params.userid}"
+	/>
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta
 		name="twitter:title"
-		content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} " />
+		content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} "
+	/>
 	<meta
 		name="twitter:description"
-		content="Search for Steam Input configurations from {playerInfo?.personaname ??
-			page.params.userid}" />
+		content="Search for Steam Input configurations from {playerInfo?.personaname ?? page.params.userid}"
+	/>
 	{#if playerInfo?.avatarfull}
 		<meta property="og:image" content={playerInfo.avatarfull} />
 		<meta
 			property="og:image:alt"
-			content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} " />
+			content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} "
+		/>
 		<meta name="twitter:image" content={playerInfo.avatarfull} />
 		<meta
 			name="twitter:image:alt"
-			content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} " />
+			content="SteamInputDB | UserProfile {playerInfo?.personaname ?? page.params.userid} "
+		/>
 	{/if}
-	<svelte:element this={'script'} type="application/ld+json">
+	<svelte:element this={"script"} type="application/ld+json">
 		{createUserSchemaJsonLd({
 			userId: page.params.userid ?? '',
 			personName: playerInfo?.personaname ?? page.params.userid ?? '',
@@ -212,7 +215,8 @@ onMount(() => {
 	}}
 	onscroll={() => {
 		showBackToTop = window.scrollY > window.innerHeight;
-	}} />
+	}}
+/>
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
@@ -222,7 +226,8 @@ onMount(() => {
 					<video autoplay loop muted playsinline>
 						<source
 							src={`${communityUrlBase.replace('/apps/', '/')}${playerInfo.mini_profile_background.movie_webm}`}
-							type="video/webm" />
+							type="video/webm"
+						/>
 					</video>
 				{/if}
 				{#if playerInfo?.avatarfull}
@@ -230,7 +235,8 @@ onMount(() => {
 					{#if playerInfo?.avatarframe?.small}
 						<enhanced:img
 							src={`${communityUrlBase.replace('/apps/', '/')}${playerInfo.avatarframe.small}`}
-							class="avatar-frame"></enhanced:img>
+							class="avatar-frame"
+						></enhanced:img>
 					{/if}
 				{:else}
 					<div></div>
@@ -251,7 +257,8 @@ onMount(() => {
 						autoPlacement: false,
 
 						arrowFollowCursor: true
-					})}>
+					})}
+				>
 					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
 					<!-- <Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" /> -->
 				</a>
@@ -264,13 +271,15 @@ onMount(() => {
 				method="GET"
 				bind:values={formValues}
 				submitOnChange={true}
-				showTotalCount={results?.total} />
+				showTotalCount={results?.total}
+			/>
 			<div class="results">
 				{#if loading}
 					<div
 						class="loading"
 						in:fade|global={{ duration: 196, easing: cubicOut }}
-						out:fade|global={{ duration: 196, easing: cubicIn }}>
+						out:fade|global={{ duration: 196, easing: cubicIn }}
+					>
 						<Spinner size="12em" />
 					</div>
 				{/if}
@@ -280,7 +289,8 @@ onMount(() => {
 						class={searchError ? 'error' : ''}
 						in:fade|global={{ duration: 196, easing: cubicOut }}
 						out:fade|global={{ duration: 196, easing: cubicIn }}
-						onintrostartcapture={findEyes}>
+						onintrostartcapture={findEyes}
+					>
 						{#if !searchError}
 							<span>No layouts found</span>
 						{/if}
@@ -299,7 +309,8 @@ onMount(() => {
 							height="100%"
 							--eyes-color="black"
 							--eyes-white-color="var(--text-color-dark)"
-							--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
+							--eyes-border-color="light-dark(var(--text-color-light), transparent)"
+						/>
 					</div>
 				{/if}
 				{#if !searchError}
@@ -309,7 +320,8 @@ onMount(() => {
 								class="plain"
 								style={loading ? 'pointer-events: none; opacity: 0.4;' : ''}
 								href={resolve(`/config/${item.file_id}`)}
-								transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+								transition:slide|global={{ duration: 196, easing: cubicInOut }}
+							>
 								<div class="thumb">
 									{#if infoAppIdMap?.[item.app_id || 0]}
 										{@const assets = infoAppIdMap[item.app_id || 0]!.assets!}
@@ -375,7 +387,8 @@ onMount(() => {
 								id="load-more-trigger"
 								{@attach intersectionObserver(() => {
 									loadMore();
-								})}>
+								})}
+							>
 								<Spinner size="12em" />
 							</div>
 						{/if}
@@ -388,7 +401,8 @@ onMount(() => {
 					in:fly={{ y: '2dvh', duration: 196, easing: cubicOut }}
 					id="back-to-top"
 					{@attach tooltip({ content: 'Back to top' })}
-					onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+					onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+				>
 					<Icon icon="mdi:arrow-up" width="1.5em" />
 				</button>
 			{/if}
@@ -401,7 +415,7 @@ main {
 	position: relative;
 	isolation: isolate;
 	display: grid;
-	padding: 1em 0;
+	padding: 1em;
 	width: 100%;
 	&::before {
 		content: '';

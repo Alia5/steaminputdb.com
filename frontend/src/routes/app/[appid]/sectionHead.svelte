@@ -64,14 +64,15 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
 						<enhanced:img
 							src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets?.community_icon}.jpg`}
-							alt="Icon"></enhanced:img>
+							alt="Icon"
+						></enhanced:img>
 					</picture>
 				{:else}
 					<!-- KEEP! -->
-					{#if appInfo?.app_id !== 413080}
-						<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
-					{:else}
+					{#if appInfo?.app_id == 413080 || appInfo?.app_id == 769}
 						<IcoDesktop />
+					{:else}
+						<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
 					{/if}
 				{/if}
 				{#if !appInfo && fallbackName}
@@ -87,7 +88,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoFullController width="2em" />
 						</div>
 					{:else if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_PARTIAL}
@@ -98,7 +100,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoPartialController width="2em" />
 						</div>
 						<!-- HACK if is real steam game -->
@@ -111,7 +114,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								placement: 'bottom',
 								autoPlacement: false
 							})}
-							class="stacked">
+							class="stacked"
+						>
 							<IcoFullController width="2em" opacity="0.5" />
 							<IcoForbidden width="2em" height="2em" color="red" style="z-index: 1;" />
 						</div>
@@ -124,7 +128,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoSIAPI width="2em" />
 						</div>
 					{/if}
@@ -136,7 +141,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoDs4Partial width="2em" />
 						</div>
 					{/if}
@@ -148,7 +154,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoDs4Full width="2em" />
 						</div>
 					{/if}
@@ -160,7 +167,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoDs5Partial width="2em" />
 						</div>
 					{/if}
@@ -172,7 +180,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								arrow: true,
 								placement: 'bottom',
 								autoPlacement: false
-							})}>
+							})}
+						>
 							<IcoDs5Full width="2em" />
 						</div>
 					{/if}
@@ -212,7 +221,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 						autoPlacement: false,
 
 						arrowFollowCursor: true
-					})}>
+					})}
+				>
 					<IcoSteam style="width: 1.4em; height: 1.4em;" />
 					<!-- <Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" /> -->
 				</a>
@@ -228,7 +238,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 						placement: 'bottom',
 						autoPlacement: false,
 						arrowFollowCursor: true
-					})}>
+					})}
+				>
 					<IcoSteamDB style="width: 1.4em; height: 1.4em;" />
 				</a>
 				<a
@@ -244,7 +255,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 						autoPlacement: false,
 
 						arrowFollowCursor: true
-					})}>
+					})}
+				>
 					<IcoProtonDB style="width: 1.4em; height: 1.4em;" />
 				</a>
 				<a
@@ -260,7 +272,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 						autoPlacement: false,
 
 						arrowFollowCursor: true
-					})}>
+					})}
+				>
 					<IcoPCGW style="width: 1.4em; height: 1.4em;" />
 				</a>
 			{/if}

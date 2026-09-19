@@ -116,7 +116,8 @@ let dialogOpen = $state(false);
 			arrowFollowCursor: true
 		})}
 		disabled={isApplyingConfig}
-		onclick={applyButtonHandler}>
+		onclick={applyButtonHandler}
+	>
 		{#if isApplyingConfig}
 			<Spinner size="1.4em" thickness="2px" />
 		{:else}
@@ -129,7 +130,8 @@ let dialogOpen = $state(false);
 		class="button"
 		disabled={isApplyingConfig}
 		onclick={() => (dialogOpen = true)}
-		style="anchor-name: --advanced-apply-button">
+		style="anchor-name: --advanced-apply-button"
+	>
 		<IconChevronDown style="width: 1.4em; height: 1.4em;" />
 	</button>
 </div>
@@ -158,16 +160,21 @@ let dialogOpen = $state(false);
 						isApplyingConfig = false;
 						dialogOpen = false;
 					});
-			}}>
+			}}
+		>
 			<strong>Apply To</strong>
 			{#if isSteamBigPicture}
 				<BPMSelect name="App" bind:value={selectedAppID}>
 					{#snippet children({ ...rest })}
 						<span>App:</span>
 						<BPMOption value={413080} {...rest}>Steam Controller Configs - Desktop</BPMOption>
+						<BPMOption value={769} {...rest}
+							>Steam Controller Configs - Big Picture Mode</BPMOption
+						>
 						{#each apps as app (app.appid)}
 							<BPMOption value={app.appid} {...rest}
-								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</BPMOption>
+								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</BPMOption
+							>
 						{/each}
 						<IconChevronDown style="width: 1.6em; height: 1.6em;" />
 					{/snippet}
@@ -186,9 +193,10 @@ let dialogOpen = $state(false);
 					<span>App</span>
 					<select id="app" name="app" bind:value={selectedAppID}>
 						<option value={413080}>Steam Controller Configs - Desktop</option>
+						<option value={769}>Steam Controller Configs - Big Picture Mode</option>
 						{#each apps as app (app.appid)}
-							<option value={app.appid}
-								>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</option>
+							<option value={app.appid}>{app.name} {app.isNonSteam ? '(Non-Steam)' : ''}</option
+							>
 						{/each}
 					</select>
 					<IconChevronDown style="width: 1.6em; height: 1.6em;" />
@@ -211,7 +219,8 @@ let dialogOpen = $state(false);
 					type="checkbox"
 					id="showConfigurator"
 					name="showConfigurator"
-					bind:checked={showConfigurator} />
+					bind:checked={showConfigurator}
+				/>
 			</label>
 			<div>
 				{#if isApplyingConfig}
@@ -221,7 +230,8 @@ let dialogOpen = $state(false);
 				{/if}
 				<button
 					type="submit"
-					disabled={selectedController < 0 || selectedAppID < 0 || isApplyingConfig}>
+					disabled={selectedController < 0 || selectedAppID < 0 || isApplyingConfig}
+				>
 					<IconSteam style="width: 1.4em; height: 1.4em;" />
 					<span>Apply</span>
 				</button>

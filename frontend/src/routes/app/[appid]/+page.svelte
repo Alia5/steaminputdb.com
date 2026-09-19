@@ -22,6 +22,7 @@ import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, fly, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
+import ControllerSupport from './ControllerSupport.svelte';
 import { sectionHead } from './sectionHead.svelte';
 
 let { data }: PageProps = $props();
@@ -132,20 +133,25 @@ onMount(() => {
 	<meta property="og:url" content={page.url.href} />
 	<meta
 		property="og:title"
-		content="SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations" />
+		content="SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations"
+	/>
 	<meta
 		name="description"
-		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
+		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}"
+	/>
 	<meta
 		property="og:description"
-		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
+		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}"
+	/>
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta
 		name="twitter:title"
-		content="SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations" />
+		content="SteamInputDB - {appInfo?.name ?? page.params.appid} | Steam Input configurations"
+	/>
 	<meta
 		name="twitter:description"
-		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
+		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}"
+	/>
 	{#if appInfo?.assets}
 		{@const assets = appInfo?.assets}
 		{@const assetChosen =
@@ -153,15 +159,17 @@ onMount(() => {
 		{#if assetChosen}
 			<meta
 				property="og:image"
-				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`}
+			/>
 			<meta property="og:image:alt" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
 			<meta
 				name="twitter:image"
-				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`}
+			/>
 			<meta name="twitter:image:alt" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
 		{/if}
 	{/if}
-	<svelte:element this={'script'} type="application/ld+json">
+	<svelte:element this={"script"} type="application/ld+json">
 		{createAppSchemaJsonLd({
 			appId: page.params.appid ?? '',
 			appName: appInfo?.name ?? page.params.appid ?? '',
@@ -204,14 +212,15 @@ onMount(() => {
 	}}
 	onscroll={() => {
 		showBackToTop = window.scrollY > window.innerHeight;
-	}} />
+	}}
+/>
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
 		<div>
 			{@render sectionHead({ appInfo, fallbackName: page.params.appid })}
 		</div>
-		<!-- TODO: show controller support and whatnot -->
+		<ControllerSupport appInfo={appInfo} />
 		<search>
 			<SearchForm
 				bind:form={form}
@@ -219,13 +228,15 @@ onMount(() => {
 				method="GET"
 				bind:values={formValues}
 				submitOnChange={true}
-				showTotalCount={results?.total} />
+				showTotalCount={results?.total}
+			/>
 			<div class="results">
 				{#if loading}
 					<div
 						class="loading"
 						in:fade|global={{ duration: 196, easing: cubicOut }}
-						out:fade|global={{ duration: 196, easing: cubicIn }}>
+						out:fade|global={{ duration: 196, easing: cubicIn }}
+					>
 						<Spinner size="12em" />
 					</div>
 				{/if}
@@ -235,7 +246,8 @@ onMount(() => {
 						class={searchError ? 'error' : ''}
 						in:fade|global={{ duration: 196, easing: cubicOut }}
 						out:fade|global={{ duration: 196, easing: cubicIn }}
-						onintrostartcapture={findEyes}>
+						onintrostartcapture={findEyes}
+					>
 						{#if !searchError}
 							<span>No results found</span>
 						{/if}
@@ -254,7 +266,8 @@ onMount(() => {
 							height="100%"
 							--eyes-color="black"
 							--eyes-white-color="var(--text-color-dark)"
-							--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
+							--eyes-border-color="light-dark(var(--text-color-light), transparent)"
+						/>
 					</div>
 				{/if}
 				{#if !searchError}
@@ -264,7 +277,8 @@ onMount(() => {
 								class="plain"
 								style={loading ? 'pointer-events: none; opacity: 0.4;' : ''}
 								href={resolve(`/config/${item.file_id}`)}
-								transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+								transition:slide|global={{ duration: 196, easing: cubicInOut }}
+							>
 								<div class="info">
 									<div>
 										<strong class="title">{item.title}</strong>
@@ -298,7 +312,8 @@ onMount(() => {
 								id="load-more-trigger"
 								{@attach intersectionObserver(() => {
 									loadMore();
-								})}>
+								})}
+							>
 								<Spinner size="12em" />
 							</div>
 						{/if}
@@ -311,7 +326,8 @@ onMount(() => {
 					in:fly={{ y: '2dvh', duration: 196, easing: cubicOut }}
 					id="back-to-top"
 					{@attach tooltip({ content: 'Back to top' })}
-					onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+					onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+				>
 					<Icon icon="mdi:arrow-up" width="1.5em" />
 				</button>
 			{/if}
@@ -324,7 +340,7 @@ main {
 	position: relative;
 	isolation: isolate;
 	display: grid;
-	padding: 1em 0;
+	padding: 1em;
 	width: 100%;
 	&::before {
 		content: '';
