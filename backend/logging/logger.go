@@ -90,6 +90,8 @@ func (h *colorHandler) Handle(_ context.Context, r slog.Record) error {
 			}
 		case "err", "error":
 			buf.WriteString("\033[31m") // Red for errors
+		case "query":
+			buf.WriteString("\033[36m") // Cyan for SQL
 		default:
 			buf.WriteString("\033[37m") // Light gray for other values
 		}

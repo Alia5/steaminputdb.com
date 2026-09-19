@@ -28,6 +28,10 @@ type DB struct {
 	MaxIdleConns    int           `help:"Database max idle connections" default:"10" env:"DB_MAX_IDLE_CONNS"`
 	MaxConnLifetime time.Duration `help:"Database max connection lifetime" default:"5m" env:"DB_MAX_CONN_LIFETIME"`
 	MaxConnIdleTime time.Duration `help:"Database max idle time" default:"5m" env:"DB_MAX_IDLE_TIME"`
+
+	SlowThreshold          time.Duration `help:"Log queries slower than this as warnings" default:"200ms" env:"DB_SLOW_THRESHOLD"`
+	SkipDefaultTransaction bool          `help:"Skip the implicit transaction around single writes" default:"true" env:"DB_SKIP_DEFAULT_TRANSACTION"`
+	PrepareStatement       bool          `help:"Cache prepared statements" default:"true" env:"DB_PREPARE_STATEMENT"`
 }
 
 var Parsed Config

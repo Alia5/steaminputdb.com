@@ -2,7 +2,6 @@ package appinfo
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -27,7 +26,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/Alia5/steaminputdb.com/types"
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 const (
@@ -97,7 +96,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 
 				userInfo, err := dal.SteamUser().Get(c, steamID64)
 				if err != nil {
-					if errors.Is(err, sql.ErrNoRows) {
+					if errors.Is(err, gorm.ErrRecordNotFound) {
 						return nil, huma.Error403Forbidden("user not found")
 					}
 					return nil, huma.Error502BadGateway("database error", err)
@@ -143,11 +142,11 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				Creators:          true,
 				OfficialConfigs:   true,
 			})
-			if dbErr != nil && !errors.Is(dbErr, sql.ErrNoRows) {
+			if dbErr != nil && !errors.Is(dbErr, gorm.ErrRecordNotFound) {
 				return nil, huma.Error502BadGateway("database error", dbErr)
 			}
 
-			if dbErr == nil && !req.ForceRefresh && time.Since(dbInfo.Timestamps.UpdatedAt) < dbMaxAge {
+			if dbErr == nil && !req.ForceRefresh && time.Since(dbInfo.UpdatedAt) < dbMaxAge {
 				wrapper := mapModelToResponse(dbInfo)
 				if useMemCache {
 					cache.Store(cacheKey, wrapper)
@@ -517,15 +516,8 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoItem {
 		if appInfo.ShortDescription != nil {
 			bi.ShortDescription = appInfo.ShortDescription
 		}
-		creatorsByID := make(map[uuid.UUID]*models.AppCreator, len(appInfo.Creators))
-		for _, c := range appInfo.Creators {
-			creatorsByID[c.ID] = c
-		}
 		for _, cl := range appInfo.CreatorLinks {
 			creator := cl.AppCreator
-			if creator == nil {
-				creator = creatorsByID[cl.AppCreatorID]
-			}
 			if creator == nil {
 				continue
 			}

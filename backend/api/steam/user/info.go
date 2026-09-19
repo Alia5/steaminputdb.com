@@ -161,7 +161,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 				userInfo, err := dal.SteamUser().Get(c, steamID64)
 				if err == nil {
 					infoResp.SteamInputDBInfo = &SteamInputDBInfo{
-						RegisteredAt: userInfo.Timestamps.CreatedAt,
+						RegisteredAt: userInfo.CreatedAt,
 					}
 					if userInfo.IsAdmin {
 						infoResp.SteamInputDBInfo.IsAdmin = new(true)

@@ -3,22 +3,22 @@ package db
 import (
 	"github.com/Alia5/steaminputdb.com/db/dal/appinfo"
 	"github.com/Alia5/steaminputdb.com/db/dal/steamuser"
-	"github.com/uptrace/bun"
+	"gorm.io/gorm"
 )
 
 type DAL interface {
 	AppInfo() appinfo.DAL
 	SteamUser() steamuser.DAL
-	DB() *bun.DB
+	DB() *gorm.DB
 }
 
 type dal struct {
-	db        *bun.DB
+	db        *gorm.DB
 	appInfo   appinfo.DAL
 	steamUser steamuser.DAL
 }
 
-func newDAL(db *bun.DB) DAL {
+func newDAL(db *gorm.DB) DAL {
 	return &dal{
 		db:        db,
 		appInfo:   appinfo.New(db),
@@ -34,6 +34,6 @@ func (d *dal) SteamUser() steamuser.DAL {
 	return d.steamUser
 }
 
-func (d *dal) DB() *bun.DB {
+func (d *dal) DB() *gorm.DB {
 	return d.db
 }

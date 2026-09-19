@@ -1,8 +1,11 @@
 package models
 
+import "time"
+
 type SteamUser struct {
-	SteamID     uint64     `bun:",pk"`
-	Timestamps  Timestamps `bun:",embed"`
-	PersonaName string     `bun:"persona_name,notnull"`
-	IsAdmin     bool       `bun:"is_admin,notnull,default:false"`
+	SteamID     uint64 `gorm:"primaryKey;autoIncrement:false"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	PersonaName string `gorm:"not null"`
+	IsAdmin     bool   `gorm:"not null;default:false"`
 }

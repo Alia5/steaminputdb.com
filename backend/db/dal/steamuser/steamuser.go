@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/Alia5/steaminputdb.com/db/models"
-	"github.com/uptrace/bun"
+	"gorm.io/gorm"
 )
 
 type DAL interface {
@@ -14,28 +14,29 @@ type DAL interface {
 }
 
 type dal struct {
-	db *bun.DB
+	db *gorm.DB
 }
 
-func New(db *bun.DB) DAL {
+func New(db *gorm.DB) DAL {
 	return &dal{db: db}
 }
 
 func (d *dal) Get(ctx context.Context, steamID uint64) (*models.SteamUser, error) {
-	user := &models.SteamUser{SteamID: steamID}
-	err := d.db.NewSelect().Model(user).WherePK().Scan(ctx)
-	if err != nil {
-		return nil, err
+	user := &models.SteamUser{}
+	res := d.db.WithContext(ctx).Limit(1).Find(user, "steam_id = ?", steamID)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
 	}
 	return user, nil
 }
 
 func (d *dal) Insert(ctx context.Context, user *models.SteamUser) error {
-	_, err := d.db.NewInsert().Model(user).Exec(ctx)
-	return err
+	return d.db.WithContext(ctx).Create(user).Error
 }
 
 func (d *dal) Update(ctx context.Context, user *models.SteamUser) error {
-	_, err := d.db.NewUpdate().Model(user).WherePK().Exec(ctx)
-	return err
+	return d.db.WithContext(ctx).Model(user).Select("*").Omit("created_at").Updates(user).Error
 }
