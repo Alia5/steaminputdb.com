@@ -252,11 +252,11 @@ components:
           format: int64
           type: integer
         flLPadPressureCurve:
-          format: int64
-          type: integer
+          format: double
+          type: number
         flRPadPressureCurve:
-          format: int64
-          type: integer
+          format: double
+          type: number
         nAuxCapSenseHysteresis:
           format: int64
           type: integer

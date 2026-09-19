@@ -4,7 +4,7 @@ declare global {
     }
 }
 
-import { mount } from 'svelte';
+import { mount, unmount } from 'svelte';
 import { ATTR } from '../components/sidb_button_desktop.svelte';
 import DesktopButton from '../components/sidb_button_desktop.svelte';
 

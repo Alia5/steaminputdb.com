@@ -51,8 +51,8 @@ type ControllerInfo struct {
 	IMUOneEuroFilter                     bool                            `json:"bIMUOneEuroFilter"`
 	LHapticStrength                      int                             `json:"nLHapticStrength"`
 	RHapticStrength                      int                             `json:"nRHapticStrength"`
-	LPadPressureCurve                    int                             `json:"flLPadPressureCurve"`
-	RPadPressureCurve                    int                             `json:"flRPadPressureCurve"`
+	LPadPressureCurve                    float64                         `json:"flLPadPressureCurve"`
+	RPadPressureCurve                    float64                         `json:"flRPadPressureCurve"`
 	LeftStickTouchDisablesLeftTrackPad   bool                            `json:"bLeftStickTouchDisablesLeftTrackPad"`
 	RightStickTouchDisablesRightTrackPad bool                            `json:"bRightStickTouchDisablesRightTrackPad"`
 	PlayerSlotLEDSetting                 int                             `json:"ePlayerSlotLEDSetting"`
