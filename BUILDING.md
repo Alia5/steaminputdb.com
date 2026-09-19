@@ -8,18 +8,18 @@ Building/Deving the site is only done in a Linux environment, so if you are runn
 
 ### Requirements
 
-- Go 1.26+
+- Go 1.27+
 - NodeJS 26+
 - Git (obviously)
 - Protocol Buffers Compiler (protoc)  
-  https://protobuf.dev/installation/
+  <https://protobuf.dev/installation/>
 - [**Either/or**] PostgreSQL 18+ or Docker (for running PostgreSQL)
   - Use the compose.dev.yml file in the root of the repo to quickly spin up a compatible PostgreSQL instance.
 - Optional but reccomended:  
   - air (for hot reloading)  
     go install github.com/air-verse/air@latest
   - just (for task running)  
-    https://github.com/casey/just
+    <https://github.com/casey/just>
 
 ### General
 
@@ -44,7 +44,7 @@ docker compose -f compose.dev.yml up
 Setup your .env file (copy .env.example and fill in the values):  
 
 You will **need** a Steam API key to run the backend  
-You can get one from Steam on: https://steamcommunity.com/dev/apikey
+You can get one from Steam on: <https://steamcommunity.com/dev/apikey>
 
 ```bash
 cd backend
@@ -80,7 +80,7 @@ cd frontend
 npm i
 ```
 
-You can then run the frontend (including hot reload) with: 
+You can then run the frontend (including hot reload) with:
 
 ```bash
 npm run dev
@@ -93,13 +93,13 @@ The Buddy-App does build on Windows, but it is recommended to use a linux enviro
 
 ### Requirements
 
-- Go 1.26+
+- Go 1.27+
 - NodeJS 26+
 - Optional but reccomended:  
   - air (for hot reloading)  
     go install github.com/air-verse/air@latest
   - just (for task running)  
-    https://github.com/casey/just
+    <https://github.com/casey/just>
 
 ### General
 
