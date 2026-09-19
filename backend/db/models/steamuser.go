@@ -8,4 +8,5 @@ type SteamUser struct {
 	UpdatedAt   time.Time
 	PersonaName string `gorm:"not null"`
 	IsAdmin     bool   `gorm:"not null;default:false"`
+	TrustedMod  bool   `gorm:"not null;default:false"`
 }

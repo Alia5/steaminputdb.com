@@ -11,7 +11,7 @@ import (
 type DAL interface {
 	Get(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error)
 	Insert(ctx context.Context, appInfo *models.AppInfo) error
-	Update(ctx context.Context, appInfo *models.AppInfo) error
+	UpdateBaseInfo(ctx context.Context, appInfo *models.AppInfo) error
 }
 
 type dal struct {
@@ -64,44 +64,48 @@ func (d *dal) Get(ctx context.Context, appID uint32, include AppInfoInclude) (*m
 
 func (d *dal) Insert(ctx context.Context, appInfo *models.AppInfo) error {
 	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		onConflict := clause.OnConflict{
+		err := tx.Omit(
+			clause.Associations,
+			"controller_support_rating", "controller_support_notes",
+		).Clauses(clause.OnConflict{
 			Columns: []clause.Column{
 				{
 					Name: "app_id",
 				},
 			},
 			UpdateAll: true,
-		}
-		err := tx.Omit(clause.Associations).Clauses(onConflict).Create(appInfo).Error
+		}).Create(appInfo).Error
 		if err != nil {
 			return err
 		}
-		return writeRelations(tx, appInfo)
+		return writebaseRelations(tx, appInfo)
 	})
 }
 
-func (d *dal) Update(ctx context.Context, appInfo *models.AppInfo) error {
+func (d *dal) UpdateBaseInfo(ctx context.Context, appInfo *models.AppInfo) error {
 	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		err := tx.Model(appInfo).Select("*").Omit(clause.Associations, "created_at").Updates(appInfo).Error
+		err := tx.Model(appInfo).Select("*").Omit(
+			clause.Associations,
+			"created_at", "controller_support_rating", "controller_support_notes",
+		).Updates(appInfo).Error
 		if err != nil {
 			return err
 		}
-		return writeRelations(tx, appInfo)
+		return writebaseRelations(tx, appInfo)
 	})
 }
 
-func writeRelations(tx *gorm.DB, appInfo *models.AppInfo) error {
+func writebaseRelations(tx *gorm.DB, appInfo *models.AppInfo) error {
 	if appInfo.ControllerSupport != nil {
 		appInfo.ControllerSupport.AppID = appInfo.AppID
-		onConflict := clause.OnConflict{
+		err := tx.Clauses(clause.OnConflict{
 			Columns: []clause.Column{
 				{
 					Name: "app_id",
 				},
 			},
 			UpdateAll: true,
-		}
-		err := tx.Clauses(onConflict).Create(appInfo.ControllerSupport).Error
+		}).Create(appInfo.ControllerSupport).Error
 		if err != nil {
 			return err
 		}
@@ -109,15 +113,14 @@ func writeRelations(tx *gorm.DB, appInfo *models.AppInfo) error {
 
 	if appInfo.Assets != nil {
 		appInfo.Assets.AppID = appInfo.AppID
-		onConflict := clause.OnConflict{
+		err := tx.Clauses(clause.OnConflict{
 			Columns: []clause.Column{
 				{
 					Name: "app_id",
 				},
 			},
 			UpdateAll: true,
-		}
-		err := tx.Clauses(onConflict).Create(appInfo.Assets).Error
+		}).Create(appInfo.Assets).Error
 		if err != nil {
 			return err
 		}

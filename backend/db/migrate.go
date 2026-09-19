@@ -20,6 +20,14 @@ var tables = []any{
 	&models.AppCreatorToApp{},
 	&models.OfficialSteamInputConfig{},
 	&models.SteamUser{},
+	&models.AppMixedInputInfo{},
+	&models.MixedInputModLinks{},
+	&models.AppGlyphs{},
+	&models.AppGlyphCtrlSupport{},
+	&models.AppGlyphTag{},
+	&models.AppSteamInputAPISupport{},
+	&models.AppSIAPITypes{},
+	&models.AppHWFeatures{},
 }
 
 func migrate(db *gorm.DB) error {

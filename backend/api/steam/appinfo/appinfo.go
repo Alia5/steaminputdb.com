@@ -198,7 +198,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 					return nil, err
 				}
 			} else {
-				if err := dal.AppInfo().Update(c, appInfo); err != nil {
+				if err := dal.AppInfo().UpdateBaseInfo(c, appInfo); err != nil {
 					slog.Error("db update failed", "error", err)
 					return nil, err
 				}
