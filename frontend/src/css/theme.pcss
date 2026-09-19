@@ -22,12 +22,12 @@
 	--text-color-dark: rgb(245 245 245 / 0.95);
 	--text-color-light: rgb(10 10 10 / 0.97);
 
-	--text-color: light-dark(var(--text-color-light), var(--text-color-dark));
+	--text-color: light-dark(rgb(10 10 10 / 0.97), rgb(245 245 245 / 0.95));
 	--highlight-color: light-dark(
 		color-mix(in srgb, var(--text-color), var(--color-primary) 50%),
 		color-mix(in srgb, var(--color-primary), var(--text-color) 60%)
 	);
-	--inverse-text-color: light-dark(var(--text-color-dark), var(--text-color-light));
+	--inverse-text-color: light-dark(rgb(245 245 245 / 0.95), rgb(10 10 10 / 0.97));
 	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 20%);
 	--color-primary: light-dark(#7e3ddf, #8d54e2);
 	--color-primary-active: color-mix(in srgb, var(--color-primary), var(--text-color) 75%);

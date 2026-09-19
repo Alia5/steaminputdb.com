@@ -16,6 +16,10 @@ export default defineConfig({
     server: {
         allowedHosts: ['host.docker.internal','steaminputdb.local','dev.local', '*']
     },
+    build: {
+        cssTarget: ['chrome123', 'edge123', 'firefox120', 'safari17.5', 'ios17.5'] // leave my css alone!
+
+    },
     plugins: [
         enhancedImages(),
         sveltekit(),
