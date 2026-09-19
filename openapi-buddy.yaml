@@ -246,11 +246,11 @@ components:
           format: double
           type: number
         flLEDBrightness:
-          format: int64
-          type: integer
+          format: double
+          type: number
         flLEDSaturation:
-          format: int64
-          type: integer
+          format: double
+          type: number
         flLPadPressureCurve:
           format: double
           type: number

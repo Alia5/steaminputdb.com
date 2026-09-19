@@ -37,8 +37,8 @@ type ControllerInfo struct {
 	FirmwareBuildTime                    string                          `json:"strFirmwareBuildTime"`
 	SerialNumber                         string                          `json:"strSerialNumber"`
 	ChipID                               string                          `json:"strChipID"`
-	LEDBrightness                        int                             `json:"flLEDBrightness"`
-	LEDSaturation                        int                             `json:"flLEDSaturation"`
+	LEDBrightness                        float64                         `json:"flLEDBrightness"`
+	LEDSaturation                        float64                         `json:"flLEDSaturation"`
 	TurnOnSound                          int                             `json:"nTurnOnSound"`
 	TurnOffSound                         int                             `json:"nTurnOffSound"`
 	LEDColorR                            uint8                           `json:"nLEDColorR"`
