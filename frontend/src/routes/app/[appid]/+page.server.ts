@@ -39,7 +39,8 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
                         app_id,
                         raw: false,
                         controller_support: true,
-                        official_configs: true
+                        official_configs: true,
+                        steaminputdb_info: true
                     }
                 }
             });

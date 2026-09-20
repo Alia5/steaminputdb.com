@@ -130,7 +130,7 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								<IcoForbidden width="2em" height="2em" color="red" style="z-index: 1;" />
 							</div>
 						{/if}
-						{#if appInfo?.controller_support?.steam_input_api_support}
+						{#if appInfo?.controller_support?.steaminputapi_support}
 							<div
 								{@attach tooltip({
 									content: 'Steam Input API support',
@@ -233,37 +233,44 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 				>
 					<IconHelp style="width: 1.6em; height: 1.6em; color: var(--text-muted);" />
 				</div>
-
-				{#if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Platinum}
-					<RatingPlatinum />
-					<div>
-						<span style="color: #afd5e0;">Platinum</span>
-					</div>
-				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Gold}
-					<RatingGold />
-					<div>
-						<span style="color: #d4a74f;">Gold</span>
-					</div>
-				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Silver}
-					<RatingSilver />
-					<div>
-						<span style="color: silver;">Silver</span>
-					</div>
-				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Bronze}
-					<RatingBronze />
-					<div>
-						<span style="color: #b1865b;">Bronze</span>
-					</div>
-				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Wood}
-					<RatingNoSupport style="color: firebrick;" />
-					<div>
-						<span>No controller support</span>
-					</div>
-				{:else}
+				<!-- HACK if is real steam game -->
+				{#if appInfo?.assets?.community_icon}
 					<RatingUnknown />
 					<div>
 						<span>Not yet rated</span>
 					</div>
+				{:else}
+					{#if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Platinum}
+						<RatingPlatinum />
+						<div>
+							<span style="color: #afd5e0;">Platinum</span>
+						</div>
+					{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Gold}
+						<RatingGold />
+						<div>
+							<span style="color: #d4a74f;">Gold</span>
+						</div>
+					{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Silver}
+						<RatingSilver />
+						<div>
+							<span style="color: silver;">Silver</span>
+						</div>
+					{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Bronze}
+						<RatingBronze />
+						<div>
+							<span style="color: #b1865b;">Bronze</span>
+						</div>
+					{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Wood}
+						<RatingNoSupport style="color: firebrick;" />
+						<div>
+							<span>No controller support</span>
+						</div>
+					{:else}
+						<RatingUnknown />
+						<div>
+							<span>Not yet rated</span>
+						</div>
+					{/if}
 				{/if}
 			</div>
 		</div>

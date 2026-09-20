@@ -6,6 +6,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/api/search/games"
 	"github.com/Alia5/steaminputdb.com/db/models"
 	"github.com/Alia5/steaminputdb.com/steamapi"
+	"github.com/Alia5/steaminputdb.com/types"
 )
 
 func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
@@ -279,6 +280,12 @@ func mapModelToResponse(appInfo *models.AppInfo) *AppInfoItem {
 			DS5WiredSupport:      appInfo.ControllerSupport.DS5WiredSupport,
 			DS5WirelessSupport:   appInfo.ControllerSupport.DS5WirelessSupport,
 			SteamInputAPISupport: appInfo.ControllerSupport.SteamInputAPISupport,
+		}
+		if wrapper.SteamInputDBInfo != nil {
+			if appInfo.ControllerSupport.SupportLevel != nil &&
+				*appInfo.ControllerSupport.SupportLevel == types.ControllerSupportLevelNone {
+				wrapper.SteamInputDBInfo.ControllerSupportRating = models.ControllerSupportRatingWood
+			}
 		}
 	}
 	if len(appInfo.OfficialConfigs) > 0 {

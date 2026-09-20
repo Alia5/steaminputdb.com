@@ -106,6 +106,9 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 					if !req.OfficialConfigs {
 						res.OfficialConfigs = nil
 					}
+					if !req.SteamInputDBInfo {
+						res.SteamInputDBInfo = nil
+					}
 					return &AppInfoResponse{Body: &res}, nil
 				}
 			}
@@ -160,7 +163,11 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 			}
 
 			appInfo := mapStoreItemToModel(storeItem.item)
-
+			// handle special configs
+			if storeItem.item.GetSuccess() != 1 {
+				appInfo.AppID = req.AppID
+				appInfo.StoreURLPath = ""
+			}
 			picsInfo, err := fetchFromSteamClient(c, sc, req.AppID)
 			if err != nil {
 				if strings.Contains(err.Error(), "no PICS info") {
