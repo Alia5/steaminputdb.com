@@ -86,7 +86,8 @@ $effect(() => {
 		}
 	}}
 	bind:innerHeight={windowHeight}
-	bind:innerWidth={windowWidth} />
+	bind:innerWidth={windowWidth}
+/>
 
 <header
 	bind:this={header}
@@ -96,7 +97,8 @@ $effect(() => {
 		},
 		0.5,
 		true
-	)}>
+	)}
+>
 	<a class="home" href={resolve('/')}>
 		<Logo height="1.6em" />
 		<span>SteamInputDB</span>
@@ -107,7 +109,8 @@ $effect(() => {
 			modal.setScrimOpacityMulti(1);
 			modal.toggle();
 		}}
-		aria-label="Menu">
+		aria-label="Menu"
+	>
 		<IconMenu style="width: 100%; height: 100%;" />
 		{#if page.url.pathname.endsWith('/search')}
 			<span>SteamInputDB</span>
@@ -149,7 +152,8 @@ $effect(() => {
 				modal.setScrimOpacityMulti(1 - Math.abs(swipeDist) / (window.innerWidth / 0.75));
 			}
 		}}
-		onswipeend={modal.swipeend}>
+		onswipeend={modal.swipeend}
+	>
 		<div>
 			<a class="home" href={resolve('/')}>
 				<Logo height="1.6em" width="1.6em" />
