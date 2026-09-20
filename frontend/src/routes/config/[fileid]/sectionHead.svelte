@@ -51,7 +51,8 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 								assetChosen
 							)}`}
 							alt="Capsule"
-							height="100%"></enhanced:img>
+							height="100%"
+						></enhanced:img>
 					</picture>
 				{/if}
 			{/if}
@@ -62,7 +63,8 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 						<enhanced:img
 							src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets.community_icon}.jpg`}
 							alt="Icon"
-							style="min-width: 1.2em; height: 1.2em; margin-right: 0.1em;"></enhanced:img>
+							style="min-width: 1.2em; height: 1.2em; margin-right: 0.1em;"
+						></enhanced:img>
 					{:else}
 						<Icon icon="mdi:steam" width="1.2em" />
 					{/if}
@@ -82,7 +84,8 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 					<div
 						style="display: grid; place-items: center;"
 						in:slide={{ duration: 196, easing: cubicOut }}
-						out:fade={{ duration: 196, easing: cubicOut }}>
+						out:fade={{ duration: 196, easing: cubicOut }}
+					>
 						<p style="white-space: nowrap; text-align: center;">Preview this config in Steam</p>
 						{#if !appInfo}
 							<p style="text-align: center;">
@@ -99,12 +102,14 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 						<strong
 							>Alternatively, you should consider installing the
 							<a href="https://steaminputdb.com/buddy-app/install">SteamInputDB Buddy App</a>
-							for better and direct Steam integration</strong>
+							for better and direct Steam integration</strong
+						>
 						<br />
 						<code
 							>steam://controllerconfig/{encodeURI(
 								fileInfo.app_id_string ?? ''
-							)}/{fileInfo.file_id}</code>
+							)}/{fileInfo.file_id}</code
+						>
 					</div>
 				{/snippet}
 				{#snippet defaultPreviewLinkButton()}
@@ -117,7 +122,8 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 							outDelay: 200,
 							arrow: true,
 							arrowFollowCursor: true
-						})}>
+						})}
+					>
 						<IconSteam style="width: 1.4em; height: 1.4em;" />
 						<span>Preview | Apply</span>
 					</a>
@@ -144,7 +150,8 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 							fileInfo={fileInfo}
 							appInfo={appInfo}
 							controllers={controllers}
-							apps={apps} />
+							apps={apps}
+						/>
 					</svelte:boundary>
 				{:else}
 					{@render defaultPreviewLinkButton()}
@@ -222,6 +229,9 @@ import BuddyApplyButton from './BuddyApplyButton.svelte';
 				text-align: start;
 				width: 100%;
 				color: var(--text-color-dark);
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
 			}
 			& :global(> :nth-child(1n + 2)) {
 				color: color-mix(in srgb, var(--color-primary), var(--text-color-dark) 60%);

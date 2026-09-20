@@ -48,7 +48,8 @@ import Icon from '@iconify/svelte';
 				outDelay: 200,
 				arrow: true,
 				arrowFollowCursor: true
-			})}>
+			})}
+		>
 			<div>
 				<span>
 					{#if (item.votes?.down || 0) > (item.votes?.up || 0)}
@@ -89,7 +90,8 @@ import Icon from '@iconify/svelte';
 						minimumFractionDigits: 0,
 						maximumFractionDigits: 1
 					})}
-					<Icon icon="mdi:thumb-down" /></span>
+					<Icon icon="mdi:thumb-down" /></span
+				>
 			</div>
 			<i>(Rating from Steam)</i>
 		</div>
@@ -97,7 +99,7 @@ import Icon from '@iconify/svelte';
 {/snippet}
 
 {#snippet tooltipContent()}
-	<div style="display: grid; place-items: center;">
+	<div style="display: grid; place-items: center; max-width: 80svw;">
 		<p style="text-align: center;">The ranking system is provided by Steam</p>
 		<p style="text-align: center;">I do not know and can only guess on how it rates</p>
 	</div>

@@ -7,6 +7,7 @@ const CONTROLLER_SUPPORT_LEVEL_PARTIAL = 1;
 
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
+import { ControllerSupportRating } from '$lib/api/steaminputdbEnums';
 import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { assetUrlBase, communityUrlBase, steamStoreUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
@@ -14,8 +15,16 @@ import { cubicOut } from 'svelte/easing';
 import { fade } from 'svelte/transition';
 import IcoDesktop from '~icons/mdi/monitor';
 
+import RatingBronze from '$lib/assets/ratings/RatingBronze.svg?component';
+import RatingGold from '$lib/assets/ratings/RatingGold.svg?component';
+import RatingNoSupport from '$lib/assets/ratings/RatingNoSupport.svg?component';
+import RatingPlatinum from '$lib/assets/ratings/RatingPlatinum.svg?component';
+import RatingSilver from '$lib/assets/ratings/RatingSilver.svg?component';
+import RatingUnknown from '$lib/assets/ratings/RatingUnknown.svg?component';
 import IcoFullController from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
 import IcoPartialController from '$lib/assets/steam_controller_type_svgs/xbox_partial.svg?component';
+import IconHelp from '~icons/material-symbols/help-outline';
+
 import IcoForbidden from '~icons/mdi/do-not-disturb-alt';
 
 import { resolve } from '$app/paths';
@@ -41,172 +50,225 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 	fallbackName?: string;
 })}
 	<section class="app-header">
-		<div>
-			{#if appInfo?.assets?.library_hero || appInfo?.assets?.header || appInfo?.assets?.package_header || appInfo?.assets?.main_capsule}
-				{@const srcChosen = appInfo?.assets?.asset_url_format
-					? `${assetUrlBase}${appInfo.assets?.asset_url_format?.replace(
-							'${FILENAME}',
-							appInfo?.assets?.library_hero ??
-								appInfo.assets.header ??
-								appInfo.assets.package_header ??
-								appInfo.assets.main_capsule ??
-								'undefined'
-						)}`
-					: undefined}
-				{#if srcChosen}
-					<picture class="capsule" transition:fade={{ duration: 196, easing: cubicOut }}>
-						<enhanced:img src={srcChosen} alt="Thumbnail" height="100%"></enhanced:img>
-					</picture>
-				{/if}
-			{/if}
-			<div>
-				{#if appInfo?.assets?.community_icon}
-					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
-						<enhanced:img
-							src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets?.community_icon}.jpg`}
-							alt="Icon"
-						></enhanced:img>
-					</picture>
-				{:else}
-					<!-- KEEP! -->
-					{#if appInfo?.app_id == 413080 || appInfo?.app_id == 769}
-						<IcoDesktop />
-					{:else}
-						<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+		<div class="app-lead">
+			<div class="app-banner">
+				{#if appInfo?.assets?.library_hero || appInfo?.assets?.package_header || appInfo?.assets?.main_capsule || appInfo?.assets?.header}
+					{@const srcChosen = appInfo?.assets?.asset_url_format
+						? `${assetUrlBase}${appInfo.assets?.asset_url_format?.replace(
+								'${FILENAME}',
+								appInfo?.assets?.library_hero ??
+									appInfo.assets.package_header ??
+									appInfo.assets.main_capsule ??
+									appInfo.assets.header ??
+									'undefined'
+							)}`
+						: undefined}
+					{#if srcChosen}
+						<picture class="capsule" transition:fade={{ duration: 196, easing: cubicOut }}>
+							<enhanced:img src={srcChosen} alt="Thumbnail" height="100%"></enhanced:img>
+						</picture>
 					{/if}
 				{/if}
-				{#if !appInfo && fallbackName}
-					<i>(Non Steam Shortcut)</i>
-				{/if}
-				<h1>{appInfo?.name ?? fallbackName}</h1>
 				<div>
-					{#if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_FULL}
-						<div
-							{@attach tooltip({
-								content: 'Full controller support',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoFullController width="2em" />
-						</div>
-					{:else if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_PARTIAL}
-						<div
-							{@attach tooltip({
-								content: 'Partial controller support',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoPartialController width="2em" />
-						</div>
-						<!-- HACK if is real steam game -->
-					{:else if appInfo?.assets?.community_icon}
-						<div
-							{@attach tooltip({
-								content: 'No controller support',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-							class="stacked"
-						>
-							<IcoFullController width="2em" opacity="0.5" />
-							<IcoForbidden width="2em" height="2em" color="red" style="z-index: 1;" />
-						</div>
+					{#if appInfo?.assets?.community_icon}
+						<picture transition:fade={{ duration: 196, easing: cubicOut }}>
+							<enhanced:img
+								src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets?.community_icon}.jpg`}
+								alt="Icon"
+							></enhanced:img>
+						</picture>
+					{:else}
+						<!-- KEEP! -->
+						{#if appInfo?.app_id == 413080 || appInfo?.app_id == 769}
+							<IcoDesktop />
+						{:else}
+							<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+						{/if}
 					{/if}
-					{#if appInfo?.controller_support?.steam_input_api_support}
-						<div
-							{@attach tooltip({
-								content: 'Steam Input API support',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoSIAPI width="2em" />
-						</div>
+					{#if !appInfo && fallbackName}
+						<i>(Non Steam Shortcut)</i>
 					{/if}
-					{#if appInfo?.controller_support?.ds4_wired_support}
-						<div
-							{@attach tooltip({
-								content: 'Native DualShock Controller support (USB only)',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoDs4Partial width="2em" />
-						</div>
-					{/if}
-					{#if appInfo?.controller_support?.ds4_wireless_support}
-						<div
-							{@attach tooltip({
-								content: 'Native DualShock Controller support',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoDs4Full width="2em" />
-						</div>
-					{/if}
-					{#if appInfo?.controller_support?.ds5_wired_support}
-						<div
-							{@attach tooltip({
-								content: 'Native DualSense Controller support (USB only)',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoDs5Partial width="2em" />
-						</div>
-					{/if}
-					{#if appInfo?.controller_support?.ds5_wireless_support}
-						<div
-							{@attach tooltip({
-								content: 'Native DualSense Controller support',
-								outDelay: 200,
-								arrow: true,
-								placement: 'bottom',
-								autoPlacement: false
-							})}
-						>
-							<IcoDs5Full width="2em" />
-						</div>
-					{/if}
+					<h1>{appInfo?.name ?? fallbackName}</h1>
+					<div class="official-controller-support">
+						{#if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_FULL}
+							<div
+								{@attach tooltip({
+									content: 'Full controller support',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoFullController width="2em" />
+							</div>
+						{:else if appInfo?.controller_support?.support_level === CONTROLLER_SUPPORT_LEVEL_PARTIAL}
+							<div
+								{@attach tooltip({
+									content: 'Partial controller support',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoPartialController width="2em" />
+							</div>
+							<!-- HACK if is real steam game -->
+						{:else if appInfo?.assets?.community_icon}
+							<div
+								{@attach tooltip({
+									content: 'No controller support',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+								class="stacked"
+							>
+								<IcoFullController width="2em" opacity="0.5" />
+								<IcoForbidden width="2em" height="2em" color="red" style="z-index: 1;" />
+							</div>
+						{/if}
+						{#if appInfo?.controller_support?.steam_input_api_support}
+							<div
+								{@attach tooltip({
+									content: 'Steam Input API support',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoSIAPI width="2em" />
+							</div>
+						{/if}
+						{#if appInfo?.controller_support?.ds4_wired_support}
+							<div
+								{@attach tooltip({
+									content: 'Native DualShock Controller support (USB only)',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoDs4Partial width="2em" />
+							</div>
+						{/if}
+						{#if appInfo?.controller_support?.ds4_wireless_support}
+							<div
+								{@attach tooltip({
+									content: 'Native DualShock Controller support',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoDs4Full width="2em" />
+							</div>
+						{/if}
+						{#if appInfo?.controller_support?.ds5_wired_support}
+							<div
+								{@attach tooltip({
+									content: 'Native DualSense Controller support (USB only)',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoDs5Partial width="2em" />
+							</div>
+						{/if}
+						{#if appInfo?.controller_support?.ds5_wireless_support}
+							<div
+								{@attach tooltip({
+									content: 'Native DualSense Controller support',
+									outDelay: 200,
+									arrow: true,
+									placement: 'bottom',
+									autoPlacement: false
+								})}
+							>
+								<IcoDs5Full width="2em" />
+							</div>
+						{/if}
+					</div>
 				</div>
 			</div>
-		</div>
-		<div>
-			{#if Object.entries(appInfo?.official_configs ?? {}).length}
-				<div class="official-configs">
-					<h3>Official Configs</h3>
-					{#each Object.entries(appInfo?.official_configs ?? {}) as [controller_type, config_id] (config_id)}
-						{@const controller_list_entry = CONTROLLER_LIST.find(
-							(controller) => controller.type === controller_type
-						)}
-						<a href={resolve(`/config/${config_id}`)} class="button">
-							{#if controller_list_entry}
-								<controller_list_entry.icon width="2em" height="2em" />
-							{:else}
-								<IcoGeneric style="width: 2em; height: 2em;" />
-							{/if}
-							<span>{controller_list_entry?.niceName ?? 'Generic'}</span>
-						</a>
-					{/each}
+
+			<div class="rating-container card glass">
+				{#snippet controllerSupportRatingHelp()}
+					<div
+						style="display: grid; place-items: center; max-width: 80svw; filter: drop-shadow(0 0 0.3rem rgba(0, 0, 0, 0.5));"
+					>
+						<p
+							style="text-align: center; font-size: 1.2em; font-weight: bold; margin-bottom: 0.5em;"
+						>
+							Controller support rating
+						</p>
+						<p style="text-align: center;">
+							Controller support is rated <b>by a dedicated mod team</b> on a variety of factors
+							including native support for different controllers, SteamInput,
+							<b>Mixed input support</b> and others.
+						</p>
+						<br />
+						<p style="text-align: center;">
+							A dedicated description of tiers and the rating system will follow shortly.
+						</p>
+					</div>
+				{/snippet}
+				<div
+					class="rating-help"
+					{@attach tooltip({
+						snippet: controllerSupportRatingHelp,
+						snippetInDefaultBackground: true,
+						autoPlacement: true,
+						outDelay: 200,
+						arrow: true,
+						arrowFollowCursor: true
+					})}
+				>
+					<IconHelp style="width: 1.6em; height: 1.6em; color: var(--text-muted);" />
 				</div>
-			{/if}
+
+				{#if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Platinum}
+					<RatingPlatinum />
+					<div>
+						<span style="color: #afd5e0;">Platinum</span>
+					</div>
+				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Gold}
+					<RatingGold />
+					<div>
+						<span style="color: #d4a74f;">Gold</span>
+					</div>
+				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Silver}
+					<RatingSilver />
+					<div>
+						<span style="color: silver;">Silver</span>
+					</div>
+				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Bronze}
+					<RatingBronze />
+					<div>
+						<span style="color: #b1865b;">Bronze</span>
+					</div>
+				{:else if appInfo?.steaminputdb_info?.controller_support_rating === ControllerSupportRating.Wood}
+					<RatingNoSupport style="color: firebrick;" />
+					<div>
+						<span>No controller support</span>
+					</div>
+				{:else}
+					<RatingUnknown />
+					<div>
+						<span>Not yet rated</span>
+					</div>
+				{/if}
+			</div>
+		</div>
+
+		<div class="link-container">
 			{#if appInfo?.store_url_path}
 				<a
 					href={steamStoreUrlBase + appInfo?.store_url_path}
@@ -226,6 +288,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 					<IcoSteam style="width: 1.4em; height: 1.4em;" />
 					<!-- <Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" /> -->
 				</a>
+			{/if}
+			{#if appInfo?.app_id && typeof appInfo?.app_id === 'number'}
 				<a
 					href={`https://steamdb.info/app/${appInfo.app_id}/`}
 					class="button"
@@ -278,18 +342,47 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 				</a>
 			{/if}
 		</div>
+
+		{#if Object.entries(appInfo?.official_configs ?? {}).length}
+			<div class="official-configs">
+				<h3>Official Configs</h3>
+				{#each Object.entries(appInfo?.official_configs ?? {}) as [controller_type, config_id] (config_id)}
+					{@const controller_list_entry = CONTROLLER_LIST.find(
+						(controller) => controller.type === controller_type
+					)}
+					<a href={resolve(`/config/${config_id}`)} class="button">
+						{#if controller_list_entry}
+							<controller_list_entry.icon width="2em" height="2em" />
+						{:else}
+							<IcoGeneric style="width: 2em; height: 2em;" />
+						{/if}
+						<span>{controller_list_entry?.niceName ?? 'Generic'}</span>
+					</a>
+				{/each}
+			</div>
+		{/if}
 	</section>
 {/snippet}
 
 <style lang="postcss">
 :global(section.app-header) {
-	display: grid;
+	display: flex;
+	flex-flow: row wrap;
 	width: 100%;
 	gap: 1em;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 32em), auto));
-	max-width: calc(100dvw - 2em);
+	max-width: calc(100svw - 2em);
 	container-type: inline-size;
 	justify-self: center;
+	justify-content: center;
+
+	.app-lead {
+		display: flex;
+		flex-flow: row wrap;
+		gap: 1em;
+		margin-right: auto;
+		flex-grow: 1;
+		width: 100%;
+	}
 
 	.stacked {
 		display: grid;
@@ -301,18 +394,53 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 			grid-area: stack;
 		}
 	}
-	& > :first-child {
+
+	.rating-container {
+		position: relative;
+		display: grid;
+		place-items: center;
+		color: var(--text-color);
+		min-height: 192px;
+		min-width: 222px;
+		height: fit-content;
+		& > :global(svg) {
+			max-height: 6.66em;
+		}
+		& span {
+			white-space: nowrap;
+			font-size: 1.6em;
+			font-weight: bold;
+		}
+
+		& > :last-child {
+			display: grid;
+			grid-auto-flow: column;
+			align-items: center;
+			gap: 0.5ch;
+			color: var(--text-color-dark);
+			& span {
+				filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.842))
+					drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.671));
+			}
+		}
+		.rating-help {
+			position: absolute;
+			top: 1em;
+			right: 1em;
+		}
+
+		flex-grow: 1;
+	}
+
+	.app-banner {
 		position: relative;
 		display: grid;
 		align-items: center;
-		width: 100%;
-		height: 100%;
 		min-height: 12em;
 		padding: 1em 1.6em;
+		flex-grow: 9999999;
+		min-width: min(100cqi, 32em);
 		color: var(--text-color-dark);
-		@container (width > 1200px) {
-			max-width: 40cqw;
-		}
 
 		& .capsule {
 			position: absolute;
@@ -367,7 +495,7 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 				margin-right: auto;
 			}
 
-			& > :last-child {
+			& .official-controller-support {
 				grid-column: 1 / -1;
 				display: flex;
 				flex-direction: row wrap;
@@ -377,13 +505,12 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 			}
 		}
 	}
-	& > :last-child {
+
+	& .link-container {
 		display: flex;
 		flex-flow: row wrap-reverse;
-		align-items: center;
-		justify-content: end;
-		width: 100%;
-		margin: auto;
+		align-items: start;
+		justify-content: center;
 		gap: 1em;
 		& > a {
 			white-space: nowrap;
@@ -411,9 +538,13 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 		display: flex;
 		flex-flow: row wrap;
 		gap: 1ch;
+		margin-left: auto;
+		justify-content: center;
+		width: 100%;
 		& > :first-child {
 			width: 100%;
-			flex: 1 0 100%;
+			text-align: center;
+			filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.452)) drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.63));
 		}
 		& > a {
 			display: grid;

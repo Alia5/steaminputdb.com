@@ -37,7 +37,7 @@ export default defineConfig({
                         name: 'prefixIds',
                         params: {
                             delim: '',
-                            prefix: () => svgoPrefixIdsCount++
+                            prefix: () => `s${svgoPrefixIdsCount++}`
                         }
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     } as any

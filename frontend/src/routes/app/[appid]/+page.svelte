@@ -22,7 +22,6 @@ import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, fly, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
-import ControllerSupport from './ControllerSupport.svelte';
 import { sectionHead } from './sectionHead.svelte';
 
 let { data }: PageProps = $props();
@@ -220,7 +219,7 @@ onMount(() => {
 		<div>
 			{@render sectionHead({ appInfo, fallbackName: page.params.appid })}
 		</div>
-		<ControllerSupport appInfo={appInfo} />
+		<!-- <ControllerSupport appInfo={appInfo} /> -->
 		<search>
 			<SearchForm
 				bind:form={form}

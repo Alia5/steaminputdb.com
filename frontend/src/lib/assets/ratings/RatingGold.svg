@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="RatingGold-Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+<svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 168.02 168.02">
     <defs>
-        <style>.RatingGold-cls-1{fill:url(#RatingGold-linear-gradient-3);fill-rule:evenodd;stroke:url(#RatingGold-linear-gradient-4);stroke-miterlimit:10;}.RatingGold-cls-2{fill:url(#RatingGold-linear-gradient-2);}.RatingGold-cls-3{fill:url(#RatingGold-linear-gradient-5);}.RatingGold-cls-4{fill:url(#RatingGold-linear-gradient-6);}.RatingGold-cls-5{fill:url(#RatingGold-linear-gradient);}</style>
-        <linearGradient id="RatingGold-linear-gradient" x1="29.45" y1="36.35" x2="141.36" y2="134.11"
+        <style>.ratingGold-cls-1{fill:url(#ratingGold-lineargradient-3);fill-rule:evenodd;stroke:url(#ratingGold-lineargradient-4);stroke-miterlimit:10;}.ratingGold-cls-2{fill:url(#ratingGold-lineargradient-2);}.ratingGold-cls-3{fill:url(#ratingGold-lineargradient-5);}.ratingGold-cls-4{fill:url(#ratingGold-lineargradient-6);}.ratingGold-cls-5{fill:url(#ratingGold-lineargradient);}</style>
+        <linearGradient id="ratingGold-lineargradient" x1="29.45" y1="36.35" x2="141.36" y2="134.11"
             gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#c2a359" />
-            <stop offset="1" stop-color="#eccf94" />
+            <stop offset="0" stop-color="#b58d37" />
+            <stop offset="1" stop-color="#ebc684" />
         </linearGradient>
-        <linearGradient id="RatingGold-linear-gradient-2" x1="22.39" y1="30.19" x2="148.78" y2="140.59"
+        <linearGradient id="ratingGold-lineargradient-2" x1="22.39" y1="30.19" x2="148.78"
+            y2="140.59"
             gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#eccf94" />
-            <stop offset=".19" stop-color="#eab743" />
-            <stop offset=".4" stop-color="#f8d68c" />
-            <stop offset=".6" stop-color="#eab743" />
-            <stop offset=".8" stop-color="#f6d284" />
-            <stop offset="1" stop-color="#cba54b" />
+            <stop offset="0" stop-color="#dfb66b" />
+            <stop offset=".19" stop-color="#dd9e27" />
+            <stop offset=".4" stop-color="#ebbc61" />
+            <stop offset=".6" stop-color="#dd9e27" />
+            <stop offset=".8" stop-color="#e9b85c" />
+            <stop offset="1" stop-color="#bd8e2d" />
         </linearGradient>
-        <linearGradient id="RatingGold-linear-gradient-3" x1="99.83" y1="138.39" x2="65.37" y2="19.93"
+        <linearGradient id="ratingGold-lineargradient-3" x1="99.83" y1="138.39" x2="65.37"
+            y2="19.93"
             gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#e0b755" />
-            <stop offset=".12" stop-color="#edc55b" />
-            <stop offset=".26" stop-color="#ecbf58" />
-            <stop offset=".45" stop-color="#f6cd77" />
-            <stop offset=".61" stop-color="#f2c555" />
-            <stop offset=".76" stop-color="#f5d080" />
-            <stop offset=".89" stop-color="#f4ca69" />
-            <stop offset="1" stop-color="#eccf94" />
+            <stop offset="0" stop-color="#d39f31" />
+            <stop offset=".12" stop-color="#e0ac33" />
+            <stop offset=".26" stop-color="#dfa630" />
+            <stop offset=".45" stop-color="#e9b34d" />
+            <stop offset=".61" stop-color="#e5ac2e" />
+            <stop offset=".76" stop-color="#e8b658" />
+            <stop offset=".89" stop-color="#e7b140" />
+            <stop offset="1" stop-color="#dfb66b" />
         </linearGradient>
-        <linearGradient id="RatingGold-linear-gradient-4" x1="33.63" y1="40" x2="134.62" y2="128.22"
+        <linearGradient id="ratingGold-lineargradient-4" x1="33.63" y1="40" x2="134.62" y2="128.22"
             gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#f9da96" />
-            <stop offset=".26" stop-color="#e9be59" />
-            <stop offset=".5" stop-color="#f9da96" />
-            <stop offset=".78" stop-color="#cba54b" />
-            <stop offset="1" stop-color="#f9da96" />
+            <stop offset="0" stop-color="#ecc06b" />
+            <stop offset=".26" stop-color="#dca532" />
+            <stop offset=".5" stop-color="#ecc06b" />
+            <stop offset=".78" stop-color="#bd8e2d" />
+            <stop offset="1" stop-color="#ecc06b" />
         </linearGradient>
-        <linearGradient id="RatingGold-linear-gradient-5" x1="-296.15" y1="112.78" x2="-296.21" y2="254.11"
+        <linearGradient id="ratingGold-lineargradient-5" x1="-296.15" y1="112.78" x2="-296.21"
+            y2="254.11"
             gradientTransform="translate(-149.69 340.72) rotate(163.75)"
             gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#f9dda0" />
-            <stop offset="1" stop-color="#a88b3e" />
+            <stop offset="0" stop-color="#ebc275" />
+            <stop offset="1" stop-color="#9b772c" />
         </linearGradient>
-        <linearGradient id="RatingGold-linear-gradient-6" x1="97.9" y1="57.09" x2="97.83" y2="225.09"
+        <linearGradient id="ratingGold-lineargradient-6" x1="97.9" y1="57.09" x2="97.83" y2="225.09"
             gradientTransform="translate(-48.63 -21.36) rotate(-16.25)"
             gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#fffaef" />
-            <stop offset="1" stop-color="#a88b3e" />
+            <stop offset="0" stop-color="#f2e3c5" />
+            <stop offset="1" stop-color="#9b772c" />
         </linearGradient>
     </defs>
     <g id="RatingGold">
-        <path class="RatingGold-cls-5"
+        <path class="ratingGold-cls-5"
             d="M84.01,9.68C43.02,9.68,9.68,43.02,9.68,84.01s33.35,74.33,74.33,74.33,74.33-33.35,74.33-74.33S125,9.68,84.01,9.68Z" />
-        <path class="RatingGold-cls-2"
+        <path class="ratingGold-cls-2"
             d="M84.01,167.96C37.72,167.96.06,130.3.06,84.01S37.72.06,84.01.06s83.95,37.66,83.95,83.95-37.66,83.95-83.95,83.95ZM84.01,14.06C45.44,14.06,14.06,45.44,14.06,84.01s31.38,69.95,69.95,69.95,69.95-31.38,69.95-69.95S122.58,14.06,84.01,14.06Z" />
-        <path class="RatingGold-cls-1"
+        <path class="ratingGold-cls-1"
             d="M148.08,65.34c-5.23-17.96-17.4-32.04-32.74-40.2l-6.67.05c-7.97,0-15.69-1.74-23.16-4.23-3.83-1.37-7.36-2.37-10.62-3.05-3.18.44-6.38,1.11-9.55,2.04-10.46,3.05-19.59,8.46-27.02,15.46-3.79,7.38-6.77,16.47-10,26.33-1.59,4.85-3.24,9.9-5.08,15.02-2.31,6.47-4,12.33-5.14,17.65.44,2.76,1.03,5.53,1.83,8.28,5.67,19.46,19.49,34.37,36.66,42.12,4.28.31,8.76-.18,12.95-2.23,10.74-5.24,9.37-15.43,19.7-18.75,8.1-2.6,29.56,5.66,39.93,5.26,1.58-.06,3.07-.25,4.49-.55,14.85-16.61,21.09-40.28,14.41-63.2ZM84.19,73.08c0,.8-.6,1.39-1.59,1.39h-10.96v10.96c0,.8-.6,1.39-1.39,1.39h-8.17v.2c-.8,0-1.39-.6-1.39-1.39v-10.96h-10.96c-.8,0-1.59-.6-1.59-1.39v-8.17c0-.8.6-1.39,1.59-1.39h10.96v-10.96c0-.8.6-1.39,1.39-1.39h8.17c.8,0,1.39.6,1.39,1.39v10.96h10.96c.8,0,1.59.6,1.59,1.39v7.97ZM121.68,113.84c-5.98,0-10.71-4.98-10.71-10.96s4.98-10.71,10.71-10.71,10.96,4.98,10.96,10.71-4.98,10.96-10.96,10.96Z" />
-        <path class="RatingGold-cls-3"
+        <path class="ratingGold-cls-3"
             d="M64.24,16.16c37.41-10.9,76.71,10.67,87.61,48.08,10.9,37.41-10.67,76.71-48.08,87.61-37.41,10.9-76.71-10.67-87.61-48.08C5.26,66.37,26.83,27.07,64.24,16.16ZM102.68,148.08c35.33-10.3,55.7-47.41,45.4-82.74-10.29-35.33-47.41-55.7-82.74-45.4C30.01,30.23,9.64,67.35,19.94,102.68c10.29,35.33,47.41,55.7,82.74,45.4Z" />
-        <path class="RatingGold-cls-4"
+        <path class="ratingGold-cls-4"
             d="M107.51,164.65c-44.47,12.96-91.19-12.68-104.15-57.15C-9.59,63.04,16.04,16.32,60.51,3.36c44.47-12.96,91.19,12.68,104.15,57.15,12.96,44.47-12.68,91.19-57.15,104.15ZM61.82,7.85C19.82,20.08-4.39,64.21,7.85,106.2c12.24,42,56.36,66.21,98.36,53.97,42-12.24,66.21-56.36,53.97-98.36C147.93,19.82,103.81-4.39,61.82,7.85Z" />
     </g>
 </svg>

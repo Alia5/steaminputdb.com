@@ -62,7 +62,8 @@ onMount(() => {
 		role="alert"
 		style="--color: {color}"
 		in:slide|global={{ duration: 196, delay: 196, easing: quadOut }}
-		out:slide|global={{ duration: 196, easing: quadIn }}>
+		out:slide|global={{ duration: 196, easing: quadIn }}
+	>
 		<strong style="font-size: 1.4em; margin-bottom: 0.5em;">Failed to reach SteamInputDB-Buddy</strong>
 		<p>Is SteamInputDB-Buddy running and your browser allowed to make requests to "localhost"?</p>
 	</div>
@@ -79,7 +80,8 @@ onMount(() => {
 				{...link?.attrs || {}}
 				onload={function () {
 					this.rel = 'stylesheet';
-				}} />
+				}}
+			/>
 		{:else}
 			<link {...link?.attrs || {}} />
 		{/if}
@@ -89,7 +91,8 @@ onMount(() => {
 		rel="search"
 		type="application/opensearchdescription+xml"
 		href="/opensearch.xml"
-		title="SteamInputDB" />
+		title="SteamInputDB"
+	/>
 	<meta property="og:url" content={page.url.toString()} />
 	<meta property="og:site_name" content="SteamInputDB" />
 	<style>
@@ -111,7 +114,7 @@ onMount(() => {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	min-height: 100svh;
-	max-width: 100dvw;
+	max-width: 100svw;
 }
 
 :global(main) {
