@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strings"
 	"text/template"
 	"time"
 
@@ -17,11 +16,10 @@ import (
 	"github.com/coder/websocket/wsjson"
 )
 
-const DefaultInjectTab = "SharedJSContext"
-
 type Executor[Args any, R any] interface {
 	Execute(ctx context.Context, args Args) (R, error)
 	ExecuteInTab(ctx context.Context, tab string, args Args) (R, error)
+	ExecuteInAnyTab(ctx context.Context, tabs []string, args Args) (R, error)
 }
 
 type executor[Args any, R any] struct {
@@ -38,13 +36,20 @@ func (e *executor[Args, R]) Execute(ctx context.Context, args Args) (R, error) {
 }
 
 func (e *executor[Args, R]) ExecuteInTab(ctx context.Context, tab string, args Args) (R, error) {
+	tabs := []string{
+		tab,
+	}
+	return e.ExecuteInAnyTab(ctx, tabs, args)
+}
+
+func (e *executor[Args, R]) ExecuteInAnyTab(ctx context.Context, tabs []string, args Args) (R, error) {
 	var r R
 	var buf bytes.Buffer
 	if err := e.tmpl.Execute(&buf, args); err != nil {
 		return r, fmt.Errorf("%w: %w", ErrCEFTemplateExecFailed, err)
 	}
 	js := buf.String()
-	resStr, err := executeJs(ctx, e.cfg, tab, js)
+	resStr, err := executeJs(ctx, e.cfg, tabs, js)
 	if err != nil {
 		return r, err
 	}
@@ -63,7 +68,7 @@ func (e *executor[Args, R]) ExecuteInTab(ctx context.Context, tab string, args A
 	return r, nil
 }
 
-func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string) (*string, error) {
+func executeJs(ctx context.Context, cfg *appconfig.Steam, targetTabs []string, js string) (*string, error) {
 	if _, hasDeadline := ctx.Deadline(); !hasDeadline {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, 5*time.Second)
@@ -71,7 +76,7 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 		slog.Debug("executeJs: applied default 5s timeout")
 	}
 
-	slog.Debug("executeJs: starting", "tab", tab)
+	slog.Debug("executeJs: starting", "tabs", targetTabs)
 
 	tabs, err := steam.GetCEFTabs(ctx, cfg)
 	if err != nil {
@@ -81,13 +86,14 @@ func executeJs(ctx context.Context, cfg *appconfig.Steam, tab string, js string)
 	slog.Debug("executeJs: fetched tabs", "count", len(tabs), "tabs", tabs)
 	webSocketDebugURL := ""
 	for _, t := range tabs {
-		if strings.EqualFold(t.Title, tab) {
+		if matchesTab(t.Title, targetTabs) {
+			slog.Debug("executeJs: target tab found", "title", t.Title)
 			webSocketDebugURL = t.WebSocketDebuggerURL
 			break
 		}
 	}
 	if webSocketDebugURL == "" {
-		slog.Debug("executeJs: target tab not found", "tab", tab)
+		slog.Debug("executeJs: target tab not found", "tabs", targetTabs)
 		return nil, ErrCEFTabNotFound
 	}
 

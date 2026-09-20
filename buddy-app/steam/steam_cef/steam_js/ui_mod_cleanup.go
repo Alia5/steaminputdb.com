@@ -11,12 +11,6 @@ import (
 	steamcef "github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef"
 )
 
-var cleanupTabs = []string{
-	"Steam",
-	"Steam Big Picture Mode",
-	"SharedJSContext",
-}
-
 type UiModCleanupExecutor interface {
 	steamcef.Executor[*struct{}, *struct{}]
 }
@@ -31,14 +25,14 @@ func NewUiModCleanup(cfg *appconfig.Steam) UiModCleanupExecutor {
 func UiModCleanup(ctx context.Context, cfg *appconfig.Steam) error {
 	executor := NewUiModCleanup(cfg)
 	var errs []error
-	for _, tab := range cleanupTabs {
-		_, err := executor.ExecuteInTab(ctx, tab, &struct{}{})
+	for _, tabs := range steamcef.UIModTabs {
+		_, err := executor.ExecuteInAnyTab(ctx, tabs, &struct{}{})
 		if err != nil {
-			slog.Warn("cleanup failed for tab", "tab", tab, "err", err)
+			slog.Warn("cleanup failed for tab", "tab", tabs[0], "err", err)
 			errs = append(errs, err)
 		}
 	}
-	if len(errs) == len(cleanupTabs) {
+	if len(errs) == len(steamcef.UIModTabs) {
 		return errors.Join(errs...)
 	}
 	return nil

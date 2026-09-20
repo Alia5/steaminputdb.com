@@ -29,7 +29,7 @@ func NewAddSteamInputDBButtonDesktop(cfg *appconfig.Steam) AddSteamInputDBButton
 
 func AddSteamInputDBButton_Desktop(ctx context.Context, cfg *appconfig.Steam, override bool, useSteamBrowser bool) error {
 	executor := NewAddSteamInputDBButtonDesktop(cfg)
-	_, err := executor.ExecuteInTab(ctx, "Steam", &AddSteamInputDbButtonDesktopArgs{
+	_, err := executor.ExecuteInTab(ctx, steamcef.DesktopTab, &AddSteamInputDbButtonDesktopArgs{
 		Override:        override,
 		UseSteamBrowser: useSteamBrowser,
 	})

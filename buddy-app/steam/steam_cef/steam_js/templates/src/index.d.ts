@@ -6,8 +6,19 @@ declare global {
         SteamClient: SteamClient;
     }
 
+    interface SteamUIStore {
+        ActiveWindowInstance: {
+            m_Navigator: {
+                SteamWebTab: (url: string) => void;
+            };
+        };
+        IsGamepadUIWindowActive?: () => boolean;
+        Navigate?: (path: string) => void;
+    }
+
     interface Window {
         SteamClient?: SteamClient;
+        SteamUIStore?: SteamUIStore;
         // @ts-expect-error ignore
         opener?: SteamWindow | null;
         __sidbCleanup?: (() => void)[];
@@ -32,13 +43,7 @@ declare global {
     let __INJECT_RETURN: unknown;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const goTmpl: (paramName: string) => any;
-    const SteamUIStore: {
-        ActiveWindowInstance: {
-            m_Navigator: {
-                SteamWebTab: (url: string) => void;
-            };
-        };
-    };
+    const SteamUIStore: SteamUIStore;
 }
 
 // Best effort, Edited as needed

@@ -11,6 +11,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/buddy-app/db"
 	"github.com/Alia5/steaminputdb.com/buddy-app/db/models"
 	"github.com/Alia5/steaminputdb.com/buddy-app/steam"
+	steamcef "github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef"
 	"github.com/Alia5/steaminputdb.com/buddy-app/steam/steam_cef/steam_js"
 )
 
@@ -18,12 +19,6 @@ var initPollInterval = 2 * time.Second
 var refreshPollInterval = 15 * time.Second
 var defaultWaitTimeout = 60 * time.Second
 var injectTimeout = 1 * time.Second
-
-var cleanupTabs = []string{
-	"Steam",
-	"Steam Big Picture Mode",
-	"SharedJSContext",
-}
 
 func Init(cfg *appconfig.Config, dal *db.DAL) {
 	ctx := context.Background()
@@ -88,7 +83,7 @@ func startPolling(cfg *appconfig.Config, dal *db.DAL) {
 			}
 			currentIDs := []string{}
 			for _, tab := range tabs {
-				if slices.Contains(cleanupTabs, tab.Title) {
+				if steamcef.IsUIModTab(tab.Title) {
 					currentIDs = append(currentIDs, tab.ID)
 				}
 			}

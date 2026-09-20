@@ -28,7 +28,7 @@ func NewAddSteamInputDBButtonBPM(cfg *appconfig.Steam) AddSteamInputDBButtonBPM 
 
 func AddSteamInputDBButton_BPM(ctx context.Context, cfg *appconfig.Steam, override bool) error {
 	executor := NewAddSteamInputDBButtonBPM(cfg)
-	_, err := executor.ExecuteInTab(ctx, "Steam Big Picture Mode", &AddSteamInputDbButtonBPMArgs{
+	_, err := executor.ExecuteInAnyTab(ctx, steamcef.BigPictureWindowTitles, &AddSteamInputDbButtonBPMArgs{
 		Override: override,
 	})
 	if err != nil {
