@@ -6,7 +6,7 @@ import (
 
 	"github.com/Alia5/steaminputdb.com/buddy-app/db/models"
 	"github.com/google/uuid"
-	"github.com/uptrace/bun"
+	"gorm.io/gorm"
 )
 
 type DAL interface {
@@ -15,18 +15,21 @@ type DAL interface {
 	Update(ctx context.Context, settings *models.Settings) (*models.Settings, error)
 }
 type dal struct {
-	db *bun.DB
+	db *gorm.DB
 }
 
-func New(db *bun.DB) DAL {
+func New(db *gorm.DB) DAL {
 	return &dal{db: db}
 }
 
 func (d *dal) Get(ctx context.Context) (*models.Settings, error) {
 	settings := &models.Settings{}
-	err := d.db.NewSelect().Model(settings).Scan(ctx)
-	if err != nil {
-		return nil, err
+	res := d.db.WithContext(ctx).Limit(1).Find(settings)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
 	}
 	return settings, nil
 }
@@ -41,7 +44,7 @@ func (d *dal) ResetToDefault(ctx context.Context) (*models.Settings, error) {
 	settings.DesktopUseSteamBrowser = new(false)
 	settings.SteamWaitTimeout = new(60 * time.Second)
 
-	_, err = d.db.NewUpdate().Model(settings).OmitZero().WherePK().Exec(ctx)
+	err = d.db.WithContext(ctx).Model(settings).Updates(settings).Error
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +62,7 @@ func (d *dal) Update(ctx context.Context, settings *models.Settings) (*models.Se
 		}
 		settings.ID = dbSettings.ID
 	}
-	_, err := d.db.NewUpdate().Model(settings).OmitZero().WherePK().Exec(ctx)
+	err := d.db.WithContext(ctx).Model(settings).Updates(settings).Error
 	if err != nil {
 		return nil, err
 	}

@@ -1,46 +1,21 @@
 package testing
 
 import (
-	"context"
-	"database/sql"
 	"testing"
-	"time"
 
 	"github.com/Alia5/steaminputdb.com/buddy-app/config"
 	"github.com/Alia5/steaminputdb.com/buddy-app/db"
-	settingsDal "github.com/Alia5/steaminputdb.com/buddy-app/db/dal/settings"
-	"github.com/Alia5/steaminputdb.com/buddy-app/db/migrations"
 	"github.com/danielgtaylor/huma/v2/humatest"
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/sqlitedialect"
-	"github.com/uptrace/bun/driver/sqliteshim"
 )
 
 func NewMemDB(tb testing.TB) (*db.DAL, error) {
 	tb.Helper()
 
-	uri := "file::memory:"
-
-	sqldb, err := sql.Open(sqliteshim.ShimName, uri)
+	dal, _, err := db.Open("file::memory:")
 	if err != nil {
 		return nil, err
 	}
-	sqldb.SetMaxOpenConns(1)
-	sqldb.SetMaxIdleConns(10)
-	sqldb.SetConnMaxLifetime(5 * time.Minute)
-	sqldb.SetConnMaxIdleTime(5 * time.Minute)
-
-	bunDB := bun.NewDB(sqldb, sqlitedialect.New())
-
-	_, err = migrations.Migrate(context.Background(), bunDB)
-	if err != nil {
-		return nil, err
-	}
-
-	return &db.DAL{
-		DB:       bunDB,
-		Settings: settingsDal.New(bunDB),
-	}, nil
+	return dal, nil
 }
 
 func MockConfig(tb testing.TB) *config.Config {
