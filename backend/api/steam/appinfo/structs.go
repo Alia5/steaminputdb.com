@@ -2,6 +2,7 @@ package appinfo
 
 import (
 	"github.com/Alia5/steaminputdb.com/api/search/games"
+	"github.com/Alia5/steaminputdb.com/db/models"
 	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/Alia5/steaminputdb.com/types"
@@ -17,6 +18,7 @@ type AppInfoRequest struct {
 	ControllerSupport bool   `query:"controller_support" default:"false"`
 	OfficialConfigs   bool   `query:"official_configs" default:"false"`
 	ForceRefresh      bool   `query:"force_refresh" default:"false"`
+	SteamInputDBInfo  bool   `query:"steaminputdb_info" default:"false"`
 }
 
 type responseBody interface {
@@ -30,8 +32,9 @@ func (r *AppInfoItem) searchSuggestionsResponse() {}
 
 type AppInfoItem struct {
 	games.AppItem
-	ControllerSupport *ControllerSupport `json:"controller_support,omitempty"`
-	OfficialConfigs   *officialConfigs   `json:"official_configs,omitempty"`
+	ControllerSupport *ControllerSupport     `json:"controller_support,omitempty"`
+	OfficialConfigs   *officialConfigs       `json:"official_configs,omitempty"`
+	SteamInputDBInfo  *SIDBControllerSupport `json:"steaminputdb_info,omitempty,omitzero"`
 }
 
 type ControllerSupport struct {
@@ -40,7 +43,51 @@ type ControllerSupport struct {
 	DS4WirelessSupport   *bool                         `json:"ds4_wireless_support,omitempty"`
 	DS5WiredSupport      *bool                         `json:"ds5_wired_support,omitempty"`
 	DS5WirelessSupport   *bool                         `json:"ds5_wireless_support,omitempty"`
-	SteamInputAPISupport *bool                         `json:"steam_input_api_support,omitempty"`
+	SteamInputAPISupport *bool                         `json:"steaminputapi_support,omitempty"`
+}
+
+type SIDBControllerSupport struct {
+	ControllerSupportRating models.ControllerSupportRating `json:"controller_support_rating"`
+	ControllerSupportNotes  *string                        `json:"controller_support_notes,omitempty"`
+	MixedInputInfo          *MixedInputInfo                `json:"mixed_input,omitempty"`
+	GlyphInfo               *GlyphInfo                     `json:"glyphs,omitempty"`
+	SteamInputAPISupport    *SteamInputAPISupport          `json:"steaminputapi_support,omitempty"`
+	HWFeatures              []HWFeature                    `json:"hw_features,omitempty"`
+}
+
+type MixedInputInfo struct {
+	MixedInputType    models.MixedInputSupportType `json:"type"`
+	GlyphFlicker      bool                         `json:"glyph_flicker"`
+	Notes             string                       `json:"notes,omitempty,omitzero"`
+	MixedInputModURLS []string                     `json:"mixed_input_mod_urls,omitempty"`
+}
+
+type GlyphInfo struct {
+	AutoDetect   bool                     `json:"autodetect"`
+	ManualSelect bool                     `json:"manual_select"`
+	Notes        string                   `json:"notes,omitempty,omitzero"`
+	Controllers  []GlyphControllerSupport `json:"controllers,omitempty"`
+}
+
+type GlyphControllerSupport struct {
+	ControllerType *steamtypes.ControllerType `json:"controller_type,omitempty,omitzero" example:"controller_steamcontroller_gordon" doc:"Type of controller this configuration is designed for"`
+	Notes          string                     `json:"notes,omitempty"`
+}
+
+type SteamInputAPISupport struct {
+	Glyphs []models.AppGlyphTagType `json:"glyphs,omitempty,omitzero"`
+
+	CameraSupport models.SteamInputCameraSupport    `json:"camera_support"`
+	PixelsPer360  string                            `json:"pixels_per_360"`
+	SupportTags   []models.SteamInputAPISupportType `json:"support_tags,omitempty"`
+
+	Notes string `json:"notes,omitempty"`
+}
+
+type HWFeature struct {
+	Feature          models.HWFeature               `json:"feature"`
+	ControllerFamily models.HWFeatureControllerType `json:"controller_family"`
+	Notes            string                         `json:"notes,omitempty"`
 }
 
 type configID uint64

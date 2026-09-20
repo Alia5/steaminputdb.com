@@ -15,16 +15,11 @@ import (
 
 	"github.com/Alia5/steaminputdb.com/api/ctx"
 	"github.com/Alia5/steaminputdb.com/api/memcache"
-	"github.com/Alia5/steaminputdb.com/api/search/games"
 	"github.com/Alia5/steaminputdb.com/api/steam/auth"
 	"github.com/Alia5/steaminputdb.com/db"
 	appinfodal "github.com/Alia5/steaminputdb.com/db/dal/appinfo"
-	"github.com/Alia5/steaminputdb.com/db/models"
 	"github.com/Alia5/steaminputdb.com/steam/client"
-	clientappinfo "github.com/Alia5/steaminputdb.com/steam/client/appinfo"
-	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
 	"github.com/Alia5/steaminputdb.com/steamapi"
-	"github.com/Alia5/steaminputdb.com/types"
 	"github.com/danielgtaylor/huma/v2"
 	"gorm.io/gorm"
 )
@@ -82,32 +77,12 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 		},
 		func(c context.Context, req *AppInfoRequest) (*AppInfoResponse, error) {
 
-			advancedAuthorized := os.Getenv("DEV") == "1"
-			if !advancedAuthorized && (req.Raw || req.ForceRefresh) {
-				steamID, ok := c.Value(ctx.KeySteamID).(string)
-				if !ok || steamID == "" {
-					return nil, huma.Error403Forbidden("authentication error")
-				}
-
-				steamID64, err := strconv.ParseUint(steamID, 10, 64)
-				if err != nil {
-					return nil, huma.Error403Forbidden("invalid steam ID")
-				}
-
-				userInfo, err := dal.SteamUser().Get(c, steamID64)
-				if err != nil {
-					if errors.Is(err, gorm.ErrRecordNotFound) {
-						return nil, huma.Error403Forbidden("user not found")
-					}
-					return nil, huma.Error502BadGateway("database error", err)
-				}
-				if !userInfo.IsAdmin {
-					return nil, huma.Error403Forbidden("insufficient permissions")
-				}
-				advancedAuthorized = true
+			rawAllowed, err := isAllowedRawInfo(c, dal, req)
+			if err != nil {
+				return nil, err
 			}
 
-			if req.Raw && !advancedAuthorized {
+			if req.Raw && !rawAllowed {
 				return nil, huma.Error403Forbidden("")
 			}
 
@@ -141,6 +116,7 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				Links:             true,
 				Creators:          true,
 				OfficialConfigs:   true,
+				SteamInputDBInfo:  true,
 			})
 			if dbErr != nil && !errors.Is(dbErr, gorm.ErrRecordNotFound) {
 				return nil, huma.Error502BadGateway("database error", dbErr)
@@ -157,6 +133,9 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				}
 				if !req.OfficialConfigs {
 					res.OfficialConfigs = nil
+				}
+				if !req.SteamInputDBInfo {
+					res.SteamInputDBInfo = nil
 				}
 				return &AppInfoResponse{Body: &res}, nil
 			}
@@ -215,6 +194,9 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 			if !req.OfficialConfigs {
 				res.OfficialConfigs = nil
 			}
+			if !req.SteamInputDBInfo {
+				res.SteamInputDBInfo = nil
+			}
 			return &AppInfoResponse{Body: &res}, nil
 		},
 	)
@@ -261,301 +243,30 @@ func fetchFromSteamAPI(c context.Context, req *AppInfoRequest) (*storeAPIResult,
 	return result, nil
 }
 
-func fetchFromSteamClient(ctx context.Context, sc client.Client, appID uint32) (*clientappinfo.Info, error) {
-	infos, err := clientappinfo.Get(ctx, sc, appID)
-	if err != nil {
-		return nil, err
-	}
-	if len(infos) == 0 {
-		return nil, fmt.Errorf("no PICS info for app %d", appID)
-	}
-	return &infos[0], nil
-}
+func isAllowedRawInfo(c context.Context, dal db.DAL, req *AppInfoRequest) (bool, error) {
+	rawAllowed := os.Getenv("DEV") == "1"
+	if !rawAllowed && (req.Raw || req.ForceRefresh) {
+		steamID, ok := c.Value(ctx.KeySteamID).(string)
+		if !ok || steamID == "" {
+			return false, huma.Error403Forbidden("authentication error")
+		}
 
-func mapStoreItemToModel(item *steamapi.StoreItem) *models.AppInfo {
-	appInfo := &models.AppInfo{
-		AppID:        item.GetAppid(),
-		Name:         item.GetName(),
-		StoreURLPath: item.GetStoreUrlPath(),
-	}
-	if item.Type != nil {
-		appInfo.Type = games.TypeToString(item.Type)
-	}
-	if item.BasicInfo != nil {
-		desc := item.BasicInfo.GetShortDescription()
-		if desc != "" {
-			appInfo.ShortDescription = &desc
+		steamID64, err := strconv.ParseUint(steamID, 10, 64)
+		if err != nil {
+			return false, huma.Error403Forbidden("invalid steam ID")
 		}
-	}
-	if item.Platforms != nil {
-		appInfo.Platforms = models.AppPlatforms{
-			Windows:      item.Platforms.Windows,
-			Mac:          item.Platforms.Mac,
-			SteamOSLinux: item.Platforms.SteamosLinux,
-		}
-	}
-	if item.Release != nil {
-		if item.Release.SteamReleaseDate != nil {
-			t := time.Unix(int64(*item.Release.SteamReleaseDate), 0)
-			appInfo.Release.SteamReleaseDate = &t
-		}
-		if item.Release.OriginalReleaseDate != nil && *item.Release.OriginalReleaseDate != 0 {
-			t := time.Unix(int64(*item.Release.OriginalReleaseDate), 0)
-			appInfo.Release.OriginalReleaseDate = &t
-		}
-	}
-	if item.Assets != nil {
-		appInfo.Assets = &models.AppAsset{
-			AppID:              item.GetAppid(),
-			AssetURLFormat:     item.Assets.AssetUrlFormat,
-			MainCapsule:        item.Assets.MainCapsule,
-			SmallCapsule:       item.Assets.SmallCapsule,
-			Header:             item.Assets.Header,
-			PackageHeader:      item.Assets.PackageHeader,
-			PageBackground:     item.Assets.PageBackground,
-			HeroCapsule:        item.Assets.HeroCapsule,
-			HeroCapsule2X:      item.Assets.HeroCapsule_2X,
-			LibraryCapsule:     item.Assets.LibraryCapsule,
-			LibraryCapsule2X:   item.Assets.LibraryCapsule_2X,
-			LibraryHero:        item.Assets.LibraryHero,
-			LibraryHero2X:      item.Assets.LibraryHero_2X,
-			CommunityIcon:      item.Assets.CommunityIcon,
-			ClanAvatar:         item.Assets.ClanAvatar,
-			PageBackgroundPath: item.Assets.PageBackgroundPath,
-			RawPageBackground:  item.Assets.RawPageBackground,
-		}
-	}
-	appInfo.Links = make([]*models.AppLink, 0)
-	if item.Links != nil {
-		for _, link := range item.Links {
-			if link == nil || link.Url == nil {
-				continue
-			}
-			appInfo.Links = append(appInfo.Links, &models.AppLink{
-				AppID: item.GetAppid(),
-				URL:   *link.Url,
-			})
-		}
-	}
-	appInfo.CreatorLinks = make([]*models.AppCreatorToApp, 0)
-	if item.BasicInfo != nil {
-		for _, pub := range item.BasicInfo.Publishers {
-			if pub == nil || pub.Name == nil {
-				continue
-			}
-			appInfo.CreatorLinks = append(appInfo.CreatorLinks, &models.AppCreatorToApp{
-				RoleID: models.AppCreatorRoleIDPublisher,
-				AppCreator: &models.AppCreator{
-					Name:                 *pub.Name,
-					CreatorClanAccountID: pub.GetCreatorClanAccountId(),
-				},
-			})
-		}
-		for _, dev := range item.BasicInfo.Developers {
-			if dev == nil || dev.Name == nil {
-				continue
-			}
-			appInfo.CreatorLinks = append(appInfo.CreatorLinks, &models.AppCreatorToApp{
-				RoleID: models.AppCreatorRoleIDDeveloper,
-				AppCreator: &models.AppCreator{
-					Name:                 *dev.Name,
-					CreatorClanAccountID: dev.GetCreatorClanAccountId(),
-				},
-			})
-		}
-		for _, fr := range item.BasicInfo.Franchises {
-			if fr == nil || fr.Name == nil {
-				continue
-			}
-			appInfo.CreatorLinks = append(appInfo.CreatorLinks, &models.AppCreatorToApp{
-				RoleID: models.AppCreatorRoleIDFranchise,
-				AppCreator: &models.AppCreator{
-					Name:                 *fr.Name,
-					CreatorClanAccountID: fr.GetCreatorClanAccountId(),
-				},
-			})
-		}
-	}
-	return appInfo
-}
 
-func enrichModelFromPICS(appInfo *models.AppInfo, info *clientappinfo.Info) {
-	cs := &models.AppControllerSupport{AppID: appInfo.AppID}
-	switch info.Common.ControllerSupport {
-	case "full":
-		cs.SupportLevel = new(types.ControllerSupportLevelFull)
-	case "partial":
-		cs.SupportLevel = new(types.ControllerSupportLevelPartial)
-	default:
-		cs.SupportLevel = new(types.ControllerSupportLevelNone)
-	}
-
-	if appInfo.Name == "" && info.Common.Name != "" {
-		appInfo.Name = info.Common.Name
-	}
-
-	cat := info.Common.Category
-	check := func(id int64) *bool {
-		_, ok := cat[fmt.Sprintf("category_%d", id)]
-		return &ok
-	}
-	cs.DS4WiredSupport = check(int64(clientappinfo.CategoryPS4Wired))
-	cs.DS4WirelessSupport = check(int64(clientappinfo.CategoryPS4Bluetooth))
-	cs.DS5WiredSupport = check(int64(clientappinfo.CategoryPS5Wired))
-	cs.DS5WirelessSupport = check(int64(clientappinfo.CategoryPS5Bluetooth))
-	cs.SteamInputAPISupport = check(int64(clientappinfo.CategorySteamInputAPI))
-	appInfo.ControllerSupport = cs
-
-	appInfo.OfficialConfigs = make([]*models.OfficialSteamInputConfig, 0)
-	type configCandidate struct {
-		config    *models.OfficialSteamInputConfig
-		isDefault bool
-	}
-	best := make(map[steamtypes.ControllerType]configCandidate)
-	seen := make(map[steamtypes.ControllerType]bool)
-	for idStr, detail := range info.Config.SteamControllerConfigDetails {
-		cfg := parseConfig(appInfo.AppID, idStr, detail)
-		if cfg == nil {
-			continue
-		}
-		seen[cfg.ControllerType] = true
-		isDefault := hasDefaultBranch(detail.EnabledBranches)
-		if prev, ok := best[cfg.ControllerType]; !ok || (isDefault && !prev.isDefault) {
-			best[cfg.ControllerType] = configCandidate{config: cfg, isDefault: isDefault}
-		}
-	}
-	for idStr, detail := range info.Config.SteamControllerTouchConfigDetails {
-		ct := steamtypes.ControllerType(detail.ControllerType)
-		if seen[ct] {
-			continue
-		}
-		cfg := parseConfig(appInfo.AppID, idStr, detail)
-		if cfg == nil {
-			continue
-		}
-		isDefault := hasDefaultBranch(detail.EnabledBranches)
-		if prev, ok := best[cfg.ControllerType]; !ok || (isDefault && !prev.isDefault) {
-			best[cfg.ControllerType] = configCandidate{config: cfg, isDefault: isDefault}
-		}
-	}
-	for _, c := range best {
-		appInfo.OfficialConfigs = append(appInfo.OfficialConfigs, c.config)
-	}
-}
-
-func parseConfig(appID uint32, idStr string, detail clientappinfo.ControllerConfigDetail) *models.OfficialSteamInputConfig {
-	configID, err := strconv.ParseUint(idStr, 10, 64)
-	if err != nil {
-		return nil
-	}
-	return &models.OfficialSteamInputConfig{
-		AppID:          appID,
-		ControllerType: steamtypes.ControllerType(detail.ControllerType),
-		ConfigID:       configID,
-	}
-}
-
-func hasDefaultBranch(enabledBranches string) bool {
-	for _, b := range strings.Split(enabledBranches, ",") {
-		if strings.TrimSpace(b) == "default" {
-			return true
-		}
-	}
-	return false
-}
-
-func mapModelToResponse(appInfo *models.AppInfo) *AppInfoItem {
-	wrapper := &AppInfoItem{
-		AppItem: games.AppItem{
-			AppID:        &appInfo.AppID,
-			Name:         &appInfo.Name,
-			StoreURLPath: &appInfo.StoreURLPath,
-			Type:         appInfo.Type,
-			Platforms: games.AppsPlatforms{
-				Windows:      appInfo.Platforms.Windows,
-				SteamOSLinux: appInfo.Platforms.SteamOSLinux,
-				Mac:          appInfo.Platforms.Mac,
-			},
-		},
-	}
-	if appInfo.Release.SteamReleaseDate != nil {
-		wrapper.Release.SteamReleaseDate = *appInfo.Release.SteamReleaseDate
-	}
-	if appInfo.Release.OriginalReleaseDate != nil {
-		wrapper.Release.OriginalReleaseDate = *appInfo.Release.OriginalReleaseDate
-	}
-	if appInfo.Assets != nil {
-		wrapper.Assets = &steamapi.StoreItem_Assets{
-			AssetUrlFormat:     appInfo.Assets.AssetURLFormat,
-			MainCapsule:        appInfo.Assets.MainCapsule,
-			SmallCapsule:       appInfo.Assets.SmallCapsule,
-			Header:             appInfo.Assets.Header,
-			PackageHeader:      appInfo.Assets.PackageHeader,
-			PageBackground:     appInfo.Assets.PageBackground,
-			HeroCapsule:        appInfo.Assets.HeroCapsule,
-			HeroCapsule_2X:     appInfo.Assets.HeroCapsule2X,
-			LibraryCapsule:     appInfo.Assets.LibraryCapsule,
-			LibraryCapsule_2X:  appInfo.Assets.LibraryCapsule2X,
-			LibraryHero:        appInfo.Assets.LibraryHero,
-			LibraryHero_2X:     appInfo.Assets.LibraryHero2X,
-			CommunityIcon:      appInfo.Assets.CommunityIcon,
-			ClanAvatar:         appInfo.Assets.ClanAvatar,
-			PageBackgroundPath: appInfo.Assets.PageBackgroundPath,
-			RawPageBackground:  appInfo.Assets.RawPageBackground,
-		}
-	}
-	if len(appInfo.Links) > 0 {
-		links := make([]string, 0, len(appInfo.Links))
-		for _, link := range appInfo.Links {
-			links = append(links, link.URL)
-		}
-		wrapper.Links = &links
-	}
-	if appInfo.ShortDescription != nil || len(appInfo.CreatorLinks) > 0 {
-		bi := &steamapi.StoreItem_BasicInfo{}
-		if appInfo.ShortDescription != nil {
-			bi.ShortDescription = appInfo.ShortDescription
-		}
-		for _, cl := range appInfo.CreatorLinks {
-			creator := cl.AppCreator
-			if creator == nil {
-				continue
+		userInfo, err := dal.SteamUser().Get(c, steamID64)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return false, huma.Error403Forbidden("user not found")
 			}
-			name := creator.Name
-			link := &steamapi.StoreItem_BasicInfo_CreatorHomeLink{
-				Name: &name,
-			}
-			if creator.CreatorClanAccountID != 0 {
-				clanID := creator.CreatorClanAccountID
-				link.CreatorClanAccountId = &clanID
-			}
-			switch cl.RoleID {
-			case models.AppCreatorRoleIDPublisher:
-				bi.Publishers = append(bi.Publishers, link)
-			case models.AppCreatorRoleIDDeveloper:
-				bi.Developers = append(bi.Developers, link)
-			case models.AppCreatorRoleIDFranchise:
-				bi.Franchises = append(bi.Franchises, link)
-			}
+			return false, huma.Error502BadGateway("database error", err)
 		}
-		wrapper.BasicInfo = bi
-	}
-	if appInfo.ControllerSupport != nil {
-		wrapper.ControllerSupport = &ControllerSupport{
-			SupportLevel:         appInfo.ControllerSupport.SupportLevel,
-			DS4WiredSupport:      appInfo.ControllerSupport.DS4WiredSupport,
-			DS4WirelessSupport:   appInfo.ControllerSupport.DS4WirelessSupport,
-			DS5WiredSupport:      appInfo.ControllerSupport.DS5WiredSupport,
-			DS5WirelessSupport:   appInfo.ControllerSupport.DS5WirelessSupport,
-			SteamInputAPISupport: appInfo.ControllerSupport.SteamInputAPISupport,
+		if !userInfo.IsAdmin {
+			return false, huma.Error403Forbidden("insufficient permissions")
 		}
+		rawAllowed = true
 	}
-	if len(appInfo.OfficialConfigs) > 0 {
-		oc := make(officialConfigs, len(appInfo.OfficialConfigs))
-		for _, cfg := range appInfo.OfficialConfigs {
-			oc[cfg.ControllerType] = configID(cfg.ConfigID)
-		}
-		wrapper.OfficialConfigs = &oc
-	}
-	return wrapper
+	return rawAllowed, nil
 }

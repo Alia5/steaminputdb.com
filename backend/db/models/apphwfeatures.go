@@ -30,7 +30,7 @@ type AppHWFeatures struct {
 	AppID                   uint32 `gorm:"primaryKey;autoIncrement:false"`
 	CreatedAt               time.Time
 	UpdatedAt               time.Time
-	HWFeature               HWFeature               `gorm:"not null"`
-	HWFeatureControllerType HWFeatureControllerType `gorm:"not null"`
+	HWFeature               HWFeature               `gorm:"primaryKey;autoIncrement:false"`
+	HWFeatureControllerType HWFeatureControllerType `gorm:"primaryKey;autoIncrement:false"`
 	Notes                   string
 }

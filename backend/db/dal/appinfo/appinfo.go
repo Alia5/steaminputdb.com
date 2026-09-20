@@ -28,6 +28,7 @@ type AppInfoInclude struct {
 	Links             bool
 	Creators          bool
 	OfficialConfigs   bool
+	SteamInputDBInfo  bool
 }
 
 func (d *dal) Get(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error) {
@@ -49,6 +50,16 @@ func (d *dal) Get(ctx context.Context, appID uint32, include AppInfoInclude) (*m
 	}
 	if include.OfficialConfigs {
 		q = q.Preload("OfficialConfigs")
+	}
+	if include.SteamInputDBInfo {
+		q = q.Joins("MixedInputInfo").
+			Preload("MixedInputInfo.MixedInputModLinks").
+			Joins("SteamInputAPISupport").
+			Preload("SteamInputAPISupport.SIAPITypes").
+			Preload("HWFeatures").
+			Joins("Glyphs").
+			Preload("Glyphs.GlyphCtrlSupport").
+			Preload("Glyphs.GlyphTags")
 	}
 
 	appInfo := &models.AppInfo{}

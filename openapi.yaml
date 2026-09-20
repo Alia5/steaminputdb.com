@@ -60,6 +60,8 @@ components:
           $ref: "#/components/schemas/AppsPlatforms"
         release:
           $ref: "#/components/schemas/AppsRelease"
+        steaminputdb_info:
+          $ref: "#/components/schemas/SIDBControllerSupport"
         store_url_path:
           examples:
             - app/440/Team_Fortress_2
@@ -826,7 +828,7 @@ components:
           type: boolean
         ds5_wireless_support:
           type: boolean
-        steam_input_api_support:
+        steaminputapi_support:
           type: boolean
         support_level:
           enum:
@@ -894,6 +896,51 @@ components:
             - https://example.com/errors/example
           format: uri
           type: string
+      type: object
+    GlyphControllerSupport:
+      additionalProperties: false
+      properties:
+        controller_type:
+          description: Type of controller this configuration is designed for
+          examples:
+            - controller_steamcontroller_gordon
+          type: string
+        notes:
+          type: string
+      type: object
+    GlyphInfo:
+      additionalProperties: false
+      properties:
+        autodetect:
+          type: boolean
+        controllers:
+          items:
+            $ref: "#/components/schemas/GlyphControllerSupport"
+          type:
+            - array
+            - "null"
+        manual_select:
+          type: boolean
+        notes:
+          type: string
+      required:
+        - autodetect
+        - manual_select
+      type: object
+    HWFeature:
+      additionalProperties: false
+      properties:
+        controller_family:
+          format: int64
+          type: integer
+        feature:
+          format: int64
+          type: integer
+        notes:
+          type: string
+      required:
+        - feature
+        - controller_family
       type: object
     LoginResponse:
       additionalProperties: false
@@ -968,6 +1015,26 @@ components:
         - image
         - movie_webm
         - movie_mp4
+      type: object
+    MixedInputInfo:
+      additionalProperties: false
+      properties:
+        glyph_flicker:
+          type: boolean
+        mixed_input_mod_urls:
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+        notes:
+          type: string
+        type:
+          format: int64
+          type: integer
+      required:
+        - type
+        - glyph_flicker
       type: object
     OpenIDBody:
       additionalProperties: false
@@ -1439,6 +1506,29 @@ components:
           minimum: 0
           type: integer
       type: object
+    SIDBControllerSupport:
+      additionalProperties: false
+      properties:
+        controller_support_notes:
+          type: string
+        controller_support_rating:
+          format: int64
+          type: integer
+        glyphs:
+          $ref: "#/components/schemas/GlyphInfo"
+        hw_features:
+          items:
+            $ref: "#/components/schemas/HWFeature"
+          type:
+            - array
+            - "null"
+        mixed_input:
+          $ref: "#/components/schemas/MixedInputInfo"
+        steaminputapi_support:
+          $ref: "#/components/schemas/SteamInputAPISupport"
+      required:
+        - controller_support_rating
+      type: object
     SearchRequestBody:
       additionalProperties: false
       properties:
@@ -1492,6 +1582,34 @@ components:
           type:
             - array
             - "null"
+      type: object
+    SteamInputAPISupport:
+      additionalProperties: false
+      properties:
+        camera_support:
+          format: int64
+          type: integer
+        glyphs:
+          items:
+            format: int64
+            type: integer
+          type:
+            - array
+            - "null"
+        notes:
+          type: string
+        pixels_per_360:
+          type: string
+        support_tags:
+          items:
+            format: int64
+            type: integer
+          type:
+            - array
+            - "null"
+      required:
+        - camera_support
+        - pixels_per_360
       type: object
     SteamInputDBInfo:
       additionalProperties: false
@@ -2473,6 +2591,12 @@ paths:
         - explode: false
           in: query
           name: force_refresh
+          schema:
+            default: false
+            type: boolean
+        - explode: false
+          in: query
+          name: steaminputdb_info
           schema:
             default: false
             type: boolean
