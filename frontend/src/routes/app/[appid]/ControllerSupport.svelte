@@ -213,12 +213,17 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 								{/if}
 							</div>
 							<div>
-								{#if mixedinputInfo?.glyph_flicker}
-									<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
-									<span>Glyph Flicker</span>
-								{:else}
-									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-									<span>Without Glyph Flicker</span>
+								<!-- eslint-disable-next-line prettier/prettier -->
+								{#if mixedInputType !== MixedInputSupportType.Unsupported
+                                    && mixedInputType !== MixedInputSupportType.Unknown 
+                                 }
+									{#if mixedinputInfo?.glyph_flicker}
+										<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
+										<span>Glyph Flicker</span>
+									{:else}
+										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+										<span>Without Glyph Flicker</span>
+									{/if}
 								{/if}
 							</div>
 							{#if mixedinputInfo?.notes}
