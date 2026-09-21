@@ -54,7 +54,8 @@ export const HWFeature = {
     AdaptiveTriggersWired: 5,
     ImpulseTriggers: 6,
     Touchpads: 7,
-    AudioHaptics: 8
+    AudioHaptics: 8,
+    AdaptiveTriggersWireless: 9
 } as const;
 export type HWFeatureValue = (typeof HWFeature)[keyof typeof HWFeature];
 

@@ -119,6 +119,8 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 			<IcoLightbar style="width: 1.2em; height: 1.2em;" /> Lightbar
 		{:else if feature === HWFeature.AdaptiveTriggersWired}
 			<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Adaptive Triggers (Wired)
+		{:else if feature === HWFeature.AdaptiveTriggersWireless}
+			<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Adaptive Triggers (Wireless)
 		{:else if feature === HWFeature.ImpulseTriggers}
 			<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Impulse Triggers
 		{:else if feature === HWFeature.Touchpads}
