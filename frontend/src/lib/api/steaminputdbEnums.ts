@@ -15,7 +15,7 @@ export const MixedInputSupportType = {
     Unsupported: 1,
     Supported: 2,
     WithMod: 3,
-    Other: 4
+    Partial: 4
 } as const;
 export type MixedInputSupportTypeValue = (typeof MixedInputSupportType)[keyof typeof MixedInputSupportType];
 

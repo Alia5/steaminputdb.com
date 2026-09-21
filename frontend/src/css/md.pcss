@@ -1,74 +1,108 @@
-hr {
-	opacity: 0.3;
-}
-
-picture,
-img {
-	object-fit: contain;
-	object-position: center;
-	height: fit-content;
-}
-
-pre,
-code {
-	background: var(--card-background-noise);
-}
-
-code {
-	margin: 0.25em;
-	line-height: 1.6;
-}
-
-table {
-	background: var(--card-background-noise);
-	border: 1px solid color-mix(in srgb, var(--text-color), transparent 75%);
-	border-radius: 0.5em;
-	padding: 0;
-	border-spacing: 0;
-	& th {
-		text-align: center;
-		padding: 0.5em 1em;
+.mdcontainer {
+	& hr {
+		opacity: 0.3;
+		margin: 1.5em auto;
 	}
-	& thead {
-		position: relative;
-		background-color: color-mix(in srgb, var(--text-color), transparent 90%);
-		&::after {
-			content: '';
-			position: absolute;
-			width: 100%;
-			bottom: 0;
-			display: block;
-			height: 1px;
-			background: color-mix(in srgb, var(--text-color), transparent 50%);
+
+	& ol,
+	& ul {
+		margin-left: 1.6em;
+		margin-top: 0.25em;
+		margin-bottom: 0.5em;
+	}
+	& li {
+		margin-bottom: 0.5em;
+	}
+
+	& p:not(:first-child) {
+		margin-top: 0.5em;
+	}
+
+	& picture,
+	& img {
+		object-fit: contain;
+		object-position: center;
+		height: fit-content;
+	}
+	& pre {
+		margin: 1em 0;
+	}
+	& pre,
+	& code {
+		background-color: color(from var(--card-color) srgb r g b / 0.25) !important;
+	}
+
+	& pre:has(code) {
+		background: transparent;
+	}
+
+	& code {
+		margin: 0.25em;
+		line-height: 1.6;
+		box-shadow: inset 0 0 0.4em 0 color(from var(--shadow-color) srgb r g b / 0.2);
+	}
+
+	& table {
+		border: 1px solid color-mix(in srgb, var(--text-color), transparent 75%);
+		border-radius: 0.5em;
+		padding: 0;
+		border-spacing: 0;
+		margin: 0.5em 0;
+
+		& th {
+			text-align: center;
+			padding: 0.5em 1em;
 		}
-	}
-	& tr {
-		& > :nth-child(n) {
+		& thead {
 			position: relative;
+			background-color: color-mix(in srgb, var(--text-color), transparent 90%);
 			&::after {
 				content: '';
 				position: absolute;
-				width: 1px;
-				height: 100%;
-				right: 0;
-				top: 0;
+				width: 100%;
+				bottom: 0;
 				display: block;
+				height: 1px;
 				background: color-mix(in srgb, var(--text-color), transparent 50%);
 			}
 		}
-		& > :last-child {
-			&::after {
-				opacity: 0;
+		& tr {
+			& > :nth-child(n) {
+				position: relative;
+				&::after {
+					content: '';
+					position: absolute;
+					width: 1px;
+					height: 100%;
+					right: 0;
+					top: 0;
+					display: block;
+					background: color-mix(in srgb, var(--text-color), transparent 50%);
+				}
+			}
+			& > :last-child {
+				&::after {
+					opacity: 0;
+				}
 			}
 		}
-	}
-	& td {
-		padding: 0.5em 1em;
-	}
-	& tbody {
-		& tr:nth-child(even) {
-			background-color: color-mix(in srgb, var(--text-color), transparent 95%);
+		& td {
+			padding: 0.5em 1em;
 		}
+		& tbody {
+			& tr:nth-child(even) {
+				background-color: color-mix(in srgb, var(--text-color), transparent 95%);
+			}
+		}
+		width: fit-content;
 	}
-	width: fit-content;
+
+	& blockquote {
+		border-left: 3px solid color(from var(--color-primary) srgb r g b / 0.5);
+		background: var(--card-color);
+		padding: 1em 2.5em 0.5em 1em;
+		border-radius: 0 0.5em 0.5em 0;
+		width: fit-content;
+		margin-left: 1em;
+	}
 }

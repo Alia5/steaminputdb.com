@@ -190,7 +190,14 @@ func RegisterRoute(a huma.API, dal db.DAL, opts ...bool) {
 				}
 			}
 
+			appInfo.ControllerSupportRating = dbInfo.ControllerSupportRating
+			appInfo.ControllerSupportNotes = dbInfo.ControllerSupportNotes
+			appInfo.MixedInputInfo = dbInfo.MixedInputInfo
+			appInfo.SteamInputAPISupport = dbInfo.SteamInputAPISupport
+			appInfo.HWFeatures = dbInfo.HWFeatures
+			appInfo.Glyphs = dbInfo.Glyphs
 			infoItem := mapModelToResponse(appInfo)
+
 			if useMemCache {
 				cache.Store(cacheKey, infoItem)
 			}

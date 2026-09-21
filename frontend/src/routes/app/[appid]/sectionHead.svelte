@@ -25,16 +25,11 @@ import IcoFullController from '$lib/assets/steam_controller_type_svgs/xbox.svg?c
 import IcoPartialController from '$lib/assets/steam_controller_type_svgs/xbox_partial.svg?component';
 import IconHelp from '~icons/material-symbols/help-outline';
 
-import IcoForbidden from '~icons/mdi/do-not-disturb-alt';
-
-import { resolve } from '$app/paths';
 import IcoDs4Full from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
 import IcoDs4Partial from '$lib/assets/steam_controller_type_svgs/ps4_partial.svg?component';
 import IcoDs5Full from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
 import IcoDs5Partial from '$lib/assets/steam_controller_type_svgs/ps5_partial.svg?component';
 import IcoSIAPI from '$lib/assets/steam_controller_type_svgs/siapi.svg?component';
-import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
-import IcoGeneric from '~icons/mdi/controller';
 
 import IcoSteam from '~icons/mdi/steam';
 import IcoPCGW from '~icons/simple-icons/pcgamingwiki';
@@ -114,11 +109,10 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 							>
 								<IcoPartialController width="2em" />
 							</div>
-							<!-- HACK if is real steam game -->
-						{:else if appInfo?.assets?.community_icon}
-							<div
+						{:else if !appInfo?.store_url_path}
+							<!-- <div
 								{@attach tooltip({
-									content: 'No controller support',
+									content: 'Unknown controller support',
 									outDelay: 200,
 									arrow: true,
 									placement: 'bottom',
@@ -127,8 +121,8 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 								class="stacked"
 							>
 								<IcoFullController width="2em" opacity="0.5" />
-								<IcoForbidden width="2em" height="2em" color="red" style="z-index: 1;" />
-							</div>
+								<IcoUnknown width="2em" height="2em" style="z-index: 1;" />
+							</div> -->
 						{/if}
 						{#if appInfo?.controller_support?.steaminputapi_support}
 							<div
@@ -210,13 +204,11 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 							Controller support rating
 						</p>
 						<p style="text-align: center;">
-							Controller support is rated <b>by a dedicated mod team</b> on a variety of factors
-							including native support for different controllers, SteamInput,
-							<b>Mixed input support</b> and others.
+							The controller support rating system is a work and progress and to be determined
 						</p>
-						<br />
 						<p style="text-align: center;">
-							A dedicated description of tiers and the rating system will follow shortly.
+							Ratings will be based on a set of criteria including native controller support,
+							SteamInputAPI, glyphs, and mixed input support.
 						</p>
 					</div>
 				{/snippet}
@@ -233,8 +225,7 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 				>
 					<IconHelp style="width: 1.6em; height: 1.6em; color: var(--text-muted);" />
 				</div>
-				<!-- HACK if is real steam game -->
-				{#if appInfo?.assets?.community_icon}
+				{#if !appInfo?.store_url_path}
 					<RatingUnknown />
 					<div>
 						<span>Not yet rated</span>
@@ -349,25 +340,6 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 				</a>
 			{/if}
 		</div>
-
-		{#if Object.entries(appInfo?.official_configs ?? {}).length}
-			<div class="official-configs">
-				<h3>Official Configs</h3>
-				{#each Object.entries(appInfo?.official_configs ?? {}) as [controller_type, config_id] (config_id)}
-					{@const controller_list_entry = CONTROLLER_LIST.find(
-						(controller) => controller.type === controller_type
-					)}
-					<a href={resolve(`/config/${config_id}`)} class="button">
-						{#if controller_list_entry}
-							<controller_list_entry.icon width="2em" height="2em" />
-						{:else}
-							<IcoGeneric style="width: 2em; height: 2em;" />
-						{/if}
-						<span>{controller_list_entry?.niceName ?? 'Generic'}</span>
-					</a>
-				{/each}
-			</div>
-		{/if}
 	</section>
 {/snippet}
 
@@ -537,39 +509,6 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 			&:focus-visible {
 				color: var(--text-color-dark);
 				background-color: var(--color-primary);
-			}
-		}
-	}
-
-	.official-configs {
-		display: flex;
-		flex-flow: row wrap;
-		gap: 1ch;
-		margin-left: auto;
-		justify-content: center;
-		width: 100%;
-		& > :first-child {
-			width: 100%;
-			text-align: center;
-			filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.452)) drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.63));
-		}
-		& > a {
-			display: grid;
-			place-items: center;
-			font-weight: bold;
-			display: grid;
-			align-items: center;
-			justify-content: center;
-			padding: 0.5em 1em;
-			gap: 0.5ch;
-			background: linear-gradient(
-				215deg,
-				color-mix(in srgb, var(--card-color), transparent 35%) 0%,
-				color-mix(in srgb, var(--card-color), transparent 60%) 70%
-			);
-			& > :global(svg) {
-				width: 2em;
-				height: 2em;
 			}
 		}
 	}

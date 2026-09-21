@@ -2,7 +2,6 @@
 import { selectAllHandler } from '$lib/attachments/selectAllHandler.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { fade } from 'svelte/transition';
-import '../../../../css/md.pcss';
 
 import AboutBuddy from './about-buddy.svx';
 
@@ -90,7 +89,7 @@ const fetchReleases = async () => {
 	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
 </svelte:head>
 
-<main>
+<main class="mdcontainer">
 	<h1><span>SteamInputDB-<strong>Buddy</strong></span> <em>(Beta)</em></h1>
 	<section id="about-buddy">
 		<AboutBuddy />

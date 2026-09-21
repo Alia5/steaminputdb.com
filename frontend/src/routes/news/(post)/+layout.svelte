@@ -1,13 +1,12 @@
 <script lang="ts">
 const { children } = $props();
-import '../../../css/md.pcss';
 </script>
 
 <svelte:head>
 	<meta property="og:type" content="article" />
 </svelte:head>
 
-<main>
+<main class="mdcontainer">
 	{@render children?.()}
 </main>
 

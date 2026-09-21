@@ -20,7 +20,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 	fileInfo: components['schemas']['ConfigDetailResponse'];
 	appInfo?: components['schemas']['AppItem'];
 
-	creatorInfo?: components['schemas']['PlayerInfo'];
+	creatorInfo?: components['schemas']['UserInfoResponse'];
 })}
 	<section id="config-info">
 		<dl class="card glass">
