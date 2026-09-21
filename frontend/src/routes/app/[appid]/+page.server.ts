@@ -3,8 +3,8 @@ import { clientWithSvelteFetch, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import { fetchConfigs } from '$lib/api/searchConfigs';
 import { log } from '$lib/log';
-import { error, isHttpError } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { error, fail, isHttpError } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
 
 
 export const load: PageServerLoad = async ({ params, fetch, url }) => {
@@ -101,3 +101,35 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
     return loadRes;
 
 };
+
+export const actions = {
+    patchControllerSupportInfo: async ({ request, params, cookies, fetch }) => {
+        const app_id = parseInt(params.appid, 10);
+        const info = (await request.formData()).get('info');
+        if (typeof info !== 'string') {
+            return fail(400, { message: 'No info in request' });
+        }
+
+        const r = await clientWithSvelteFetch(fetch, PUBLIC_API_BASE_URL_LOCAL).PATCH(
+            '/v1/steam/appinfo/{app_id}/steaminputdbinfos',
+            {
+                params: {
+                    path: {
+                        app_id
+                    }
+                },
+                headers: {
+                    cookie: `token=${cookies.get('token')}`
+                },
+                body: JSON.parse(info)
+            }
+        );
+        if (r.error) {
+            log.error('Failed to patch controller support info', 'app_id', app_id, 'error', r.error);
+            return fail(r.error.status || 502, {
+                message: r.error.detail || 'Failed to update controller support info'
+            });
+        }
+        return { success: true };
+    }
+} satisfies Actions;

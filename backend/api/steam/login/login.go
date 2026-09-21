@@ -60,17 +60,17 @@ type Response struct {
 const jwtValidity = time.Hour * 24 * 30
 
 func RegisterWithURL(a huma.API, dal db.DAL, steamURL string) {
-	registerRoutes(a, dal, steamURL)
+	registerRoutes(a, steamURL)
 }
 
 func RegisterRoutes(a huma.API, dal db.DAL) {
-	registerRoutes(a, dal, steamLoginURL)
+	registerRoutes(a, steamLoginURL)
 }
 
 // TODO: create private endpoint for docs callback
 
-func registerRoutes(a huma.API, dal db.DAL, loginURL string) {
-	handler := handler(dal, loginURL)
+func registerRoutes(a huma.API, loginURL string) {
+	handler := handler(loginURL)
 	huma.Register(
 		a,
 		huma.Operation{
@@ -102,7 +102,7 @@ func registerRoutes(a huma.API, dal db.DAL, loginURL string) {
 	)
 }
 
-func handler(dal db.DAL, loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
+func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
 	return func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
 		params := url.Values{}
 

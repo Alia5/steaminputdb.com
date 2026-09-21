@@ -35,7 +35,7 @@ type SIDBControllerSupport struct {
 type MixedInputInfo struct {
 	MixedInputType    models.MixedInputSupportType `json:"type"`
 	GlyphFlicker      bool                         `json:"glyph_flicker"`
-	Notes             string                       `json:"notes,omitempty,omitzero"`
+	Notes             string                       `json:"notes,omitzero,omitempty"`
 	MixedInputModURLS []string                     `json:"mixed_input_mod_urls,omitempty"`
 }
 
@@ -48,23 +48,23 @@ type GlyphInfo struct {
 
 type GlyphControllerSupport struct {
 	ControllerType *steamtypes.ControllerType `json:"controller_type,omitempty,omitzero" example:"controller_steamcontroller_gordon" doc:"Type of controller this configuration is designed for"`
-	Notes          string                     `json:"notes,omitempty"`
+	Notes          string                     `json:"notes,omitempty,omitzero"`
 }
 
 type SteamInputAPISupport struct {
 	Glyphs []models.AppGlyphTagType `json:"glyphs,omitempty,omitzero"`
 
 	CameraSupport models.SteamInputCameraSupport    `json:"camera_support"`
-	PixelsPer360  string                            `json:"pixels_per_360"`
+	PixelsPer360  string                            `json:"pixels_per_360,omitempty,omitzero"`
 	SupportTags   []models.SteamInputAPISupportType `json:"support_tags,omitempty"`
 
-	Notes string `json:"notes,omitempty"`
+	Notes string `json:"notes,omitempty,omitzero"`
 }
 
 type HWFeature struct {
 	Feature          models.HWFeature               `json:"feature"`
 	ControllerFamily models.HWFeatureControllerType `json:"controller_family"`
-	Notes            string                         `json:"notes,omitempty"`
+	Notes            string                         `json:"notes,omitempty,omitzero"`
 }
 
 type configID uint64

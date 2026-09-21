@@ -50,7 +50,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         fileInfo: components['schemas']['ConfigItem'];
         nonSteam: boolean;
         appInfo?: components['schemas']['AppItem'];
-        creatorInfo?: components['schemas']['PlayerInfo'];
+        creatorInfo?: components['schemas']['UserInfoResponse'];
     } = {
         fileInfo,
         nonSteam: ! (!!fileInfo.app_id && Number.isInteger(fileInfo.app_id))

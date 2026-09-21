@@ -22,14 +22,19 @@ import (
 
 type PatchSteamInputDBInfosRequest struct {
 	AppID uint32 `path:"app_id"`
-	Body  SIDBControllerSupport
+	Body  UpdateSteamInputDBInfosBody
 }
 
 type UpdateSteamInputDBInfosBody struct {
-	// Define the fields that can be updated here
+	ControllerSupportRating *models.ControllerSupportRating `json:"controller_support_rating,omitempty,omitzero"`
+	ControllerSupportNotes  *string                         `json:"controller_support_notes,omitempty,omitzero"`
+	MixedInputInfo          *MixedInputInfo                 `json:"mixed_input,omitempty,omitzero"`
+	GlyphInfo               *GlyphInfo                      `json:"glyphs,omitempty,omitzero"`
+	SteamInputAPISupport    *SteamInputAPISupport           `json:"steaminputapi_support,omitempty,omitzero"`
+	HWFeatures              []HWFeature                     `json:"hw_features,omitempty,omitzero"`
 }
 
-func registerPatchSteamInputDBInfos(a huma.API, dal db.DAL, registry huma.Registry, sc client.Client, useMemCache bool, cache *memcache.Cache) {
+func registerPatchSteamInputDBInfos(a huma.API, dal db.DAL, _ huma.Registry, sc client.Client, useMemCache bool, cache *memcache.Cache) {
 	huma.Register(a, huma.Operation{
 		Method:  "PATCH",
 		Path:    "/v1/steam/appinfo/{app_id}/steaminputdbinfos",
@@ -102,14 +107,27 @@ func registerPatchSteamInputDBInfos(a huma.API, dal db.DAL, registry huma.Regist
 	})
 }
 
-func mapSteamInputDBInfoToAppInfo(appID uint32, info *SIDBControllerSupport, dbInfo *models.AppInfo) *models.AppInfo {
+func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBody, dbInfo *models.AppInfo) *models.AppInfo {
 	appInfo := &models.AppInfo{
 		AppID:                   appID,
-		ControllerSupportRating: info.ControllerSupportRating,
+		ControllerSupportRating: dbInfo.ControllerSupportRating,
 		ControllerSupportNotes:  info.ControllerSupportNotes,
+	}
+	if info.ControllerSupportRating != nil {
+		appInfo.ControllerSupportRating = *info.ControllerSupportRating
 	}
 
 	mixedInput := info.MixedInputInfo
+	if mixedInput != nil {
+		createsEmptyMixedInput := dbInfo.MixedInputInfo == nil
+		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.MixedInputType == models.MixedInputSupportUnknown
+		createsEmptyMixedInput = createsEmptyMixedInput && !mixedInput.GlyphFlicker
+		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.Notes == ""
+		createsEmptyMixedInput = createsEmptyMixedInput && len(mixedInput.MixedInputModURLS) == 0
+		if createsEmptyMixedInput {
+			mixedInput = nil
+		}
+	}
 	if mixedInput != nil {
 		appInfo.MixedInputInfo = &models.AppMixedInputInfo{
 			MixedInputSupport:      mixedInput.MixedInputType,
@@ -117,20 +135,37 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *SIDBControllerSupport, dbI
 			MixedInputNotes:        mixedInput.Notes,
 		}
 		if mixedInput.MixedInputModURLS != nil {
-			appInfo.MixedInputInfo.MixedInputModLinks = make([]*models.MixedInputModLinks, 0, len(mixedInput.MixedInputModURLS))
+			appInfo.MixedInputInfo.MixedInputModLinks = make(
+				[]*models.MixedInputModLinks,
+				0,
+				len(mixedInput.MixedInputModURLS),
+			)
 			for _, url := range mixedInput.MixedInputModURLS {
 				url = strings.TrimSpace(url)
 				if url == "" {
 					continue
 				}
-				appInfo.MixedInputInfo.MixedInputModLinks = append(appInfo.MixedInputInfo.MixedInputModLinks, &models.MixedInputModLinks{
-					Mod: url,
-				})
+				appInfo.MixedInputInfo.MixedInputModLinks = append(
+					appInfo.MixedInputInfo.MixedInputModLinks,
+					&models.MixedInputModLinks{
+						Mod: url,
+					},
+				)
 			}
 		}
 	}
 
 	glyphs := info.GlyphInfo
+	if glyphs != nil {
+		createsEmptyGlyphs := dbInfo.Glyphs == nil
+		createsEmptyGlyphs = createsEmptyGlyphs && !glyphs.AutoDetect
+		createsEmptyGlyphs = createsEmptyGlyphs && !glyphs.ManualSelect
+		createsEmptyGlyphs = createsEmptyGlyphs && glyphs.Notes == ""
+		createsEmptyGlyphs = createsEmptyGlyphs && len(glyphs.Controllers) == 0
+		if createsEmptyGlyphs {
+			glyphs = nil
+		}
+	}
 	if glyphs != nil {
 		appInfo.Glyphs = &models.AppGlyphs{
 			AutoGlyphDetect:   glyphs.AutoDetect,
@@ -138,7 +173,11 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *SIDBControllerSupport, dbI
 			GlyphNotes:        glyphs.Notes,
 		}
 		if glyphs.Controllers != nil {
-			appInfo.Glyphs.GlyphCtrlSupport = make([]*models.AppGlyphCtrlSupport, 0, len(glyphs.Controllers))
+			appInfo.Glyphs.GlyphCtrlSupport = make(
+				[]*models.AppGlyphCtrlSupport,
+				0,
+				len(glyphs.Controllers),
+			)
 			addedControllerTypes := make(map[steamtypes.ControllerType]bool, len(glyphs.Controllers))
 			for _, ctrl := range glyphs.Controllers {
 				if ctrl.ControllerType == nil {
@@ -148,15 +187,30 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *SIDBControllerSupport, dbI
 					continue
 				}
 				addedControllerTypes[*ctrl.ControllerType] = true
-				appInfo.Glyphs.GlyphCtrlSupport = append(appInfo.Glyphs.GlyphCtrlSupport, &models.AppGlyphCtrlSupport{
-					ControllerType: *ctrl.ControllerType,
-					Notes:          ctrl.Notes,
-				})
+				appInfo.Glyphs.GlyphCtrlSupport = append(
+					appInfo.Glyphs.GlyphCtrlSupport,
+					&models.AppGlyphCtrlSupport{
+						ControllerType: *ctrl.ControllerType,
+						Notes:          ctrl.Notes,
+					},
+				)
 			}
 		}
 	}
 
 	siapi := info.SteamInputAPISupport
+	if siapi != nil {
+		createsEmptySIAPISupport := dbInfo.SteamInputAPISupport == nil
+		createsEmptySIAPISupport = createsEmptySIAPISupport && dbInfo.Glyphs == nil
+		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.CameraSupport == models.SteamInputCameraSupportUnknown
+		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.PixelsPer360 == ""
+		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.Notes == ""
+		createsEmptySIAPISupport = createsEmptySIAPISupport && len(siapi.SupportTags) == 0
+		createsEmptySIAPISupport = createsEmptySIAPISupport && len(siapi.Glyphs) == 0
+		if createsEmptySIAPISupport {
+			siapi = nil
+		}
+	}
 	if siapi != nil {
 		appInfo.SteamInputAPISupport = &models.AppSteamInputAPISupport{
 			SIAPICameraSupport: siapi.CameraSupport,

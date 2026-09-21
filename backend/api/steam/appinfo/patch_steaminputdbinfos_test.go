@@ -246,6 +246,35 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			},
 		},
 		{
+			name: "EMPTY_SECTIONS_DO_NOT_CREATE_SECTIONS",
+			path: path,
+			body: `{
+				"controller_support_rating": 4,
+				"mixed_input": {"type": 0, "glyph_flicker": false, "notes": "", "mixed_input_mod_urls": []},
+				"glyphs": {"autodetect": false, "manual_select": false, "notes": "", "controllers": []},
+				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": "", "notes": "", "support_tags": []},
+				"hw_features": []
+			}`,
+			expectedStatus: http.StatusOK,
+			expectedBody: `{
+				"app_id": 999999,
+				"name": "Test App",
+				"store_url_path": "",
+				"type": "",
+				"steaminputdb_info": {
+					"controller_support_rating": 4
+				}
+			}`,
+			setup: func(t *testing.T, api humatest.TestAPI, dal db.DAL) {
+				err := dal.SteamUser().Insert(context.Background(), &models.SteamUser{
+					SteamID:     76561197997352479,
+					PersonaName: "TestUser",
+					IsAdmin:     true,
+				})
+				require.NoError(t, err)
+			},
+		},
+		{
 			name: "GLYPH_TAGS_WITHOUT_GLYPHS_KEEP_GLYPH_INFO",
 			path: path,
 			body: `{
@@ -279,7 +308,6 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 					"steaminputapi_support": {
 						"glyphs": [3],
 						"camera_support": 0,
-						"pixels_per_360": "",
 						"support_tags": [2, 3]
 					},
 					"hw_features": [
@@ -305,9 +333,9 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			body: `{
 				"controller_support_rating": 0,
 				"controller_support_notes": "",
-				"mixed_input": {"type": 0, "glyph_flicker": false, "mixed_input_mod_urls": [""]},
-				"glyphs": {"autodetect": false, "manual_select": false, "controllers": []},
-				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": "", "support_tags": []},
+				"mixed_input": {"type": 0, "glyph_flicker": false, "notes": "", "mixed_input_mod_urls": [""]},
+				"glyphs": {"autodetect": false, "manual_select": false, "notes": "", "controllers": []},
+				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": "", "notes": "", "support_tags": []},
 				"hw_features": []
 			}`,
 			expectedStatus: http.StatusOK,
@@ -328,8 +356,7 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 						"manual_select": false
 					},
 					"steaminputapi_support": {
-						"camera_support": 0,
-						"pixels_per_360": ""
+						"camera_support": 0
 					}
 				}
 			}`,

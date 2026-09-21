@@ -34,6 +34,9 @@ import IcoSteam from '~icons/mdi/steam';
 import IcoTrash from '~icons/mdi/trash-can-outline';
 import IcoAudioHaptics from '~icons/mdi/volume-vibrate';
 
+import { enhance } from '$app/forms';
+import { invalidateAll } from '$app/navigation';
+import { toast } from '$lib/toaster/toaster.svelte';
 import IcoCross from '~icons/mdi/close';
 import IcoEye from '~icons/mdi/eye';
 import IcoFloppy from '~icons/mdi/floppy';
@@ -42,6 +45,7 @@ import ControllerSupport from './ControllerSupport.svelte';
 
 let {
 	appInfo = $bindable(),
+	// eslint-disable-next-line no-useless-assignment
 	editControllerSupport = $bindable<boolean>(false)
 }: {
 	appInfo: components['schemas']['AppInfoItem'];
@@ -57,32 +61,18 @@ let steaminputdbInfo = $derived.by(() => {
 	}
 	if (!draft?.steaminputdb_info?.mixed_input) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		draft.steaminputdb_info!.mixed_input = {} as any;
-	}
-	if (!draft?.steaminputdb_info?.mixed_input?.mixed_input_mod_urls) {
-		draft.steaminputdb_info!.mixed_input!.mixed_input_mod_urls = [];
+		draft.steaminputdb_info!.mixed_input = { type: 0, glyph_flicker: true } as any;
 	}
 	if (!draft?.steaminputdb_info?.glyphs) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		draft.steaminputdb_info!.glyphs = {} as any;
-	}
-	if (!draft?.steaminputdb_info?.glyphs?.controllers) {
-		draft.steaminputdb_info!.glyphs!.controllers = [];
+		draft.steaminputdb_info!.glyphs = { autodetect: true, manual_select: false } as any;
 	}
 
 	if (!draft?.steaminputdb_info?.steaminputapi_support) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		draft.steaminputdb_info!.steaminputapi_support = {} as any;
+		draft.steaminputdb_info!.steaminputapi_support = { camera_support: 0, pixels_per_360: '' } as any;
 	}
-	if (!draft?.steaminputdb_info?.steaminputapi_support?.glyphs) {
-		draft.steaminputdb_info!.steaminputapi_support!.glyphs = [];
-	}
-	if (!draft?.steaminputdb_info?.steaminputapi_support?.support_tags) {
-		draft.steaminputdb_info!.steaminputapi_support!.support_tags = [];
-	}
-	if (!draft?.steaminputdb_info?.hw_features) {
-		draft.steaminputdb_info!.hw_features = [];
-	}
+
 	return draft?.steaminputdb_info as Exclude<
 		Required<components['schemas']['AppInfoItem']['steaminputdb_info']>,
 		undefined
@@ -98,7 +88,31 @@ let previewAppInfo = $derived({
 });
 </script>
 
-<form id="controller-support">
+<form
+	id="controller-support"
+	method="POST"
+	action="?/patchControllerSupportInfo"
+	use:enhance={({ formData }) => {
+		formData.set('info', JSON.stringify(previewAppInfo.steaminputdb_info));
+		appInfo = previewAppInfo;
+		editControllerSupport = false;
+		return async ({ result }) => {
+			if (result.type !== 'success') {
+				toast({
+					message: 'Failed to save controller support info',
+					color: 'firebrick'
+				});
+			} else {
+				editControllerSupport = false;
+				toast({
+					message: 'Successfully saved controller support info',
+					color: 'green'
+				});
+				await invalidateAll();
+			}
+		};
+	}}
+>
 	{#if preview}
 		<strong
 			style="color: red; font-size: 1.4em; text-align: center; filter: drop-shadow(0 0 0.75rem black);"
@@ -427,7 +441,6 @@ let previewAppInfo = $derived({
 									name="glyph-flicker"
 									bind:value={steaminputdbInfo.mixed_input.glyph_flicker}
 								>
-									<option value={null}>Unknown</option>
 									<option value={true}>Yes</option>
 									<option value={false}>No</option>
 								</select>
@@ -474,7 +487,6 @@ let previewAppInfo = $derived({
 									name="glyph-detect"
 									bind:value={steaminputdbInfo.glyphs.autodetect}
 								>
-									<option value={null}>Unknown</option>
 									<option value={true}>Yes</option>
 									<option value={false}>No</option>
 								</select>
@@ -489,7 +501,6 @@ let previewAppInfo = $derived({
 									name="manual-glyph-select"
 									bind:value={steaminputdbInfo.glyphs.manual_select}
 								>
-									<option value={null}>Unknown</option>
 									<option value={true}>Yes</option>
 									<option value={false}>No</option>
 								</select>

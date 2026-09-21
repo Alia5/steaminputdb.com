@@ -1509,13 +1509,6 @@ components:
     SIDBControllerSupport:
       additionalProperties: false
       properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          examples:
-            - http://localhost:8889/schemas/SIDBControllerSupport.json
-          format: uri
-          readOnly: true
-          type: string
         controller_support_notes:
           type: string
         controller_support_rating:
@@ -1616,7 +1609,6 @@ components:
             - "null"
       required:
         - camera_support
-        - pixels_per_360
       type: object
     SteamInputDBInfo:
       additionalProperties: false
@@ -2361,6 +2353,34 @@ components:
         type:
           type: string
       type: object
+    UpdateSteamInputDBInfosBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/UpdateSteamInputDBInfosBody.json
+          format: uri
+          readOnly: true
+          type: string
+        controller_support_notes:
+          type: string
+        controller_support_rating:
+          format: int64
+          type: integer
+        glyphs:
+          $ref: "#/components/schemas/GlyphInfo"
+        hw_features:
+          items:
+            $ref: "#/components/schemas/HWFeature"
+          type:
+            - array
+            - "null"
+        mixed_input:
+          $ref: "#/components/schemas/MixedInputInfo"
+        steaminputapi_support:
+          $ref: "#/components/schemas/SteamInputAPISupport"
+      type: object
     UserInfoResponse:
       additionalProperties: false
       properties:
@@ -2666,7 +2686,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SIDBControllerSupport"
+              $ref: "#/components/schemas/UpdateSteamInputDBInfosBody"
         required: true
       responses:
         "200":
