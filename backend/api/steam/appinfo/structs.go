@@ -34,14 +34,14 @@ type SIDBControllerSupport struct {
 
 type MixedInputInfo struct {
 	MixedInputType    models.MixedInputSupportType `json:"type"`
-	GlyphFlicker      bool                         `json:"glyph_flicker"`
+	GlyphFlicker      *bool                        `json:"glyph_flicker,omitempty,omitzero" nullable:"true"`
 	Notes             string                       `json:"notes,omitzero,omitempty"`
 	MixedInputModURLS []string                     `json:"mixed_input_mod_urls,omitempty"`
 }
 
 type GlyphInfo struct {
-	AutoDetect   bool                     `json:"autodetect"`
-	ManualSelect bool                     `json:"manual_select"`
+	AutoDetect   *bool                    `json:"autodetect,omitempty,omitzero" nullable:"true"`
+	ManualSelect *bool                    `json:"manual_select,omitempty,omitzero" nullable:"true"`
 	Notes        string                   `json:"notes,omitempty,omitzero"`
 	Controllers  []GlyphControllerSupport `json:"controllers,omitempty"`
 }
@@ -55,7 +55,7 @@ type SteamInputAPISupport struct {
 	Glyphs []models.AppGlyphTagType `json:"glyphs,omitempty,omitzero"`
 
 	CameraSupport models.SteamInputCameraSupport    `json:"camera_support"`
-	PixelsPer360  string                            `json:"pixels_per_360,omitempty,omitzero"`
+	PixelsPer360  *string                           `json:"pixels_per_360,omitempty,omitzero" nullable:"true"`
 	SupportTags   []models.SteamInputAPISupportType `json:"support_tags,omitempty"`
 
 	Notes string `json:"notes,omitempty,omitzero"`

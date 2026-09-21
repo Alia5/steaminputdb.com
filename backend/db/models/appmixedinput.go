@@ -19,7 +19,7 @@ type AppMixedInputInfo struct {
 	CreatedAt              time.Time
 	UpdatedAt              time.Time
 	MixedInputSupport      MixedInputSupportType `gorm:"index"`
-	MixedInputGlyphFlicker bool
+	MixedInputGlyphFlicker *bool
 	MixedInputNotes        string
 	MixedInputModLinks     []*MixedInputModLinks `gorm:"foreignKey:AppID"`
 }

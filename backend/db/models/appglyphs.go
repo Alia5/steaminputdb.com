@@ -14,8 +14,8 @@ const (
 type AppGlyphs struct {
 	AppID uint32 `gorm:"primaryKey;autoIncrement:false"`
 
-	AutoGlyphDetect   bool
-	ManualGlyphSelect bool
+	AutoGlyphDetect   *bool
+	ManualGlyphSelect *bool
 	GlyphCtrlSupport  []*AppGlyphCtrlSupport `gorm:"foreignKey:AppID"`
 	GlyphTags         []*AppGlyphTag         `gorm:"foreignKey:AppID"`
 	GlyphNotes        string

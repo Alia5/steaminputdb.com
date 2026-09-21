@@ -22,7 +22,7 @@ func fullInfo(appID uint32) *models.AppInfo {
 		ControllerSupportNotes:  new("notes"),
 		MixedInputInfo: &models.AppMixedInputInfo{
 			MixedInputSupport:      models.MixedInputWithMod,
-			MixedInputGlyphFlicker: true,
+			MixedInputGlyphFlicker: new(true),
 			MixedInputNotes:        "mixed notes",
 			MixedInputModLinks: []*models.MixedInputModLinks{
 				{
@@ -35,7 +35,7 @@ func fullInfo(appID uint32) *models.AppInfo {
 		},
 		SteamInputAPISupport: &models.AppSteamInputAPISupport{
 			SIAPICameraSupport: models.SteamInputCameraSupportFull,
-			SIAPIPixelsPer360:  "1234",
+			SIAPIPixelsPer360:  new("1234"),
 			Notes:              "siapi notes",
 			SIAPITypes: []*models.AppSIAPITypes{
 				{
@@ -47,8 +47,8 @@ func fullInfo(appID uint32) *models.AppInfo {
 			},
 		},
 		Glyphs: &models.AppGlyphs{
-			AutoGlyphDetect:   true,
-			ManualGlyphSelect: true,
+			AutoGlyphDetect:   new(true),
+			ManualGlyphSelect: new(true),
 			GlyphNotes:        "glyph notes",
 			GlyphCtrlSupport: []*models.AppGlyphCtrlSupport{
 				{
@@ -147,7 +147,7 @@ func TestUpdateSteamInputDBInfo(t *testing.T) {
 				info := fullInfo(testAppID)
 				info.ControllerSupportRating = models.ControllerSupportRatingSilver
 				info.MixedInputInfo.MixedInputSupport = models.MixedInputUnsupported
-				info.MixedInputInfo.MixedInputGlyphFlicker = false
+				info.MixedInputInfo.MixedInputGlyphFlicker = nil
 				info.MixedInputInfo.MixedInputNotes = ""
 				return info
 			}(),

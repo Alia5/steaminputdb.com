@@ -121,7 +121,7 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 	if mixedInput != nil {
 		createsEmptyMixedInput := dbInfo.MixedInputInfo == nil
 		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.MixedInputType == models.MixedInputSupportUnknown
-		createsEmptyMixedInput = createsEmptyMixedInput && !mixedInput.GlyphFlicker
+		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.GlyphFlicker == nil
 		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.Notes == ""
 		createsEmptyMixedInput = createsEmptyMixedInput && len(mixedInput.MixedInputModURLS) == 0
 		if createsEmptyMixedInput {
@@ -158,8 +158,8 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 	glyphs := info.GlyphInfo
 	if glyphs != nil {
 		createsEmptyGlyphs := dbInfo.Glyphs == nil
-		createsEmptyGlyphs = createsEmptyGlyphs && !glyphs.AutoDetect
-		createsEmptyGlyphs = createsEmptyGlyphs && !glyphs.ManualSelect
+		createsEmptyGlyphs = createsEmptyGlyphs && glyphs.AutoDetect == nil
+		createsEmptyGlyphs = createsEmptyGlyphs && glyphs.ManualSelect == nil
 		createsEmptyGlyphs = createsEmptyGlyphs && glyphs.Notes == ""
 		createsEmptyGlyphs = createsEmptyGlyphs && len(glyphs.Controllers) == 0
 		if createsEmptyGlyphs {
@@ -200,10 +200,15 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 
 	siapi := info.SteamInputAPISupport
 	if siapi != nil {
+		if siapi.PixelsPer360 != nil {
+			if *siapi.PixelsPer360 == "" {
+				siapi.PixelsPer360 = nil
+			}
+		}
 		createsEmptySIAPISupport := dbInfo.SteamInputAPISupport == nil
 		createsEmptySIAPISupport = createsEmptySIAPISupport && dbInfo.Glyphs == nil
 		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.CameraSupport == models.SteamInputCameraSupportUnknown
-		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.PixelsPer360 == ""
+		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.PixelsPer360 == nil
 		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.Notes == ""
 		createsEmptySIAPISupport = createsEmptySIAPISupport && len(siapi.SupportTags) == 0
 		createsEmptySIAPISupport = createsEmptySIAPISupport && len(siapi.Glyphs) == 0

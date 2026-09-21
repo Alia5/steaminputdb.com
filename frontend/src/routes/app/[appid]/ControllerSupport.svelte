@@ -326,7 +326,9 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 						</div>
 					</section>
 				{/if}
-				{#if steaminputdbInfo?.steaminputapi_support}
+				<!-- eslint-disable prettier-prettier -->
+				{#if (steaminputdbInfo?.steaminputapi_support?.support_tags || []).length || steaminputdbInfo?.steaminputapi_support?.camera_support || steaminputdbInfo?.steaminputapi_support?.notes}
+					<!-- eslint-enable prettier-prettier -->
 					{@const steaminputapi = steaminputdbInfo?.steaminputapi_support}
 					<section id="steaminputapi" class="info-group">
 						<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input API Support</h3>
@@ -355,11 +357,11 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 									{/if}
 									<span>SIAPI Camera Support</span>
 								</div>
-								{#if steaminputapi?.pixels_per_360}
+								{#if steaminputapi?.pixels_per_360 || (steaminputapi?.camera_support ?? 0 > 0)}
 									<div>
 										<IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />
 										<span>Pixels Per 360°</span>
-										<code>{steaminputapi.pixels_per_360}</code>
+										<code>{steaminputapi?.pixels_per_360 ?? ''}</code>
 									</div>
 								{/if}
 							{/if}

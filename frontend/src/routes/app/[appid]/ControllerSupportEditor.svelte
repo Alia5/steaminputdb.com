@@ -61,16 +61,16 @@ let steaminputdbInfo = $derived.by(() => {
 	}
 	if (!draft?.steaminputdb_info?.mixed_input) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		draft.steaminputdb_info!.mixed_input = { type: 0, glyph_flicker: true } as any;
+		draft.steaminputdb_info!.mixed_input = { type: 0 } as any;
 	}
 	if (!draft?.steaminputdb_info?.glyphs) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		draft.steaminputdb_info!.glyphs = { autodetect: true, manual_select: false } as any;
+		draft.steaminputdb_info!.glyphs = {} as any;
 	}
 
 	if (!draft?.steaminputdb_info?.steaminputapi_support) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		draft.steaminputdb_info!.steaminputapi_support = { camera_support: 0, pixels_per_360: '' } as any;
+		draft.steaminputdb_info!.steaminputapi_support = { camera_support: 0 } as any;
 	}
 
 	return draft?.steaminputdb_info as Exclude<
@@ -441,6 +441,7 @@ let previewAppInfo = $derived({
 									name="glyph-flicker"
 									bind:value={steaminputdbInfo.mixed_input.glyph_flicker}
 								>
+									<option value={null}>Unknown</option>
 									<option value={true}>Yes</option>
 									<option value={false}>No</option>
 								</select>
@@ -487,6 +488,7 @@ let previewAppInfo = $derived({
 									name="glyph-detect"
 									bind:value={steaminputdbInfo.glyphs.autodetect}
 								>
+									<option value={null}>Unknown</option>
 									<option value={true}>Yes</option>
 									<option value={false}>No</option>
 								</select>
@@ -501,6 +503,7 @@ let previewAppInfo = $derived({
 									name="manual-glyph-select"
 									bind:value={steaminputdbInfo.glyphs.manual_select}
 								>
+									<option value={null}>Unknown</option>
 									<option value={true}>Yes</option>
 									<option value={false}>No</option>
 								</select>

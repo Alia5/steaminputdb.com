@@ -31,7 +31,7 @@ type AppSteamInputAPISupport struct {
 
 	SIAPITypes         []*AppSIAPITypes `gorm:"foreignKey:AppID"`
 	SIAPICameraSupport SteamInputCameraSupport
-	SIAPIPixelsPer360  string
+	SIAPIPixelsPer360  *string
 	SIAPICameraNotes   string
 
 	Notes string

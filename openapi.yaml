@@ -912,7 +912,9 @@ components:
       additionalProperties: false
       properties:
         autodetect:
-          type: boolean
+          type:
+            - boolean
+            - "null"
         controllers:
           items:
             $ref: "#/components/schemas/GlyphControllerSupport"
@@ -920,12 +922,11 @@ components:
             - array
             - "null"
         manual_select:
-          type: boolean
+          type:
+            - boolean
+            - "null"
         notes:
           type: string
-      required:
-        - autodetect
-        - manual_select
       type: object
     HWFeature:
       additionalProperties: false
@@ -1020,7 +1021,9 @@ components:
       additionalProperties: false
       properties:
         glyph_flicker:
-          type: boolean
+          type:
+            - boolean
+            - "null"
         mixed_input_mod_urls:
           items:
             type: string
@@ -1034,7 +1037,6 @@ components:
           type: integer
       required:
         - type
-        - glyph_flicker
       type: object
     OpenIDBody:
       additionalProperties: false
@@ -1599,7 +1601,9 @@ components:
         notes:
           type: string
         pixels_per_360:
-          type: string
+          type:
+            - string
+            - "null"
         support_tags:
           items:
             format: int64

@@ -250,9 +250,9 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			path: path,
 			body: `{
 				"controller_support_rating": 4,
-				"mixed_input": {"type": 0, "glyph_flicker": false, "notes": "", "mixed_input_mod_urls": []},
-				"glyphs": {"autodetect": false, "manual_select": false, "notes": "", "controllers": []},
-				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": "", "notes": "", "support_tags": []},
+				"mixed_input": {"type": 0, "glyph_flicker": null, "notes": "", "mixed_input_mod_urls": []},
+				"glyphs": {"autodetect": null, "manual_select": null, "notes": "", "controllers": []},
+				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": null, "notes": "", "support_tags": []},
 				"hw_features": []
 			}`,
 			expectedStatus: http.StatusOK,
