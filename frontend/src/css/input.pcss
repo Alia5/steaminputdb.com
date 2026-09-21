@@ -18,9 +18,42 @@ input {
 	&:focus-visible {
 		outline: 0.16em solid var(--color-primary);
 	}
+	&[disabled] {
+		opacity: 0.5;
+		cursor: not-allowed;
+		&:hover,
+		&:focus-visible {
+			outline: 1px solid transparent;
+		}
+	}
 }
 
 input[type='search']::-webkit-search-cancel-button {
 	-webkit-appearance: none;
 	-webkit-user-modify: read-write !important;
+}
+
+textarea {
+	background-color: color-mix(in srgb, var(--card-color), transparent 60%);
+	border: 1px solid color-mix(in srgb, var(--text-color), transparent 90%);
+	padding: 0.5em 1em;
+	color: var(--text-color);
+	border-radius: 0.5rem;
+	box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.25);
+	transition:
+		border var(--transition-duration) var(--default-ease),
+		box-shadow var(--transition-duration) var(--default-ease),
+		outline var(--transition-duration) var(--default-ease),
+		opacity var(--transition-duration) var(--default-ease),
+		color var(--transition-duration) var(--default-ease);
+	outline: 1px solid transparent;
+	&:hover,
+	&:focus-within {
+		outline: 0.1em solid var(--color-primary);
+		box-shadow: 0 0 1.3em -0.4em var(--color-primary);
+	}
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
 }

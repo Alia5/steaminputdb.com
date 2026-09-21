@@ -42,8 +42,7 @@ const {
 }: {
 	appInfo: components['schemas']['AppInfoItem'];
 } = $props();
-
-$inspect(appInfo);
+let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 </script>
 
 {#snippet controllerIcon(type: string | undefined, glyphNotes?: string)}
@@ -56,7 +55,7 @@ $inspect(appInfo);
 				content: glyphNotes ?? '',
 				outDelay: 200,
 				arrow: true,
-
+				autoPlacement: true,
 				arrowFollowCursor: false
 			})}
 		/>
@@ -86,7 +85,7 @@ $inspect(appInfo);
 			content: notes ?? '',
 			outDelay: 200,
 			arrow: true,
-
+			autoPlacement: true,
 			arrowFollowCursor: false
 		})}
 	>
@@ -156,12 +155,16 @@ $inspect(appInfo);
 {/snippet}
 
 <section id="controller-support">
+	{@render controllerSupportContent()}
+</section>
+
+{#snippet controllerSupportContent()}
 	<div
-		class={appInfo?.steaminputdb_info?.glyphs ||
-		appInfo?.steaminputdb_info?.mixed_input ||
-		appInfo?.steaminputdb_info?.hw_features ||
-		appInfo?.steaminputdb_info?.steaminputapi_support ||
-		appInfo?.steaminputdb_info?.controller_support_notes
+		class={steaminputdbInfo?.glyphs ||
+		steaminputdbInfo?.mixed_input ||
+		steaminputdbInfo?.hw_features ||
+		steaminputdbInfo?.steaminputapi_support ||
+		steaminputdbInfo?.controller_support_notes
 			? 'card glass'
 			: ''}
 	>
@@ -183,13 +186,13 @@ $inspect(appInfo);
 				{/each}
 			</section>
 		{/if}
-		{#if appInfo?.steaminputdb_info?.glyphs}
+		{#if steaminputdbInfo?.glyphs}
 			<div class="rule-divider"></div>
 			<section id="mixed-input-and-glyphs">
 				<section id="mixed-input" class="info-group">
 					<h3><IcoMixedInput style="width: 2em; height: 2em;" />Mixed Input</h3>
-					{#if appInfo?.steaminputdb_info?.mixed_input}
-						{@const mixedinputInfo = appInfo?.steaminputdb_info?.mixed_input}
+					{#if steaminputdbInfo?.mixed_input}
+						{@const mixedinputInfo = steaminputdbInfo?.mixed_input}
 						{@const mixedInputType = mixedinputInfo?.type}
 						<div>
 							<div>
@@ -238,8 +241,8 @@ $inspect(appInfo);
 				</section>
 				<section id="glyphs" class="info-group">
 					<h3><IconMdiGamepadCircle style="width: 1.6em; height: 1.6em;" /> Glyphs</h3>
-					{#if appInfo?.steaminputdb_info?.glyphs}
-						{@const glyphsInfo = appInfo?.steaminputdb_info?.glyphs}
+					{#if steaminputdbInfo?.glyphs}
+						{@const glyphsInfo = steaminputdbInfo?.glyphs}
 						<div>
 							<div class="ctrl-glyphs">
 								{#each glyphsInfo.controllers as controller (controller.controller_type)}
@@ -257,9 +260,8 @@ $inspect(appInfo);
 									<span>Manual Override / Lock</span>
 								{/if}
 							</div>
-							{#if appInfo?.steaminputdb_info?.steaminputapi_support?.glyphs}
-								{@const siapiGlphTags =
-									appInfo?.steaminputdb_info?.steaminputapi_support?.glyphs}
+							{#if steaminputdbInfo?.steaminputapi_support?.glyphs}
+								{@const siapiGlphTags = steaminputdbInfo?.steaminputapi_support?.glyphs}
 								<div>
 									{#each siapiGlphTags as tag (tag)}
 										{@render steamInputAPIGlyphTag(tag)}
@@ -283,15 +285,14 @@ $inspect(appInfo);
 				</section>
 			</section>
 		{/if}
-		{#if appInfo?.steaminputdb_info?.steaminputapi_support || (appInfo?.steaminputdb_info?.hw_features || []).length}
+		{#if steaminputdbInfo?.steaminputapi_support || (steaminputdbInfo?.hw_features || []).length}
 			<div class="horizontal-group">
-				{#if appInfo?.steaminputdb_info?.steaminputapi_support}
-					{@const steaminputapi = appInfo?.steaminputdb_info?.steaminputapi_support}
+				{#if steaminputdbInfo?.steaminputapi_support}
+					{@const steaminputapi = steaminputdbInfo?.steaminputapi_support}
 					<section id="steaminputapi" class="info-group">
 						<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input API Support</h3>
-						{#if (steaminputapi.support_tags || []).length}
-							{@const siapiSuppTags =
-								appInfo?.steaminputdb_info?.steaminputapi_support?.support_tags}
+						{#if (steaminputapi?.support_tags || []).length}
+							{@const siapiSuppTags = steaminputdbInfo?.steaminputapi_support?.support_tags}
 							<div>
 								<div>
 									{#each siapiSuppTags as tag (tag)}
@@ -301,21 +302,21 @@ $inspect(appInfo);
 							</div>
 						{/if}
 						<div>
-							{#if steaminputapi.camera_support > 0}
+							{#if steaminputapi?.camera_support ?? 0 > 0}
 								<div>
-									{#if steaminputapi.camera_support === SteamInputCameraSupport.None}
+									{#if steaminputapi?.camera_support === SteamInputCameraSupport.None}
 										<IcoMdiCross style="width: 1.6em; height: 1.6em; color: red" />
 										<strong>No</strong>
-									{:else if steaminputapi.camera_support === SteamInputCameraSupport.Partial}
+									{:else if steaminputapi?.camera_support === SteamInputCameraSupport.Partial}
 										<IcoMdiDash style="width: 1.6em; height: 1.6em; color: orange" />
 										<strong>Partial</strong>
-									{:else if steaminputapi.camera_support === SteamInputCameraSupport.Full}
+									{:else if steaminputapi?.camera_support === SteamInputCameraSupport.Full}
 										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
 										<strong>Full</strong>
 									{/if}
 									<span>SIAPI Camera Support</span>
 								</div>
-								{#if steaminputapi.pixels_per_360}
+								{#if steaminputapi?.pixels_per_360}
 									<div>
 										<IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />
 										<span>Pixels Per 360°</span>
@@ -334,12 +335,12 @@ $inspect(appInfo);
 						{/if}
 					</section>
 				{/if}
-				{#if (appInfo?.steaminputdb_info?.hw_features || []).length}
-					{@const hwFeatures = appInfo?.steaminputdb_info?.hw_features}
+				{#if (steaminputdbInfo?.hw_features || []).length}
+					{@const hwFeatures = steaminputdbInfo?.hw_features}
 					<section id="hw-features" class="info-group">
 						<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
 						<div>
-							{#each Object.entries(hwFeatures!.reduce((acc, feature) => {
+							{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
 										if (!acc[feature.controller_family]) {
 											acc[feature.controller_family] = [];
 										}
@@ -348,8 +349,8 @@ $inspect(appInfo);
 									}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
 								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
 									<div>
-										<IcoDpad style="width: 2em; height: 2em;" />
-										<span>Common</span>
+										<IcoDpad style="width: 1.4em;" />
+										<span>Generic</span>
 									</div>
 									<div>
 										{#each features as f (f.feature)}
@@ -358,7 +359,7 @@ $inspect(appInfo);
 									</div>
 								{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
 									<div class="feature-group-header">
-										<IcoSteam style="width: 2em; height: 2em;" />
+										<IcoSteam style="width: 1.4em;" />
 										<span>Steam</span>
 									</div>
 									<div>
@@ -368,7 +369,7 @@ $inspect(appInfo);
 									</div>
 								{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
 									<div class="feature-group-header">
-										<IcoDs5 style="width: 2em; height: 2em;" />
+										<IcoDs5 style="width: 1.2em" />
 										<span>PlayStation</span>
 									</div>
 									<div>
@@ -378,7 +379,7 @@ $inspect(appInfo);
 									</div>
 								{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
 									<div class="feature-group-header">
-										<IcoXbox style="width: 2em; height: 2em;" />
+										<IcoXbox style="width: 1.2em;" />
 										<span>Xbox</span>
 									</div>
 									<div>
@@ -388,7 +389,7 @@ $inspect(appInfo);
 									</div>
 								{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
 									<div class="feature-group-header">
-										<IcoSwitch style="width: 2em; height: 2em;" />
+										<IcoSwitch style="width:1.2em;" />
 										<span>Nintendo</span>
 									</div>
 									<div>
@@ -404,21 +405,23 @@ $inspect(appInfo);
 			</div>
 		{/if}
 	</div>
-	{#if appInfo?.steaminputdb_info?.controller_support_notes || (appInfo?.steaminputdb_info?.mixed_input?.mixed_input_mod_urls || []).length}
+	{#if steaminputdbInfo?.controller_support_notes || (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length}
 		<aside id="controller-support-notes" class="card glass">
 			<h3>Additional Info</h3>
-			{#if appInfo?.steaminputdb_info?.controller_support_notes}
+			{#if steaminputdbInfo?.controller_support_notes}
 				<div class="mdcontainer scrollable">
 					<div class="content">
-						<MarkdownSSR content={appInfo?.steaminputdb_info?.controller_support_notes} />
+						<MarkdownSSR content={steaminputdbInfo?.controller_support_notes} />
 						<p></p>
 					</div>
 				</div>
 			{/if}
-			{#if (appInfo?.steaminputdb_info?.mixed_input?.mixed_input_mod_urls || []).length}
+			{#if (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length}
 				<div class="mod-link-list">
-					<strong style="padding-top: 1.5em;">Mixed Input / Controller Mod URLs</strong>
-					{#each appInfo?.steaminputdb_info?.mixed_input?.mixed_input_mod_urls as url, idx (idx)}
+					<strong style="padding-top: 1.5em;"
+						>Mixed Input / Controller support Mod{#if (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length > 1}s{/if}
+					</strong>
+					{#each steaminputdbInfo?.mixed_input?.mixed_input_mod_urls as url, idx (idx)}
 						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 						<a href={url} target="_blank" rel="noopener noreferrer">{getModUrlName(url)}</a>
 					{/each}
@@ -426,7 +429,7 @@ $inspect(appInfo);
 			{/if}
 		</aside>
 	{/if}
-</section>
+{/snippet}
 
 <style lang="postcss">
 #controller-support {
@@ -522,9 +525,7 @@ h3 {
 			justify-content: center;
 		}
 	}
-	& .notes {
-		max-width: 42ch;
-	}
+
 	.ctrl-glyphs {
 		display: flex;
 		flex-flow: row wrap;
@@ -550,11 +551,11 @@ h3 {
 			align-items: center;
 		}
 	}
-	& .notes {
-		max-width: 42ch;
-	}
 }
 
+.notes {
+	max-width: 42ch;
+}
 .feature {
 	display: flex;
 	align-items: center;

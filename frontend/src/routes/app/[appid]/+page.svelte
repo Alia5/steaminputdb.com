@@ -23,11 +23,12 @@ import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, fly, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
 import ControllerSupport from './ControllerSupport.svelte';
+import ControllerSupportEditor from './ControllerSupportEditor.svelte';
 import { sectionHead } from './sectionHead.svelte';
 
 let { data }: PageProps = $props();
 
-const appInfo: components['schemas']['AppInfoItem'] | undefined = $derived(data.appInfo);
+let appInfo: components['schemas']['AppInfoItem'] | undefined = $derived(data.appInfo);
 
 const pageBGURL = $derived.by(() => {
 	if (!appInfo?.assets) {
@@ -111,6 +112,8 @@ const loadMore = async () => {
 	}
 	loadingMore = false;
 };
+
+let editControllerSupport = $state(true);
 
 beforeNavigate((event) => {
 	if (event.type == 'form') {
@@ -221,7 +224,11 @@ onMount(() => {
 			{@render sectionHead({ appInfo, fallbackName: page.params.appid })}
 		</div>
 		{#if appInfo}
-			<ControllerSupport appInfo={appInfo} />
+			{#if editControllerSupport}
+				<ControllerSupportEditor appInfo={appInfo} />
+			{:else}
+				<ControllerSupport appInfo={appInfo} />
+			{/if}
 		{/if}
 		<search>
 			<SearchForm
