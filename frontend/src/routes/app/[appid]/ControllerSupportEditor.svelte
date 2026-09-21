@@ -34,10 +34,18 @@ import IcoSteam from '~icons/mdi/steam';
 import IcoTrash from '~icons/mdi/trash-can-outline';
 import IcoAudioHaptics from '~icons/mdi/volume-vibrate';
 
-const {
-	appInfo
+import IcoCross from '~icons/mdi/close';
+import IcoEye from '~icons/mdi/eye';
+import IcoFloppy from '~icons/mdi/floppy';
+import IcoPencil from '~icons/mdi/pencil';
+import ControllerSupport from './ControllerSupport.svelte';
+
+let {
+	appInfo = $bindable(),
+	editControllerSupport = $bindable<boolean>(false)
 }: {
 	appInfo: components['schemas']['AppInfoItem'];
+	editControllerSupport: boolean;
 } = $props();
 let steaminputdbInfo = $derived.by(() => {
 	const draft = $state({
@@ -80,9 +88,53 @@ let steaminputdbInfo = $derived.by(() => {
 		undefined
 	>;
 });
+
+let preview = $state(false);
+let previewAppInfo = $derived({
+	...appInfo,
+	steaminputdb_info: {
+		...steaminputdbInfo
+	}
+});
 </script>
 
-{#snippet controllerGlyphSelect(type: string | undefined, niceName: string, glyphNotes?: string)}
+<form id="controller-support">
+	{#if preview}
+		<strong
+			style="color: red; font-size: 1.4em; text-align: center; filter: drop-shadow(0 0 0.75rem black);"
+			>Preview Mode</strong
+		>
+		<ControllerSupport appInfo={previewAppInfo} />
+	{:else}
+		{@render controllerSupportContent()}
+	{/if}
+	<div class="form-buttons">
+		{#if !preview}
+			<button
+				class="edit-info-button"
+				type="button"
+				onclick={() => {
+					preview = true;
+					window.scrollTo(0, 0);
+				}}
+			>
+				<IcoEye style="width: 1.2em; height: 1.2em; " />Preview
+			</button>
+		{:else}
+			<button class="edit-info-button" type="button" onclick={() => (preview = false)}>
+				<IcoPencil style="width: 1.2em; height: 1.2em; " />Edit
+			</button>
+		{/if}
+		<button class="edit-info-button" type="button" onclick={() => (editControllerSupport = false)}>
+			<IcoCross style="width: 1.2em; height: 1.2em; " />Cancel Edit
+		</button>
+		<button class="edit-info-button">
+			<IcoFloppy style="width: 1.2em; height: 1.2em; " />Save
+		</button>
+	</div>
+</form>
+
+{#snippet controllerGlyphSelect(type: string | undefined, niceName: string)}
 	{#each CONTROLLER_LIST.filter((c) => {
 		return c.type === type;
 	}) as controller (controller.type)}
@@ -327,10 +379,6 @@ let steaminputdbInfo = $derived.by(() => {
 	{/if}
 {/snippet}
 
-<form id="controller-support">
-	{@render controllerSupportContent()}
-</form>
-
 {#snippet controllerSupportContent()}
 	<div class="card glass">
 		<section class="official-configs">
@@ -468,52 +516,6 @@ let steaminputdbInfo = $derived.by(() => {
 		</section>
 
 		<div class="group">
-			<section id="steaminputapi" class="info-group">
-				<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input API Support</h3>
-				<div>
-					<div>
-						{#each Object.values(SteamInputAPISupportType) as tag (tag)}
-							{@render steamInputAPISupportTags(tag)}
-						{/each}
-					</div>
-				</div>
-				<div>
-					<label for="siapi-camera-support">
-						<label for="siapi-camera-support" class="dropdown">
-							<span>SIAPI Camera Support: </span>
-							<select
-								id="siapi-camera-support"
-								name="siapi-camera-support"
-								bind:value={steaminputdbInfo.steaminputapi_support.camera_support}
-							>
-								<option value={0}>Unknown</option>
-								<option value={1}>None</option>
-								<option value={2}>Partial</option>
-								<option value={3}>Full</option>
-							</select>
-							<IcoDropdown />
-						</label>
-					</label>
-					<div style="gap: 1em;">
-						<span style="display: flex; align-items: center; gap: 0.5ch;"
-							><IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />Pixels Per 360°
-						</span>
-						<input
-							type="text"
-							placeholder="Native"
-							bind:value={steaminputdbInfo.steaminputapi_support.pixels_per_360}
-						/>
-					</div>
-				</div>
-
-				<div class="notes" style="margin-top: 1em;">
-					<span>Steam Input API specific notes:</span>
-					<textarea
-						id="siapi-notes"
-						name="siapi-notes"
-						bind:value={steaminputdbInfo.steaminputapi_support.notes}></textarea>
-				</div>
-			</section>
 			<section id="hw-features" class="info-group" style="margin-top: 1em;">
 				<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
 				<div>
@@ -601,6 +603,52 @@ let steaminputdbInfo = $derived.by(() => {
 					{/each}
 				</div>
 			</section>
+			<section id="steaminputapi" class="info-group" style="margin-bottom: 1em">
+				<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input API Support</h3>
+				<div>
+					<div>
+						{#each Object.values(SteamInputAPISupportType) as tag (tag)}
+							{@render steamInputAPISupportTags(tag)}
+						{/each}
+					</div>
+				</div>
+				<div>
+					<label for="siapi-camera-support">
+						<label for="siapi-camera-support" class="dropdown">
+							<span>SIAPI Camera Support: </span>
+							<select
+								id="siapi-camera-support"
+								name="siapi-camera-support"
+								bind:value={steaminputdbInfo.steaminputapi_support.camera_support}
+							>
+								<option value={0}>Unknown</option>
+								<option value={1}>None</option>
+								<option value={2}>Partial</option>
+								<option value={3}>Full</option>
+							</select>
+							<IcoDropdown />
+						</label>
+					</label>
+					<div style="gap: 1em;">
+						<span style="display: flex; align-items: center; gap: 0.5ch;"
+							><IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />Pixels Per 360°
+						</span>
+						<input
+							type="text"
+							placeholder="Native"
+							bind:value={steaminputdbInfo.steaminputapi_support.pixels_per_360}
+						/>
+					</div>
+				</div>
+
+				<div class="notes" style="margin-top: 1em;">
+					<span>Steam Input API specific notes:</span>
+					<textarea
+						id="siapi-notes"
+						name="siapi-notes"
+						bind:value={steaminputdbInfo.steaminputapi_support.notes}></textarea>
+				</div>
+			</section>
 		</div>
 	</div>
 	<aside id="controller-support-notes" class="card glass">
@@ -677,7 +725,6 @@ let steaminputdbInfo = $derived.by(() => {
 	--info-min-width: 58ch;
 	width: 100%;
 	align-items: stretch;
-	height: 100%;
 
 	gap: 1em;
 	& > :first-child {
@@ -697,16 +744,6 @@ let steaminputdbInfo = $derived.by(() => {
 		& .mod-link-list {
 			display: grid;
 			gap: 0.5em;
-		}
-
-		& .scrollable {
-			flex: 1 1 auto;
-			min-height: 0;
-			overflow: auto;
-			overflow: auto;
-			& > .content {
-				max-height: 24em;
-			}
 		}
 	}
 }
@@ -865,10 +902,6 @@ label.dropdown {
 		opacity: 0.5;
 	}
 
-	&:has([disabled]) {
-		opacity: 0.5;
-	}
-
 	&:hover,
 	&:focus-within {
 		outline: 0.1em solid var(--color-primary);
@@ -923,5 +956,15 @@ button {
 	justify-content: center;
 	gap: 0.5ch;
 	font-weight: bold;
+	padding: 0.5em 1em;
+}
+
+.form-buttons {
+	flex: 1 0 auto;
+	display: grid;
+	grid-auto-flow: column;
+	gap: 1em;
+	width: 100%;
+	justify-content: end;
 }
 </style>

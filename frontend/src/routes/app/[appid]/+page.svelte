@@ -22,9 +22,9 @@ import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, fly, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
+import AppInfoHeader from './AppInfoHeader.svelte';
 import ControllerSupport from './ControllerSupport.svelte';
 import ControllerSupportEditor from './ControllerSupportEditor.svelte';
-import { sectionHead } from './sectionHead.svelte';
 
 let { data }: PageProps = $props();
 
@@ -113,7 +113,10 @@ const loadMore = async () => {
 	loadingMore = false;
 };
 
-let editControllerSupport = $state(true);
+let isAllowedEditInfo = $derived(
+	data.userInfo?.steam_input_db_info?.is_admin || data.userInfo?.steam_input_db_info?.trusted_mod
+);
+let editControllerSupport = $state(false);
 
 beforeNavigate((event) => {
 	if (event.type == 'form') {
@@ -221,11 +224,19 @@ onMount(() => {
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
 		<div>
-			{@render sectionHead({ appInfo, fallbackName: page.params.appid })}
+			<AppInfoHeader
+				appInfo={appInfo}
+				fallbackName={page.params.appid}
+				isAllowedEditInfo={isAllowedEditInfo}
+				bind:editControllerSupport={editControllerSupport}
+			/>
 		</div>
 		{#if appInfo}
 			{#if editControllerSupport}
-				<ControllerSupportEditor appInfo={appInfo} />
+				<ControllerSupportEditor
+					bind:appInfo={appInfo}
+					bind:editControllerSupport={editControllerSupport}
+				/>
 			{:else}
 				<ControllerSupport appInfo={appInfo} />
 			{/if}

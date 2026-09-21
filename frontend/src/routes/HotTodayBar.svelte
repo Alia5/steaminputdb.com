@@ -33,9 +33,9 @@ $effect(() => {
 			app_id: idCopy
 		} as components['schemas']['AppItem'];
 		client
-			.GET('/v1/steam/appinfo', {
+			.GET('/v1/steam/appinfo/{app_id}', {
 				params: {
-					query: {
+					path: {
 						app_id: idCopy
 					}
 				}
@@ -85,7 +85,8 @@ $effect(() => {
 	<a
 		class="plain card"
 		href={resolve(link_suffix as '/')}
-		transition:fade|global={{ duration: 196, easing: cubicInOut }}>
+		transition:fade|global={{ duration: 196, easing: cubicInOut }}
+	>
 		<div class="thumb">
 			{#if infoAppIdMap?.[app_id || 0]?.assets}
 				{@const assets = infoAppIdMap[app_id || 0]!.assets!}

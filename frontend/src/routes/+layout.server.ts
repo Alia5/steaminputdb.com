@@ -1,9 +1,10 @@
-import type { components } from '$lib/api/openapi';
+import { PUBLIC_API_BASE_URL_LOCAL } from '$env/static/public';
+import { clientWithSvelteFetch } from '$lib/api/client';
 import { log } from '$lib/log';
 import type { LayoutServerLoad } from './$types';
 
 
-export const load: LayoutServerLoad = async ({ cookies, url }) => {
+export const load: LayoutServerLoad = async ({ cookies, url, fetch }) => {
     const res = {
         theme: cookies.get('theme'),
         buddyAppEnabled: false
@@ -21,23 +22,26 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
     if (!token) {
         return res;
     }
-    const mid = token.split('.')?.[1];
-    if (!mid) {
+
+    const client = clientWithSvelteFetch(fetch, PUBLIC_API_BASE_URL_LOCAL);
+    const infoResp = await client.GET('/v1/steam/userinfo', {
+        headers: {
+            cookie: `token=${token}`
+        }
+    });
+    if (infoResp.error || !infoResp.data) {
+        log.debug('Layout server load: failed to fetch user info', 'error', infoResp.error);
         return res;
     }
-    const decoded = atob(mid);
-    const payload = JSON.parse(decoded) as components['schemas']['UserInfoResponse'] & {
-        sub?: string;
-        is_admin?: boolean;
-    };
-    const steamId = payload.sub as string | undefined;
+    const userInfo = infoResp.data;
+    const steamId = userInfo.steamid;
 
-    log.debug('Layout server load', 'steamid', steamId, 'payload', payload);
+    log.debug('Layout server load', 'steamid', steamId, 'userInfo', userInfo);
 
     return {
         ...res,
         steamId,
-        userInfo: payload
+        userInfo
     };
 
 };

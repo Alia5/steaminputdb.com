@@ -79,8 +79,8 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 {/snippet}
 
 {#snippet hwFeature(feature: number, family: number | string | undefined, notes: string | undefined)}
-	<div
-		style="display: contents"
+	<span
+		class="feature"
 		{@attach tooltip({
 			content: notes ?? '',
 			outDelay: 200,
@@ -90,48 +90,30 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 		})}
 	>
 		{#if feature === HWFeature.MotionInputs}
-			<span class="feature">
-				<IcoGyro style="width: 1.4em; height: 1.4em;" /> Motion Inputs
-			</span>
+			<IcoGyro style="width: 1.4em; height: 1.4em;" /> Motion Inputs
 		{:else if feature === HWFeature.NativeGyroCamera}
-			<span class="feature">
-				<IcoDotsPer360 style="width: 1.2em; height: 1.2em;" /> Native gyro camera
-			</span>
+			<IcoDotsPer360 style="width: 1.2em; height: 1.2em;" /> Native gyro camera
 		{:else if feature === HWFeature.Rumble}
-			<span class="feature">
-				<IcoRumble style="width: 1.2em; height: 1.2em;" /> Rumble
-			</span>
+			<IcoRumble style="width: 1.2em; height: 1.2em;" /> Rumble
 		{:else if feature === HWFeature.HDHaptics}
-			<span class="feature">
-				<IcoHaptics style="width: 1.2em; height: 1.2em;" />
-				{#if family == HWFeatureControllerType.Steam}
-					Steam Haptics
-				{:else}
-					HD Haptics
-				{/if}
-			</span>
+			<IcoHaptics style="width: 1.2em; height: 1.2em;" />
+			{#if family == HWFeatureControllerType.Steam}
+				Steam Haptics
+			{:else}
+				HD Haptics
+			{/if}
 		{:else if feature === HWFeature.Lightbar}
-			<span class="feature">
-				<IcoLightbar style="width: 1.2em; height: 1.2em;" /> Lightbar
-			</span>
+			<IcoLightbar style="width: 1.2em; height: 1.2em;" /> Lightbar
 		{:else if feature === HWFeature.AdaptiveTriggersWired}
-			<span class="feature">
-				<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Adaptive Triggers (Wired)
-			</span>
+			<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Adaptive Triggers (Wired)
 		{:else if feature === HWFeature.ImpulseTriggers}
-			<span class="feature">
-				<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Impulse Triggers
-			</span>
+			<IcoTrigger style="width: 1.2em; height: 1.2em;" /> Impulse Triggers
 		{:else if feature === HWFeature.Touchpads}
-			<span class="feature">
-				<IcoTouchpads style="width: 1.2em; height: 1.2em;" /> Touchpads
-			</span>
+			<IcoTouchpads style="width: 1.2em; height: 1.2em;" /> Touchpads
 		{:else if feature === HWFeature.AudioHaptics}
-			<span class="feature">
-				<IcoAudioHaptics style="width: 1.2em; height: 1.2em;" /> Audio-based Haptics
-			</span>
+			<IcoAudioHaptics style="width: 1.2em; height: 1.2em;" /> Audio-based Haptics
 		{/if}
-	</div>
+	</span>
 {/snippet}
 
 {#snippet steamInputAPISupportTags(tag: number)}
@@ -287,6 +269,63 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 		{/if}
 		{#if steaminputdbInfo?.steaminputapi_support || (steaminputdbInfo?.hw_features || []).length}
 			<div class="horizontal-group">
+				{#if (steaminputdbInfo?.hw_features || []).length}
+					{@const hwFeatures = steaminputdbInfo?.hw_features}
+					<section id="hw-features" class="info-group">
+						<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
+						<div>
+							{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
+										if (!acc[feature.controller_family]) {
+											acc[feature.controller_family] = [];
+										}
+										acc[feature.controller_family]!.push(feature);
+										return acc;
+									}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
+								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
+									<div>
+										<IcoDpad style="width: 1.4em;" />
+										<span>Generic</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
+									<div>
+										<IcoSteam style="width: 1.4em;" />
+										<span>Steam</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
+									<div>
+										<IcoDs5 style="width: 1.2em" />
+										<span>PlayStation</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
+									<div>
+										<IcoXbox style="width: 1.2em;" />
+										<span>Xbox</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
+									<div>
+										<IcoSwitch style="width:1.2em;" />
+										<span>Nintendo</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{/if}
+							{/each}
+						</div>
+					</section>
+				{/if}
 				{#if steaminputdbInfo?.steaminputapi_support}
 					{@const steaminputapi = steaminputdbInfo?.steaminputapi_support}
 					<section id="steaminputapi" class="info-group">
@@ -333,73 +372,6 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 								</div>
 							</div>
 						{/if}
-					</section>
-				{/if}
-				{#if (steaminputdbInfo?.hw_features || []).length}
-					{@const hwFeatures = steaminputdbInfo?.hw_features}
-					<section id="hw-features" class="info-group">
-						<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
-						<div>
-							{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
-										if (!acc[feature.controller_family]) {
-											acc[feature.controller_family] = [];
-										}
-										acc[feature.controller_family]!.push(feature);
-										return acc;
-									}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
-								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
-									<div>
-										<IcoDpad style="width: 1.4em;" />
-										<span>Generic</span>
-									</div>
-									<div>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
-									<div class="feature-group-header">
-										<IcoSteam style="width: 1.4em;" />
-										<span>Steam</span>
-									</div>
-									<div>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
-									<div class="feature-group-header">
-										<IcoDs5 style="width: 1.2em" />
-										<span>PlayStation</span>
-									</div>
-									<div>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
-									<div class="feature-group-header">
-										<IcoXbox style="width: 1.2em;" />
-										<span>Xbox</span>
-									</div>
-									<div>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
-									<div class="feature-group-header">
-										<IcoSwitch style="width:1.2em;" />
-										<span>Nintendo</span>
-									</div>
-									<div>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{/if}
-							{/each}
-						</div>
 					</section>
 				{/if}
 			</div>
@@ -483,9 +455,6 @@ h3 {
 	gap: 0.5ch;
 }
 
-.feature-group-header {
-	margin-top: 1em;
-}
 .rule-divider {
 	opacity: 0.1;
 	height: 1px;
@@ -505,6 +474,10 @@ h3 {
 	gap: 1em;
 	justify-content: space-evenly;
 	align-items: center;
+	& > * {
+		max-width: 50%;
+		width: fit-content;
+	}
 }
 
 .info-group {
@@ -531,6 +504,31 @@ h3 {
 		flex-flow: row wrap;
 		gap: 1em;
 		align-items: center;
+	}
+}
+
+#hw-features {
+	& > div {
+		gap: 1em;
+		& > div {
+			position: relative;
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			gap: 0.5em;
+			width: 100%;
+			justify-content: center;
+		}
+		& > div:not(:first-child)::after {
+			content: '';
+			position: absolute;
+			height: 1px;
+			top: -0.41em;
+			left: 0;
+			width: 100%;
+			background: var(--text-color);
+			opacity: 0.2;
+		}
 	}
 }
 

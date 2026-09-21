@@ -80,9 +80,9 @@ $effect(() => {
 			app_id: idCopy
 		} as components['schemas']['AppItem'];
 		client
-			.GET('/v1/steam/appinfo', {
+			.GET('/v1/steam/appinfo/{app_id}', {
 				params: {
-					query: {
+					path: {
 						app_id: idCopy
 					}
 				}

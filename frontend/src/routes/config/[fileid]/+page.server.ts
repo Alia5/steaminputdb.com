@@ -59,10 +59,12 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     await Promise.allSettled([(async () => {
         if (fileInfo.app_id) {
             try {
-                const appInfoResp = await client.GET('/v1/steam/appinfo', {
+                const appInfoResp = await client.GET('/v1/steam/appinfo/{app_id}', {
                     params: {
+                        path: {
+                            app_id: fileInfo.app_id
+                        },
                         query: {
-                            app_id: fileInfo.app_id,
                             raw: false
                         }
                     },
