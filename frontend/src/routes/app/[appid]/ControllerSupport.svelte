@@ -377,10 +377,11 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 									{/if}
 									<span>SIAPI Camera Support</span>
 								</div>
-								{#if steaminputapi?.pixels_per_360 || (steaminputapi?.camera_support ?? 0 > 0)}
+								{#if (steaminputapi?.pixels_per_360 ?? '') !== '' && (steaminputapi?.camera_support ?? 0 > 0)}
 									<div>
 										<IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />
 										<span>Pixels Per 360°</span>
+										{typeof steaminputapi?.pixels_per_360}
 										<code>{steaminputapi?.pixels_per_360 ?? ''}</code>
 									</div>
 								{/if}
