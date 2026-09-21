@@ -1,6 +1,7 @@
 package user_test
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/Alia5/steaminputdb.com/api/steam/user"
 	"github.com/Alia5/steaminputdb.com/config"
+	"github.com/Alia5/steaminputdb.com/db"
+	"github.com/Alia5/steaminputdb.com/db/models"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	sidbtest "github.com/Alia5/steaminputdb.com/testing"
 	"github.com/golang-jwt/jwt/v5"
@@ -19,7 +22,7 @@ func TestSteamUserInfo(t *testing.T) {
 
 	type testCase struct {
 		name             string
-		setupMock        func() *httptest.Server
+		setupMock        func(dal db.DAL) *httptest.Server
 		setupToken       func() string
 		expectedStatus   int
 		expectedResponse string
@@ -28,7 +31,7 @@ func TestSteamUserInfo(t *testing.T) {
 	testCases := []testCase{
 		{
 			name: "SUCCESS",
-			setupMock: func() *httptest.Server {
+			setupMock: func(dal db.DAL) *httptest.Server {
 				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					resp := steamapi.PlayerSummaries{
 						Response: steamapi.Response{
@@ -65,8 +68,62 @@ func TestSteamUserInfo(t *testing.T) {
 			expectedStatus: http.StatusOK,
 		},
 		{
+			name: "SUCCESS_STEAMINPUTDB_INFO_OF_ADMIN_AND_TRUSTED_MOD",
+			setupMock: func(dal db.DAL) *httptest.Server {
+				_ = dal.SteamUser().Insert(context.Background(), &models.SteamUser{
+					SteamID:     76561197997352479,
+					CreatedAt:   time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+					PersonaName: "TestUser",
+					IsAdmin:     true,
+					TrustedMod:  true,
+				})
+				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					resp := steamapi.PlayerSummaries{
+						Response: steamapi.Response{
+							Players: []steamapi.Players{
+								{
+									Steamid:     "76561197997352479",
+									Personaname: "TestUser",
+								},
+							},
+						},
+					}
+					json.NewEncoder(w).Encode(resp)
+				}))
+			},
+			setupToken: func() string {
+				claims := jwt.MapClaims{
+					"sub": "76561197997352479",
+					"exp": time.Now().Add(time.Hour).Unix(),
+				}
+				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+				tokenString, _ := token.SignedString([]byte(config.Parsed.JWTSecret))
+				return tokenString
+			},
+			expectedStatus: http.StatusOK,
+			expectedResponse: `{
+				"steamid": "76561197997352479",
+				"communityvisibilitystate": 0,
+				"personaname": "TestUser",
+				"profileurl": "",
+				"avatar": "",
+				"avatarmedium": "",
+				"avatarfull": "",
+				"avatarhash": "",
+				"lastlogoff": "1970-01-01T00:00:00Z",
+				"primaryclanid": "",
+				"timecreated": "1970-01-01T00:00:00Z",
+				"loccountrycode": "",
+				"steam_input_db_info": {
+					"is_admin": true,
+					"trusted_mod": true,
+					"registered_at": "2026-01-01T00:00:00Z"
+				}
+			}`,
+		},
+		{
 			name: "STEAM_API_NO_RESPONSE",
-			setupMock: func() *httptest.Server {
+			setupMock: func(dal db.DAL) *httptest.Server {
 				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusServiceUnavailable)
 				}))
@@ -84,7 +141,7 @@ func TestSteamUserInfo(t *testing.T) {
 		},
 		{
 			name: "STEAM_USER_NOT_FOUND",
-			setupMock: func() *httptest.Server {
+			setupMock: func(dal db.DAL) *httptest.Server {
 				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					resp := steamapi.PlayerSummaries{
 						Response: steamapi.Response{
@@ -129,7 +186,7 @@ func TestSteamUserInfo(t *testing.T) {
 			var steamAPIServer *httptest.Server
 
 			if tc.setupMock != nil {
-				steamAPIServer = tc.setupMock()
+				steamAPIServer = tc.setupMock(dal)
 				defer steamAPIServer.Close()
 				steamAPIURL = steamAPIServer.URL
 				steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", steamAPIURL)

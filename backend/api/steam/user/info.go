@@ -37,10 +37,12 @@ type PlayerInfo struct {
 
 type SteamInputDBInfo struct {
 	IsAdmin      *bool     `json:"is_admin,omitempty,omitzero"`
+	TrustedMod   *bool     `json:"trusted_mod,omitempty,omitzero"`
 	RegisteredAt time.Time `json:"registered_at"`
 }
 
 type UserInfoResponse struct {
+	SteamID string `json:"steamid"`
 	PlayerInfo
 	SteamInputDBInfo *SteamInputDBInfo `json:"steam_input_db_info,omitempty,omitzero"`
 }
@@ -132,6 +134,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 			player := info.Response.Players[0]
 
 			infoResp := UserInfoResponse{
+				SteamID: steamID,
 				PlayerInfo: PlayerInfo{
 					CommunityVisibilityState: player.Communityvisibilitystate,
 					PersonaName:              player.Personaname,
@@ -160,11 +163,14 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 			if req.UserID == "" {
 				userInfo, err := dal.SteamUser().Get(c, steamID64)
 				if err == nil {
-					infoResp.SteamInputDBInfo = &SteamInputDBInfo{
+					res.Body.SteamInputDBInfo = &SteamInputDBInfo{
 						RegisteredAt: userInfo.CreatedAt,
 					}
 					if userInfo.IsAdmin {
-						infoResp.SteamInputDBInfo.IsAdmin = new(true)
+						res.Body.SteamInputDBInfo.IsAdmin = new(true)
+					}
+					if userInfo.TrustedMod {
+						res.Body.SteamInputDBInfo.TrustedMod = new(true)
 					}
 				}
 			}

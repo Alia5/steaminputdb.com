@@ -6,22 +6,22 @@ import (
 	"time"
 )
 
-type cache struct {
+type Cache struct {
 	m           *sync.Map
 	validity    time.Duration
 	maxItems    int
 	cleanupLock sync.Mutex
 }
 
-func New(validity time.Duration, maxItems int) *cache {
-	return &cache{
+func New(validity time.Duration, maxItems int) *Cache {
+	return &Cache{
 		m:        &sync.Map{},
 		validity: validity,
 		maxItems: maxItems,
 	}
 }
 
-func Get[T any](c *cache, key string) (T, bool) {
+func Get[T any](c *Cache, key string) (T, bool) {
 	v, ok := c.Get(key)
 	if !ok {
 		var zero T
@@ -30,7 +30,7 @@ func Get[T any](c *cache, key string) (T, bool) {
 	return v.(T), true
 }
 
-func (c *cache) Get(key string) (any, bool) {
+func (c *Cache) Get(key string) (any, bool) {
 	v, ok := c.m.Load(key)
 	go c.cleanup()
 
@@ -45,7 +45,7 @@ func (c *cache) Get(key string) (any, bool) {
 	return item.Value, true
 }
 
-func (c *cache) cleanup() {
+func (c *Cache) cleanup() {
 	if !c.cleanupLock.TryLock() {
 		return
 	}
@@ -78,7 +78,7 @@ func (c *cache) cleanup() {
 	}
 }
 
-func (c *cache) Store(key string, value any) {
+func (c *Cache) Store(key string, value any) {
 	c.m.Store(key, item{
 		Key:   key,
 		Value: value,

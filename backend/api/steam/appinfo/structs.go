@@ -4,31 +4,8 @@ import (
 	"github.com/Alia5/steaminputdb.com/api/search/games"
 	"github.com/Alia5/steaminputdb.com/db/models"
 	"github.com/Alia5/steaminputdb.com/steam/steamtypes"
-	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/Alia5/steaminputdb.com/types"
 )
-
-type AppInfoResponse struct {
-	Body responseBody
-}
-
-type AppInfoRequest struct {
-	AppID             uint32 `query:"app_id" required:"true"`
-	Raw               bool   `query:"raw" default:"false"`
-	ControllerSupport bool   `query:"controller_support" default:"false"`
-	OfficialConfigs   bool   `query:"official_configs" default:"false"`
-	ForceRefresh      bool   `query:"force_refresh" default:"false"`
-	SteamInputDBInfo  bool   `query:"steaminputdb_info" default:"false"`
-}
-
-type responseBody interface {
-	searchSuggestionsResponse()
-}
-
-type raw steamapi.CStoreBrowse_GetItems_Response
-
-func (r *raw) searchSuggestionsResponse()         {}
-func (r *AppInfoItem) searchSuggestionsResponse() {}
 
 type AppInfoItem struct {
 	games.AppItem

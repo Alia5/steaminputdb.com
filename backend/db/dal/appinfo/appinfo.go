@@ -12,6 +12,13 @@ type DAL interface {
 	Get(ctx context.Context, appID uint32, include AppInfoInclude) (*models.AppInfo, error)
 	Insert(ctx context.Context, appInfo *models.AppInfo) error
 	UpdateBaseInfo(ctx context.Context, appInfo *models.AppInfo) error
+	UpdateSteamInputDBInfo(ctx context.Context, appInfo *models.AppInfo) error
+	UpdateControllerSupportRating(ctx context.Context, appID uint32, rating models.ControllerSupportRating, tx *gorm.DB) error
+	UpdateControllerSupportNotes(ctx context.Context, appID uint32, notes *string, tx *gorm.DB) error
+	UpdateMixedInputInfo(ctx context.Context, appID uint32, info *models.AppMixedInputInfo, tx *gorm.DB) error
+	UpdateGlyphs(ctx context.Context, appID uint32, glyphs *models.AppGlyphs, tx *gorm.DB) error
+	UpdateSteamInputAPISupport(ctx context.Context, appID uint32, support *models.AppSteamInputAPISupport, tx *gorm.DB) error
+	UpdateHWFeatures(ctx context.Context, appID uint32, features []*models.AppHWFeatures, tx *gorm.DB) error
 }
 
 type dal struct {

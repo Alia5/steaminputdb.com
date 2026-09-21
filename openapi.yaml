@@ -1509,6 +1509,13 @@ components:
     SIDBControllerSupport:
       additionalProperties: false
       properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/SIDBControllerSupport.json
+          format: uri
+          readOnly: true
+          type: string
         controller_support_notes:
           type: string
         controller_support_rating:
@@ -1619,6 +1626,8 @@ components:
         registered_at:
           format: date-time
           type: string
+        trusted_mod:
+          type: boolean
       required:
         - registered_at
       type: object
@@ -2392,10 +2401,13 @@ components:
           type: string
         steam_input_db_info:
           $ref: "#/components/schemas/SteamInputDBInfo"
+        steamid:
+          type: string
         timecreated:
           format: date-time
           type: string
       required:
+        - steamid
         - communityvisibilitystate
         - personaname
         - profileurl
@@ -2558,12 +2570,11 @@ paths:
       summary: Search Steam games
       tags:
         - search
-  /v1/steam/appinfo:
+  /v1/steam/appinfo/{app_id}:
     get:
       description: Retrieve app information from Steam Store for a given app ID
       parameters:
-        - explode: false
-          in: query
+        - in: path
           name: app_id
           required: true
           schema:
@@ -2641,6 +2652,35 @@ paths:
       tags:
         - steam
         - app
+  /v1/steam/appinfo/{app_id}/steaminputdbinfos:
+    patch:
+      parameters:
+        - in: path
+          name: app_id
+          required: true
+          schema:
+            format: int32
+            minimum: 0
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SIDBControllerSupport"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Update Steam Input DB Controller support info
   /v1/steam/filedetails:
     get:
       description: |-

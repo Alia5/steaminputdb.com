@@ -43,18 +43,18 @@ func TestSteamAppInfo(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:           "SUCCESS",
-			path:           "/v1/steam/appinfo?app_id=250900",
+			path:           "/v1/steam/appinfo/250900",
 			expectedStatus: http.StatusOK,
 			contains:       "The Binding of Isaac: Rebirth",
 		},
 		{
-			name:           "MISSING_APP_ID",
-			path:           "/v1/steam/appinfo",
+			name:           "INVALID_APP_ID",
+			path:           "/v1/steam/appinfo/not-a-number",
 			expectedStatus: http.StatusUnprocessableEntity, contains: "app_id",
 		},
 		{
 			name:           "APP_NOT_FOUND",
-			path:           "/v1/steam/appinfo?app_id=999999",
+			path:           "/v1/steam/appinfo/999999",
 			expectedStatus: http.StatusNotFound,
 			expectedBody: `{
 				"title": "Not Found",
@@ -64,7 +64,7 @@ func TestSteamAppInfo(t *testing.T) {
 		},
 		{
 			name:           "STEAM_API_ERROR",
-			path:           "/v1/steam/appinfo?app_id=250900",
+			path:           "/v1/steam/appinfo/250900",
 			expectedStatus: http.StatusBadGateway,
 			contains:       "failed to get steam app info",
 			setup: func(t *testing.T) {

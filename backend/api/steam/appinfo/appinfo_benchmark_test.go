@@ -48,7 +48,7 @@ func BenchmarkAppInfo(b *testing.B) {
 			require.NoError(b, err)
 			appinfo.RegisterRoute(api, dal, tc.useMemCache)
 			//warmup
-			_ = api.Get("/v1/steam/appinfo?app_id=250900")
+			_ = api.Get("/v1/steam/appinfo/250900")
 			for b.Loop() {
 				if tc.freshDB {
 					b.StopTimer()
@@ -57,7 +57,7 @@ func BenchmarkAppInfo(b *testing.B) {
 					appinfo.RegisterRoute(api, dal, tc.useMemCache)
 					b.StartTimer()
 				}
-				resp := api.Get("/v1/steam/appinfo?app_id=250900")
+				resp := api.Get("/v1/steam/appinfo/250900")
 				b.StopTimer()
 				if resp.Body == nil {
 					b.Fatal("response body is nil")

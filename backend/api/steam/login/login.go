@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -45,7 +44,6 @@ type OpenIDBody struct {
 type JWTClaims struct {
 	jwt.RegisteredClaims
 	user.PlayerInfo
-	IsAdmin *bool `json:"is_admin,omitempty,omitzero"`
 }
 
 type LoginResponse struct {
@@ -208,16 +206,6 @@ func handler(dal db.DAL, loginURL string) func(ctx context.Context, req *OpenIDR
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(jwtValidity)),
 			},
 			PlayerInfo: playerInfo,
-		}
-
-		steamID64, err := strconv.ParseUint(steamID, 10, 64)
-		if err == nil {
-			userInfo, err := dal.SteamUser().Get(ctx, steamID64)
-			if err == nil {
-				if userInfo.IsAdmin {
-					claims.IsAdmin = new(true)
-				}
-			}
 		}
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
