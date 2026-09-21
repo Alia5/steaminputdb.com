@@ -49,16 +49,29 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 	{#each CONTROLLER_LIST.filter((c) => {
 		return c.type === type;
 	}) as controller (controller.type)}
-		<controller.icon
-			style="width: 2.4em; height: 2.4em;"
-			{@attach tooltip({
-				content: glyphNotes ?? '',
-				outDelay: 200,
-				arrow: true,
-				autoPlacement: true,
-				arrowFollowCursor: false
-			})}
-		/>
+		{#if type?.includes('xbox')}
+			<IcoXbox
+				style="width: 2.4em; height: 2.4em;"
+				{@attach tooltip({
+					content: glyphNotes ?? '',
+					outDelay: 200,
+					arrow: true,
+					autoPlacement: true,
+					arrowFollowCursor: false
+				})}
+			/>
+		{:else}
+			<controller.icon
+				style="width: 2.4em; height: 2.4em;"
+				{@attach tooltip({
+					content: glyphNotes ?? '',
+					outDelay: 200,
+					arrow: true,
+					autoPlacement: true,
+					arrowFollowCursor: false
+				})}
+			/>
+		{/if}
 	{/each}
 {/snippet}
 
@@ -167,9 +180,9 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 					</a>
 				{/each}
 			</section>
+			<div class="rule-divider"></div>
 		{/if}
 		{#if steaminputdbInfo?.glyphs}
-			<div class="rule-divider"></div>
 			<section id="mixed-input-and-glyphs">
 				<section id="mixed-input" class="info-group">
 					<h3><IcoMixedInput style="width: 2em; height: 2em;" />Mixed Input</h3>

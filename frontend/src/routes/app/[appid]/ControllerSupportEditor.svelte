@@ -14,7 +14,7 @@ import IcoMixedInput from '$lib/assets/mixedinput.svg?component';
 import IcoDs5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
 import IcoSIAPI from '$lib/assets/steam_controller_type_svgs/siapi.svg?component';
 import IcoSwitch from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
-import IcoXbox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
+import IcoXbone from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
 import IcoDotsPer360 from '$lib/components/layout_preview/glyphs/cmnd_dots_per_360_calibration_spin.svg?component';
 import IcoTrigger from '$lib/components/layout_preview/glyphs/shared_trigger.svg?component';
 import IcoTouchpads from '~icons/fluent/cursor-hover-16-filled';
@@ -173,8 +173,20 @@ let previewAppInfo = $derived({
 						}
 					}}
 				/>
-				<controller.icon style="width: 1.4em; height: 1.4em;" />
-				<span>{niceName}</span>
+				{#if type?.includes('xbox')}
+					<IcoXbone style="width: 1.4em; height: 1.4em;" />
+				{:else}
+					<controller.icon style="width: 1.4em; height: 1.4em;" />
+				{/if}
+				<span>
+					{#if type?.includes?.('xbox')}
+						Xbox
+					{:else if type?.includes?.('switch')}
+						Switch
+					{:else}
+						{niceName}
+					{/if}
+				</span>
 			</label>
 			<input
 				type="text"
@@ -365,7 +377,7 @@ let previewAppInfo = $derived({
 					}
 				}}
 			/>
-			<IcoXbox style="width: 1.2em; height: 1.2em;" /> XInput Style Actions
+			<IcoXbone style="width: 1.2em; height: 1.2em;" /> XInput Style Actions
 		</label>
 	{:else if tag === SteamInputAPISupportType.Discontinued}
 		<label for={`siapi-support-${tag}`} class="feature" style="background-color: red; gap: 0.5em;">
@@ -407,7 +419,10 @@ let previewAppInfo = $derived({
 					{:else}
 						<IcoDpad style="width: 2em; height: 2em;" />
 					{/if}
-					<span>{controller_list_entry?.niceName ?? 'Generic'}</span>
+					<span>
+						Xbox
+						{controller_list_entry?.niceName ?? 'Generic'}
+					</span>
 				</a>
 			{/each}
 		</section>
@@ -585,7 +600,7 @@ let previewAppInfo = $derived({
 							</div>
 						{:else if family_tag == HWFeatureControllerType.Xbox}
 							<div class="feature-group-header">
-								<IcoXbox style="width: 1.2em;" />
+								<IcoXbone style="width: 1.2em;" />
 								<span>Xbox</span>
 							</div>
 							<div>
