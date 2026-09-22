@@ -30,6 +30,7 @@ type SIDBControllerSupport struct {
 	GlyphInfo               *GlyphInfo                     `json:"glyphs,omitempty"`
 	SteamInputAPISupport    *SteamInputAPISupport          `json:"steaminputapi_support,omitempty"`
 	HWFeatures              []HWFeature                    `json:"hw_features,omitempty"`
+	HWFeatureNotes          *string                        `json:"hw_feature_notes,omitempty"`
 }
 
 type MixedInputInfo struct {

@@ -189,6 +189,7 @@ func registerGetAppInfo(a huma.API, dal db.DAL, registry huma.Registry, sc clien
 				appInfo.MixedInputInfo = dbInfo.MixedInputInfo
 				appInfo.SteamInputAPISupport = dbInfo.SteamInputAPISupport
 				appInfo.HWFeatures = dbInfo.HWFeatures
+				appInfo.HWFeatureNotes = dbInfo.HWFeatureNotes
 				appInfo.Glyphs = dbInfo.Glyphs
 			}
 

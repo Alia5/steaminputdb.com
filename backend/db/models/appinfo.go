@@ -35,7 +35,8 @@ type AppInfo struct {
 	MixedInputInfo       *AppMixedInputInfo       `gorm:"foreignKey:AppID"`
 	SteamInputAPISupport *AppSteamInputAPISupport `gorm:"foreignKey:AppID"`
 	HWFeatures           []*AppHWFeatures         `gorm:"foreignKey:AppID"`
-	Glyphs               *AppGlyphs               `gorm:"foreignKey:AppID"`
+	HWFeatureNotes       *string
+	Glyphs               *AppGlyphs `gorm:"foreignKey:AppID"`
 
 	ControllerSupportRating ControllerSupportRating
 	ControllerSupportNotes  *string

@@ -595,6 +595,13 @@ let previewAppInfo = $derived({
 						{/if}
 					{/each}
 				</div>
+				<div class="notes" style="margin-top: 1em;">
+					<span>Hardware Feature specific notes:</span>
+					<textarea
+						id="hwfeature-notes"
+						name="hwfeature-notes"
+						bind:value={steaminputdbInfo.hw_feature_notes}></textarea>
+				</div>
 			</section>
 			<section id="steaminputapi" class="info-group" style="margin-bottom: 1em">
 				<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input Support</h3>

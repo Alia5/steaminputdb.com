@@ -1518,6 +1518,8 @@ components:
           type: integer
         glyphs:
           $ref: "#/components/schemas/GlyphInfo"
+        hw_feature_notes:
+          type: string
         hw_features:
           items:
             $ref: "#/components/schemas/HWFeature"
@@ -2379,6 +2381,8 @@ components:
           type: integer
         glyphs:
           $ref: "#/components/schemas/GlyphInfo"
+        hw_feature_notes:
+          type: string
         hw_features:
           items:
             $ref: "#/components/schemas/HWFeature"

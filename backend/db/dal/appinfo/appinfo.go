@@ -19,6 +19,7 @@ type DAL interface {
 	UpdateGlyphs(ctx context.Context, appID uint32, glyphs *models.AppGlyphs, tx *gorm.DB) error
 	UpdateSteamInputAPISupport(ctx context.Context, appID uint32, support *models.AppSteamInputAPISupport, tx *gorm.DB) error
 	UpdateHWFeatures(ctx context.Context, appID uint32, features []*models.AppHWFeatures, tx *gorm.DB) error
+	UpdateHWFeatureNotes(ctx context.Context, appID uint32, notes *string, tx *gorm.DB) error
 }
 
 type dal struct {
@@ -84,7 +85,7 @@ func (d *dal) Insert(ctx context.Context, appInfo *models.AppInfo) error {
 	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Omit(
 			clause.Associations,
-			"controller_support_rating", "controller_support_notes",
+			"controller_support_rating", "controller_support_notes", "hw_feature_notes",
 		).Clauses(clause.OnConflict{
 			Columns: []clause.Column{
 				{
@@ -104,7 +105,7 @@ func (d *dal) UpdateBaseInfo(ctx context.Context, appInfo *models.AppInfo) error
 	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Model(appInfo).Select("*").Omit(
 			clause.Associations,
-			"created_at", "controller_support_rating", "controller_support_notes",
+			"created_at", "controller_support_rating", "controller_support_notes", "hw_feature_notes",
 		).Updates(appInfo).Error
 		if err != nil {
 			return err

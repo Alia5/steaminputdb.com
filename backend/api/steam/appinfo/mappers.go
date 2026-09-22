@@ -120,6 +120,7 @@ func mapSteamInputDBInfo(appInfo *models.AppInfo) *SIDBControllerSupport {
 	siDBInfo := &SIDBControllerSupport{
 		ControllerSupportRating: appInfo.ControllerSupportRating,
 		ControllerSupportNotes:  appInfo.ControllerSupportNotes,
+		HWFeatureNotes:          appInfo.HWFeatureNotes,
 	}
 	if appInfo.MixedInputInfo != nil {
 		siDBInfo.MixedInputInfo = &MixedInputInfo{

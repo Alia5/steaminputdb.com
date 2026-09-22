@@ -32,6 +32,7 @@ type UpdateSteamInputDBInfosBody struct {
 	GlyphInfo               *GlyphInfo                      `json:"glyphs,omitempty,omitzero"`
 	SteamInputAPISupport    *SteamInputAPISupport           `json:"steaminputapi_support,omitempty,omitzero"`
 	HWFeatures              []HWFeature                     `json:"hw_features,omitempty,omitzero"`
+	HWFeatureNotes          *string                         `json:"hw_feature_notes,omitempty,omitzero"`
 }
 
 func registerPatchSteamInputDBInfos(a huma.API, dal db.DAL, _ huma.Registry, sc client.Client, useMemCache bool, cache *memcache.Cache) {
@@ -112,6 +113,7 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 		AppID:                   appID,
 		ControllerSupportRating: dbInfo.ControllerSupportRating,
 		ControllerSupportNotes:  info.ControllerSupportNotes,
+		HWFeatureNotes:          info.HWFeatureNotes,
 	}
 	if info.ControllerSupportRating != nil {
 		appInfo.ControllerSupportRating = *info.ControllerSupportRating

@@ -44,6 +44,12 @@ func (d *dal) UpdateSteamInputDBInfo(ctx context.Context, appInfo *models.AppInf
 				return err
 			}
 		}
+		if appInfo.HWFeatureNotes != nil {
+			err = d.UpdateHWFeatureNotes(ctx, appInfo.AppID, appInfo.HWFeatureNotes, tx)
+			if err != nil {
+				return err
+			}
+		}
 		return nil
 	})
 }
@@ -85,6 +91,29 @@ func (d *dal) UpdateControllerSupportNotes(
 	res := tx.Model(&models.AppInfo{}).
 		Where("app_id = ?", appID).
 		UpdateColumn("controller_support_notes", notes)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
+
+func (d *dal) UpdateHWFeatureNotes(
+	ctx context.Context,
+	appID uint32,
+	notes *string,
+	tx *gorm.DB,
+) error {
+	if tx == nil {
+		tx = d.db
+	}
+	tx = tx.WithContext(ctx)
+
+	res := tx.Model(&models.AppInfo{}).
+		Where("app_id = ?", appID).
+		UpdateColumn("hw_feature_notes", notes)
 	if res.Error != nil {
 		return res.Error
 	}
