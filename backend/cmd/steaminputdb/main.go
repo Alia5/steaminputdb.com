@@ -57,7 +57,7 @@ func main() {
 
 	logging.SetupDefault(cfg.LogLevel)
 
-	if config.Parsed.JWTSecret == "" || config.Parsed.JWTSecret == "testenv" {
+	if cfg.JWTSecret == "" || cfg.JWTSecret == "testenv" {
 		randomBytes := make([]byte, 32)
 		_, err := rand.Read(randomBytes)
 		if err != nil {
