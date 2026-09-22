@@ -566,7 +566,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 section > :first-child:is(h3) {
 	font-weight: bold;
 	font-size: 1.3em;
-	filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.349)) drop-shadow(0px 0px 0.5em rgba(0, 0, 0, 0.945));
+	filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.329)) drop-shadow(0px 0px 0.5em rgba(0, 0, 0, 0.432));
 }
 
 h3 {
@@ -648,6 +648,12 @@ h3 {
 			width: 100%;
 			background: var(--text-color);
 			opacity: 0.2;
+		}
+		& > div > :global(:first-child),
+		& > div > :nth-child(2) {
+			font-size: 1.2em;
+			filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.329))
+				drop-shadow(0px 0px 0.5em rgba(0, 0, 0, 0.322));
 		}
 	}
 }
