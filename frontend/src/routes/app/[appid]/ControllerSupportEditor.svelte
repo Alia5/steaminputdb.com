@@ -448,13 +448,6 @@ let previewAppInfo = $derived({
 							</label>
 						</label>
 					</div>
-					<div class="notes">
-						<span>Mixed Input specific notes:</span>
-						<textarea
-							id="mixed-input-notes"
-							name="mixed-input-notes"
-							bind:value={steaminputdbInfo.mixed_input.notes}></textarea>
-					</div>
 				</div>
 			</section>
 			<section id="glyphs" class="info-group">
@@ -526,13 +519,6 @@ let previewAppInfo = $derived({
 							)}
 						{/each}
 					</div>
-					<div class="notes">
-						<span>Glyph specific notes:</span>
-						<textarea
-							id="glyph-notes"
-							name="glyph-notes"
-							bind:value={steaminputdbInfo.glyphs.notes}></textarea>
-					</div>
 				</div>
 			</section>
 		</section>
@@ -595,13 +581,6 @@ let previewAppInfo = $derived({
 						{/if}
 					{/each}
 				</div>
-				<div class="notes" style="margin-top: 1em;">
-					<span>Hardware Feature specific notes:</span>
-					<textarea
-						id="hwfeature-notes"
-						name="hwfeature-notes"
-						bind:value={steaminputdbInfo.hw_feature_notes}></textarea>
-				</div>
 			</section>
 			<section id="steaminputapi" class="info-group" style="margin-bottom: 1em">
 				<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input Support</h3>
@@ -659,28 +638,51 @@ let previewAppInfo = $derived({
 						/>
 					</div>
 				</div>
-
-				<div class="notes" style="margin-top: 1em;">
-					<span>Steam Input API specific notes:</span>
-					<textarea
-						id="siapi-notes"
-						name="siapi-notes"
-						bind:value={steaminputdbInfo.steaminputapi_support.notes}></textarea>
-				</div>
 			</section>
 		</div>
 	</div>
 	<aside id="controller-support-notes" class="card glass">
-		<h3>Additional Info</h3>
+		<h3 class="additional-info-header">Any extra Information</h3>
 		<span>Markdown is supported!</span>
 		<a href="https://www.markdownguide.org/cheat-sheet/" target="_blank" rel="noopener noreferrer"
 			>Markdown Cheat Sheet</a
 		>
-		<div class="notes" style="height: 100%;">
-			<textarea
-				placeholder="Any additional info here..."
-				style="width: 0; min-width: 100%; height: max-content; resize: none;"
-				bind:value={steaminputdbInfo.controller_support_notes}></textarea>
+		<div class="notes-container">
+			<div class="notes">
+				<h3><IcoMixedInput style="width: 1.4em; height: 1.4em;" />Mixed Input</h3>
+				<textarea
+					placeholder="Extra information related to Mixed Input..."
+					style="width: 0; min-width: 100%; resize: vertical;"
+					bind:value={steaminputdbInfo.mixed_input.notes}></textarea>
+			</div>
+			<div class="notes">
+				<h3><IconMdiGamepadCircle style="width: 1.2em; height: 1.2em;" /> Glyphs</h3>
+				<textarea
+					placeholder="Extra information related to Glyphs..."
+					style="width: 0; min-width: 100%; resize: vertical;"
+					bind:value={steaminputdbInfo.glyphs.notes}></textarea>
+			</div>
+			<div class="notes">
+				<h3><IcoSIAPI style="width: 1.4em; height: 1.4em;" /> Steam Input</h3>
+				<textarea
+					placeholder="Extra information related to Steam Input..."
+					style="width: 0; min-width: 100%; resize: vertical;"
+					bind:value={steaminputdbInfo.steaminputapi_support.notes}></textarea>
+			</div>
+			<div class="notes">
+				<h3><IconMdiGamepad style="width: 1.2em; height: 1.2em;" /> Hardware Features</h3>
+				<textarea
+					placeholder="Extra information related to Hardware Features..."
+					style="width: 0; min-width: 100%; resize: vertical;"
+					bind:value={steaminputdbInfo.hw_feature_notes}></textarea>
+			</div>
+			<div class="notes">
+				<h3>Additional Information</h3>
+				<textarea
+					placeholder="Any additional info here..."
+					style="width: 0; min-width: 100%; resize: vertical;"
+					bind:value={steaminputdbInfo.controller_support_notes}></textarea>
+			</div>
 		</div>
 
 		<div class="mod-link-list">
@@ -741,7 +743,7 @@ let previewAppInfo = $derived({
 	overflow-clip-margin: 2em;
 
 	--gap: 1em;
-	--info-min-width: 58ch;
+	--info-min-width: 42ch;
 	width: 100%;
 	align-items: stretch;
 
@@ -767,8 +769,18 @@ let previewAppInfo = $derived({
 	}
 }
 
+.additional-info-header {
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.notes-container {
+	height: 100%;
+	display: grid;
+	gap: 1em;
+}
+
 h3 {
-	font-size: 1.1em;
 	align-items: center;
 	display: flex;
 	gap: 0.5ch;
@@ -776,11 +788,6 @@ h3 {
 
 .feature-group-header {
 	margin-top: 1em;
-}
-.rule-divider {
-	opacity: 0.1;
-	height: 1px;
-	background: var(--text-color);
 }
 
 .group {

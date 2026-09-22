@@ -53,7 +53,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 		return c.type === type;
 	}) as controller (controller.type)}
 		<div
-			style="display: grid; justify-items: center;"
+			style="display: grid; justify-items: center; margin-bottom: 0.5em;"
 			{@attach tooltip({
 				content: glyphNotes ?? '',
 				outDelay: 100,
@@ -63,13 +63,15 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 				arrowFollowCursor: false
 			})}
 		>
-			{#if glyphNotes}
-				<IcoHelp style="width: 1.3em; height: 1.3em; opacity: 0.7;" />
-			{/if}
 			{#if type?.includes('xbox')}
 				<IcoXbox style="width: 2.4em; height: 2.4em;" />
 			{:else}
 				<controller.icon style="width: 2.4em; height: 2.4em;" />
+			{/if}
+			{#if glyphNotes}
+				<IcoHelp style="width: 1.3em; height: 1.3em; opacity: 0.7;" />
+			{:else}
+				<div class="spacer" style="width: 1.3em; height: 1.3em;"></div>
 			{/if}
 		</div>
 	{/each}
@@ -159,17 +161,16 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 </section>
 
 {#snippet controllerSupportContent()}
-	<div
-		class={steaminputdbInfo?.glyphs ||
+	{@const showsCard =
+		steaminputdbInfo?.glyphs ||
 		steaminputdbInfo?.mixed_input ||
 		steaminputdbInfo?.hw_features ||
 		steaminputdbInfo?.steaminputapi_support ||
-		steaminputdbInfo?.controller_support_notes
-			? 'card glass'
-			: ''}
-	>
+		steaminputdbInfo?.hw_feature_notes ||
+		steaminputdbInfo?.controller_support_notes}
+	<div class={showsCard ? 'card glass' : ''}>
 		{#if Object.entries(appInfo?.official_configs ?? {}).length}
-			<section class="official-configs">
+			<section class={showsCard ? 'official-configs' : 'official-configs no-divider'}>
 				<h3>Official Configs</h3>
 				{#each Object.entries(appInfo?.official_configs ?? {}) as [controller_type, config_id] (config_id)}
 					{@const controller_list_entry = CONTROLLER_LIST.find(
@@ -185,267 +186,286 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 					</a>
 				{/each}
 			</section>
-			<div class="rule-divider"></div>
 		{/if}
 		{#if steaminputdbInfo?.glyphs}
-			<section id="mixed-input-and-glyphs">
-				<section id="mixed-input" class="info-group">
-					<h3><IcoMixedInput style="width: 2em; height: 2em;" />Mixed Input</h3>
-					{#if steaminputdbInfo?.mixed_input}
-						{@const mixedinputInfo = steaminputdbInfo?.mixed_input}
-						{@const mixedInputType = mixedinputInfo?.type}
+			<section id="mixed-input" class="info-group">
+				<h3><IcoMixedInput style="width: 2em; height: 2em;" />Mixed Input</h3>
+				{#if steaminputdbInfo?.mixed_input}
+					{@const mixedinputInfo = steaminputdbInfo?.mixed_input}
+					{@const mixedInputType = mixedinputInfo?.type}
+					<div>
 						<div>
-							<div>
-								{#if mixedInputType === MixedInputSupportType.Unsupported}
-									<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
-									<span>Unsupported</span>
-								{/if}
-								{#if mixedInputType === MixedInputSupportType.Supported}
-									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-									<span>Supported</span>
-								{/if}
-								{#if mixedInputType === MixedInputSupportType.WithMod}
-									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: yellowgreen" />
-									<span>Requires Mod</span>
-								{/if}
-								{#if mixedInputType === MixedInputSupportType.Partial}
-									<IcoMdiDash style="width: 1.6em; height: 1.6em; color: orange" />
-									<span>Partial</span>
-								{/if}
-								{#if mixedInputType === MixedInputSupportType.Unknown}
-									<IcoMdiDash style="width: 1.6em; height: 1.6em; color: gray" />
-									<span>Unknown</span>
-								{/if}
-							</div>
-							<div>
-								<!-- eslint-disable-next-line prettier/prettier -->
-								{#if mixedInputType !== MixedInputSupportType.Unsupported
-                                    && mixedInputType !== MixedInputSupportType.Unknown 
-                                 }
-									{#if mixedinputInfo?.glyph_flicker}
-										<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
-										<span>Glyph Flicker</span>
-									{:else}
-										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-										<span>Without Glyph Flicker</span>
-									{/if}
-								{/if}
-							</div>
-							{#if mixedinputInfo?.notes}
-								<div class="notes mdcontainer">
-									<MarkdownSSR content={mixedinputInfo?.notes} />
-								</div>
+							{#if mixedInputType === MixedInputSupportType.Unsupported}
+								<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
+								<span>Unsupported</span>
+							{/if}
+							{#if mixedInputType === MixedInputSupportType.Supported}
+								<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+								<span>Supported</span>
+							{/if}
+							{#if mixedInputType === MixedInputSupportType.WithMod}
+								<IconMDIChecked style="width: 1.6em; height: 1.6em; color: yellowgreen" />
+								<span>Requires Mod</span>
+							{/if}
+							{#if mixedInputType === MixedInputSupportType.Partial}
+								<IcoMdiDash style="width: 1.6em; height: 1.6em; color: orange" />
+								<span>Partial</span>
+							{/if}
+							{#if mixedInputType === MixedInputSupportType.Unknown}
+								<IcoMdiDash style="width: 1.6em; height: 1.6em; color: gray" />
+								<span>Unknown</span>
 							{/if}
 						</div>
-					{:else}
 						<div>
-							<IcoMdiDash style="width: 1.6em; height: 1.6em; color: gray" />
-							<span>Unknown</span>
+							<!-- eslint-disable-next-line prettier/prettier -->
+                                    {#if mixedInputType !== MixedInputSupportType.Unsupported
+                                        && mixedInputType !== MixedInputSupportType.Unknown 
+                                     }
+								{#if mixedinputInfo?.glyph_flicker}
+									<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
+									<span>Glyph Flicker</span>
+								{:else}
+									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+									<span>Without Glyph Flicker</span>
+								{/if}
+							{/if}
 						</div>
-					{/if}
-				</section>
-				<section id="glyphs" class="info-group">
-					<h3><IconMdiGamepadCircle style="width: 1.6em; height: 1.6em;" /> Glyphs</h3>
-					{#if steaminputdbInfo?.glyphs}
-						{@const glyphsInfo = steaminputdbInfo?.glyphs}
+					</div>
+				{:else}
+					<div>
+						<IcoMdiDash style="width: 1.6em; height: 1.6em; color: gray" />
+						<span>Unknown</span>
+					</div>
+				{/if}
+			</section>
+			<section id="glyphs" class="info-group">
+				<h3><IconMdiGamepadCircle style="width: 1.4em; height: 1.4em;" /> Glyphs</h3>
+				{#if steaminputdbInfo?.glyphs}
+					{@const glyphsInfo = steaminputdbInfo?.glyphs}
+					<div>
+						<div class="ctrl-glyphs">
+							{#each glyphsInfo.controllers as controller (controller.controller_type)}
+								{@render controllerIcon(controller.controller_type, controller.notes)}
+							{/each}
+						</div>
+
 						<div>
-							<div class="ctrl-glyphs">
-								{#each glyphsInfo.controllers as controller (controller.controller_type)}
-									{@render controllerIcon(controller.controller_type, controller.notes)}
+							{#if glyphsInfo.autodetect}
+								<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+								<span>Autodetect</span>
+							{/if}
+							{#if glyphsInfo.manual_select}
+								<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+								<span>Manual Override / Lock</span>
+							{/if}
+						</div>
+						{#if steaminputdbInfo?.steaminputapi_support?.glyphs && (steaminputdbInfo.steaminputapi_support?.steam_input_type ?? 0) > 1}
+							{@const siapiGlphTags = steaminputdbInfo?.steaminputapi_support?.glyphs}
+							<div>
+								{#each siapiGlphTags as tag (tag)}
+									{@render steamInputAPIGlyphTag(tag)}
 								{/each}
 							</div>
-
-							<div>
-								{#if glyphsInfo.autodetect}
-									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-									<span>Autodetect</span>
-								{/if}
-								{#if glyphsInfo.manual_select}
-									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-									<span>Manual Override / Lock</span>
-								{/if}
-							</div>
-							{#if steaminputdbInfo?.steaminputapi_support?.glyphs && (steaminputdbInfo.steaminputapi_support?.steam_input_type ?? 0) > 1}
-								{@const siapiGlphTags = steaminputdbInfo?.steaminputapi_support?.glyphs}
-								<div>
-									{#each siapiGlphTags as tag (tag)}
-										{@render steamInputAPIGlyphTag(tag)}
-									{/each}
-								</div>
-							{/if}
-							<div>
-								{#if glyphsInfo?.notes}
-									<div class="notes mdcontainer">
-										<MarkdownSSR content={glyphsInfo?.notes} />
-									</div>
-								{/if}
-							</div>
-						</div>
-					{:else}
-						<div>
-							<IcoMdiDash style="width: 1.6em; height: 1.6em; color: gray" />
-							<span>Unknown</span>
-						</div>
-					{/if}
-				</section>
+						{/if}
+					</div>
+				{:else}
+					<div>
+						<IcoMdiDash style="width: 1.6em; height: 1.6em; color: gray" />
+						<span>Unknown</span>
+					</div>
+				{/if}
 			</section>
 		{/if}
 		{#if steaminputdbInfo?.steaminputapi_support || (steaminputdbInfo?.hw_features || []).length}
-			<div class="horizontal-group">
-				{#if (steaminputdbInfo?.hw_features || []).length}
-					{@const hwFeatures = (steaminputdbInfo?.hw_features || []).filter((f) =>
-						isHWFeatureForFamily(f.controller_family, f.feature)
-					)}
-					{#if hwFeatures.length}
-						<section id="hw-features" class="info-group">
-							<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
+			<!-- eslint-disable prettier-prettier -->
+			{#if (steaminputdbInfo?.steaminputapi_support?.support_tags || []).length || steaminputdbInfo?.steaminputapi_support?.steam_input_type || steaminputdbInfo?.steaminputapi_support?.camera_support || steaminputdbInfo?.steaminputapi_support?.notes}
+				<!-- eslint-enable prettier-prettier -->
+				{@const steaminputapi = steaminputdbInfo?.steaminputapi_support}
+				<section id="steaminputapi" class="info-group">
+					<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input Support</h3>
+					{#if !!steaminputapi?.steam_input_type}
+						<div>
 							<div>
-								{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
-											if (!acc[feature.controller_family]) {
-												acc[feature.controller_family] = [];
-											}
-											acc[feature.controller_family]!.push(feature);
-											return acc;
-										}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
-									{#if ctrl_family == `${HWFeatureControllerType.Common}`}
-										<div>
-											<IcoDpad style="width: 1.4em;" />
-											<span>Common</span>
-											{#each features as f (f.feature)}
-												{@render hwFeature(f.feature, ctrl_family, f.notes)}
-											{/each}
-										</div>
-									{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
-										<div>
-											<IcoSteam style="width: 1.4em;" />
-											<span>Steam</span>
-											{#each features as f (f.feature)}
-												{@render hwFeature(f.feature, ctrl_family, f.notes)}
-											{/each}
-										</div>
-									{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
-										<div>
-											<IcoDs5 style="width: 1.2em" />
-											<span>PlayStation</span>
-											{#each features as f (f.feature)}
-												{@render hwFeature(f.feature, ctrl_family, f.notes)}
-											{/each}
-										</div>
-									{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
-										<div>
-											<IcoXbox style="width: 1.2em;" />
-											<span>Xbox</span>
-											{#each features as f (f.feature)}
-												{@render hwFeature(f.feature, ctrl_family, f.notes)}
-											{/each}
-										</div>
-									{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
-										<div>
-											<IcoSwitch style="width:1.2em;" />
-											<span>Nintendo</span>
-											{#each features as f (f.feature)}
-												{@render hwFeature(f.feature, ctrl_family, f.notes)}
-											{/each}
-										</div>
-									{/if}
+								{#if steaminputapi?.steam_input_type === SteamInputType.None}
+									<IcoMdiCross style="width: 1.6em; height: 1.6em;" />
+									<span>Steam Input unaware</span>
+								{:else if steaminputapi?.steam_input_type === SteamInputType.VirtualGamepad}
+									<IcoMdiDash style="width: 1.6em; height: 1.6em;" />
+									<span>Steam Virtual Gamepad</span>
+								{:else if steaminputapi?.steam_input_type === SteamInputType.NativeAPI}
+									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+									<span>Native Steam Input API</span>
+								{:else if steaminputapi?.steam_input_type === SteamInputType.Required}
+									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: orange" />
+									<span>Steam Input Required</span>
+								{/if}
+							</div>
+						</div>
+					{/if}
+					{#if (steaminputapi?.support_tags || []).length}
+						{@const siapiSuppTags = steaminputdbInfo?.steaminputapi_support?.support_tags}
+						<div>
+							<div>
+								{#each siapiSuppTags as tag (tag)}
+									{@render steamInputAPISupportTags(tag)}
 								{/each}
 							</div>
-						</section>
+						</div>
 					{/if}
-				{/if}
-				<!-- eslint-disable prettier-prettier -->
-				{#if (steaminputdbInfo?.steaminputapi_support?.support_tags || []).length || steaminputdbInfo?.steaminputapi_support?.steam_input_type || steaminputdbInfo?.steaminputapi_support?.camera_support || steaminputdbInfo?.steaminputapi_support?.notes}
-					<!-- eslint-enable prettier-prettier -->
-					{@const steaminputapi = steaminputdbInfo?.steaminputapi_support}
-					<section id="steaminputapi" class="info-group">
-						<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input Support</h3>
-						{#if !!steaminputapi?.steam_input_type}
+					<div>
+						{#if steaminputapi?.camera_support ?? 0 > 0}
 							<div>
-								<div>
-									{#if steaminputapi?.steam_input_type === SteamInputType.None}
-										<IcoMdiCross style="width: 1.6em; height: 1.6em;" />
-										<span>Steam Input unaware</span>
-									{:else if steaminputapi?.steam_input_type === SteamInputType.VirtualGamepad}
-										<IcoMdiDash style="width: 1.6em; height: 1.6em;" />
-										<span>Steam Virtual Gamepad</span>
-									{:else if steaminputapi?.steam_input_type === SteamInputType.NativeAPI}
-										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-										<span>Native Steam Input API</span>
-									{:else if steaminputapi?.steam_input_type === SteamInputType.Required}
-										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: orange" />
-										<span>Steam Input Required</span>
-									{/if}
-								</div>
+								{#if steaminputapi?.camera_support === SteamInputCameraSupport.None}
+									<IcoMdiCross style="width: 1.6em; height: 1.6em; color: red" />
+									<strong>No</strong>
+								{:else if steaminputapi?.camera_support === SteamInputCameraSupport.Partial}
+									<IcoMdiDash style="width: 1.6em; height: 1.6em; color: orange" />
+									<strong>Partial</strong>
+								{:else if steaminputapi?.camera_support === SteamInputCameraSupport.Full}
+									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+									<strong>Full</strong>
+								{/if}
+								<span>SIAPI Camera Support</span>
 							</div>
-						{/if}
-						{#if (steaminputapi?.support_tags || []).length}
-							{@const siapiSuppTags = steaminputdbInfo?.steaminputapi_support?.support_tags}
-							<div>
+							{#if (steaminputapi?.pixels_per_360 ?? '') !== '' && (steaminputapi?.camera_support ?? 0 > 0)}
 								<div>
-									{#each siapiSuppTags as tag (tag)}
-										{@render steamInputAPISupportTags(tag)}
-									{/each}
+									<IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />
+									<span>Pixels Per 360°</span>
+									{typeof steaminputapi?.pixels_per_360}
+									<code>{steaminputapi?.pixels_per_360 ?? ''}</code>
 								</div>
-							</div>
+							{/if}
 						{/if}
+					</div>
+				</section>
+			{/if}
+			{#if (steaminputdbInfo?.hw_features || []).length}
+				{@const hwFeatures = (steaminputdbInfo?.hw_features || []).filter((f) =>
+					isHWFeatureForFamily(f.controller_family, f.feature)
+				)}
+				{#if hwFeatures.length}
+					<section id="hw-features" class="info-group">
+						<h3>
+							<IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features
+						</h3>
 						<div>
-							{#if steaminputapi?.camera_support ?? 0 > 0}
-								<div>
-									{#if steaminputapi?.camera_support === SteamInputCameraSupport.None}
-										<IcoMdiCross style="width: 1.6em; height: 1.6em; color: red" />
-										<strong>No</strong>
-									{:else if steaminputapi?.camera_support === SteamInputCameraSupport.Partial}
-										<IcoMdiDash style="width: 1.6em; height: 1.6em; color: orange" />
-										<strong>Partial</strong>
-									{:else if steaminputapi?.camera_support === SteamInputCameraSupport.Full}
-										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
-										<strong>Full</strong>
-									{/if}
-									<span>SIAPI Camera Support</span>
-								</div>
-								{#if (steaminputapi?.pixels_per_360 ?? '') !== '' && (steaminputapi?.camera_support ?? 0 > 0)}
+							{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
+										if (!acc[feature.controller_family]) {
+											acc[feature.controller_family] = [];
+										}
+										acc[feature.controller_family]!.push(feature);
+										return acc;
+									}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
+								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
 									<div>
-										<IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />
-										<span>Pixels Per 360°</span>
-										{typeof steaminputapi?.pixels_per_360}
-										<code>{steaminputapi?.pixels_per_360 ?? ''}</code>
+										<IcoDpad style="width: 1.4em;" />
+										<span>Common</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
+									<div>
+										<IcoSteam style="width: 1.4em;" />
+										<span>Steam</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
+									<div>
+										<IcoDs5 style="width: 1.2em" />
+										<span>PlayStation</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
+									<div>
+										<IcoXbox style="width: 1.2em;" />
+										<span>Xbox</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
+									</div>
+								{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
+									<div>
+										<IcoSwitch style="width:1.2em;" />
+										<span>Nintendo</span>
+										{#each features as f (f.feature)}
+											{@render hwFeature(f.feature, ctrl_family, f.notes)}
+										{/each}
 									</div>
 								{/if}
-							{/if}
+							{/each}
 						</div>
-
-						{#if steaminputapi?.notes}
-							<div>
-								<div class="notes mdcontainer">
-									<MarkdownSSR content={steaminputapi?.notes} />
-								</div>
-							</div>
-						{/if}
 					</section>
 				{/if}
-			</div>
+			{/if}
 		{/if}
 	</div>
-	{#if steaminputdbInfo?.controller_support_notes || (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length}
+	<!-- eslint-disable-next-line -->
+	{#if
+        steaminputdbInfo?.controller_support_notes
+        || steaminputdbInfo?.mixed_input?.notes
+        || steaminputdbInfo?.glyphs?.notes
+        || steaminputdbInfo?.hw_feature_notes
+        || steaminputdbInfo?.steaminputapi_support?.notes
+        || (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length
+        }
+		{@const generalNotes = steaminputdbInfo?.controller_support_notes}
+		{@const mixedInputNotes = steaminputdbInfo?.mixed_input?.notes}
+		{@const glyphNotes = steaminputdbInfo?.glyphs?.notes}
+		{@const hwFeatureNotes = steaminputdbInfo?.hw_feature_notes}
+		{@const steamInputNotes = steaminputdbInfo?.steaminputapi_support?.notes}
+		{@const mixedInputModUrls = steaminputdbInfo?.mixed_input?.mixed_input_mod_urls ?? []}
 		<aside id="controller-support-notes" class="card glass">
-			<h3>Additional Info</h3>
-			{#if steaminputdbInfo?.controller_support_notes}
-				<div class="mdcontainer scrollable">
-					<div class="content">
-						<MarkdownSSR content={steaminputdbInfo?.controller_support_notes} />
-						<p></p>
-					</div>
+			<div class="notes-container scrollable">
+				<div>
+					{#if mixedInputNotes}
+						<h3><IcoMixedInput style="width: 1.4em; height: 1.4em;" /> Mixed Input</h3>
+						<div class="notes mdcontainer">
+							<MarkdownSSR content={mixedInputNotes} />
+						</div>
+					{/if}
+					{#if glyphNotes}
+						<h3><IconMdiGamepadCircle style="width: 1.2em; height: 1.2em;" /> Glyphs</h3>
+						<div class="notes mdcontainer">
+							<MarkdownSSR content={glyphNotes} />
+						</div>
+					{/if}
+					{#if steamInputNotes}
+						<h3><IcoSIAPI style="width: 1.4em; height: 1.4em;" /> Steam Input</h3>
+						<div class="notes mdcontainer">
+							<MarkdownSSR content={steamInputNotes} />
+						</div>
+					{/if}
+					{#if hwFeatureNotes}
+						<h3><IconMdiGamepad style="width: 1.2em; height: 1.2em;" /> Hardware Features</h3>
+						<div class="notes mdcontainer">
+							<MarkdownSSR content={hwFeatureNotes} />
+						</div>
+					{/if}
+					{#if generalNotes}
+						<h3>Additional Information</h3>
+						<div class="notes mdcontainer">
+							<MarkdownSSR content={generalNotes} />
+						</div>
+					{/if}
 				</div>
-			{/if}
-			{#if (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length}
+			</div>
+
+			{#if mixedInputModUrls.length}
 				<div class="mod-link-list">
-					<strong style="padding-top: 1.5em;"
-						>Mixed Input / Controller support Mod{#if (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length > 1}s{/if}
-					</strong>
-					{#each steaminputdbInfo?.mixed_input?.mixed_input_mod_urls as url, idx (idx)}
-						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-						<a href={url} target="_blank" rel="noopener noreferrer">{getModUrlName(url)}</a>
-					{/each}
+					<h3 style="font-weight: bold; opacity: 0.9;">
+						Mixed Input / Controller support Mod{#if mixedInputModUrls.length > 1}s{/if}
+					</h3>
+					<div>
+						{#each mixedInputModUrls as url, idx (idx)}
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+							<a href={url} target="_blank" rel="noopener noreferrer">{getModUrlName(url)}</a>
+						{/each}
+					</div>
 				</div>
 			{/if}
 		</aside>
@@ -459,8 +479,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 	overflow: clip;
 	overflow-clip-margin: 2em;
 
-	--gap: 1em;
-	--info-min-width: 58ch;
+	--info-min-width: 42ch;
 	width: 100%;
 	align-items: stretch;
 	height: 100%;
@@ -469,9 +488,14 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 	& > :first-child {
 		flex: 3 1 var(--info-min-width);
 		min-width: 0;
-		display: grid;
-		align-content: start;
+		display: flex;
+		flex-flow: row wrap;
 		gap: 1em;
+		justify-content: space-evenly;
+		align-items: center;
+		& > section {
+			margin: 0 2.5em;
+		}
 	}
 	& > aside {
 		flex: 1 1 24ch;
@@ -483,6 +507,11 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 		& .mod-link-list {
 			display: grid;
 			gap: 0.5em;
+			& > div {
+				display: grid;
+				gap: 0.5em;
+				margin-left: 1.5em;
+			}
 		}
 
 		& .scrollable {
@@ -490,15 +519,57 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 			min-height: 0;
 			overflow: auto;
 			overflow: auto;
-			& > .content {
-				max-height: 24em;
+			& > :first-child {
+				max-height: 100%;
 			}
 		}
+		max-height: 46em;
 	}
 }
 
+.notes-container {
+	& > :first-child {
+		& > h3 {
+			position: relative;
+			font-weight: bold;
+			opacity: 0.9;
+			padding-top: 1em;
+			filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.226))
+				drop-shadow(0px 0px 0.5em rgba(0, 0, 0, 0.342));
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: -0.42em;
+				left: 0;
+				width: 100%;
+				height: 1px;
+				background: var(--text-color);
+				opacity: 0.2;
+			}
+		}
+		& > h3:first-child {
+			padding-top: 0;
+			&::before {
+				display: none;
+			}
+		}
+
+		display: grid;
+		gap: 1em;
+	}
+	& .mdcontainer {
+		padding: 0 1em;
+	}
+}
+
+section > :first-child:is(h3) {
+	font-weight: bold;
+	font-size: 1.3em;
+	filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.349)) drop-shadow(0px 0px 0.5em rgba(0, 0, 0, 0.945));
+}
+
 h3 {
-	font-size: 1.1em;
 	align-items: center;
 	display: flex;
 	gap: 0.5ch;
@@ -600,9 +671,6 @@ h3 {
 	}
 }
 
-.notes {
-	max-width: 42ch;
-}
 .feature {
 	display: flex;
 	align-items: center;
@@ -626,8 +694,17 @@ h3 {
 	margin-left: auto;
 	justify-content: center;
 	width: 100%;
-	align-items: baseline;
 	height: fit-content;
+	&:is(:not(.no-divider)) {
+		&::after {
+			content: '';
+			width: 100%;
+			height: 1px;
+			background: var(--text-color);
+			opacity: 0.2;
+			margin: 1em 0;
+		}
+	}
 	& > :first-child {
 		width: 100%;
 		padding-bottom: 0.5ch;
