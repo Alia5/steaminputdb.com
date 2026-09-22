@@ -553,7 +553,7 @@ let previewAppInfo = $derived({
 						{#if family_tag == HWFeatureControllerType.Common}
 							<div>
 								<IcoDpad style="width: 1.4em;" />
-								<span>Generic</span>
+								<span>Common</span>
 							</div>
 							<div>
 								<!-- eslint-disable prettier/prettier -->
@@ -634,7 +634,25 @@ let previewAppInfo = $derived({
 				</div>
 			</section>
 			<section id="steaminputapi" class="info-group" style="margin-bottom: 1em">
-				<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input API Support</h3>
+				<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input Support</h3>
+				<div>
+					<label for="steam-input-type">
+						<label for="steam-input-type" class="dropdown">
+							<span>Steam Input Type: </span>
+							<select
+								id="steam-input-type"
+								name="steam-input-type"
+								bind:value={steaminputdbInfo.steaminputapi_support.steam_input_type}
+							>
+								<option value={0}>Unknown</option>
+								<option value={1}>Steam Input unaware</option>
+								<option value={2}>Steam Virtual Gamepad</option>
+								<option value={3}>Native Steam Input API</option>
+							</select>
+							<IcoDropdown />
+						</label>
+					</label>
+				</div>
 				<div>
 					<div>
 						{#each Object.values(SteamInputAPISupportType) as tag (tag)}

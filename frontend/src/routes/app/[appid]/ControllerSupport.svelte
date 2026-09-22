@@ -7,7 +7,8 @@ import {
 	HWFeatureControllerType,
 	MixedInputSupportType,
 	SteamInputAPISupportType,
-	SteamInputCameraSupport
+	SteamInputCameraSupport,
+	SteamInputType
 } from '$lib/api/steaminputdbEnums';
 import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
@@ -304,7 +305,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
 									<div>
 										<IcoDpad style="width: 1.4em;" />
-										<span>Generic</span>
+										<span>Common</span>
 										{#each features as f (f.feature)}
 											{@render hwFeature(f.feature, ctrl_family, f.notes)}
 										{/each}
@@ -347,11 +348,27 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 					</section>
 				{/if}
 				<!-- eslint-disable prettier-prettier -->
-				{#if (steaminputdbInfo?.steaminputapi_support?.support_tags || []).length || steaminputdbInfo?.steaminputapi_support?.camera_support || steaminputdbInfo?.steaminputapi_support?.notes}
+				{#if (steaminputdbInfo?.steaminputapi_support?.support_tags || []).length || steaminputdbInfo?.steaminputapi_support?.steam_input_type || steaminputdbInfo?.steaminputapi_support?.camera_support || steaminputdbInfo?.steaminputapi_support?.notes}
 					<!-- eslint-enable prettier-prettier -->
 					{@const steaminputapi = steaminputdbInfo?.steaminputapi_support}
 					<section id="steaminputapi" class="info-group">
-						<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input API Support</h3>
+						<h3><IcoSIAPI style="width: 2em; height: 2em;" /> Steam Input Support</h3>
+						{#if !!steaminputapi?.steam_input_type}
+							<div>
+								<div>
+									{#if steaminputapi?.steam_input_type === SteamInputType.None}
+										<IcoMdiCross style="width: 1.6em; height: 1.6em;" />
+										<span>Steam Input unaware</span>
+									{:else if steaminputapi?.steam_input_type === SteamInputType.VirtualGamepad}
+										<IcoMdiDash style="width: 1.6em; height: 1.6em;" />
+										<span>Steam Virtual Gamepad</span>
+									{:else if steaminputapi?.steam_input_type === SteamInputType.NativeAPI}
+										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
+										<span>Native Steam Input API</span>
+									{/if}
+								</div>
+							</div>
+						{/if}
 						{#if (steaminputapi?.support_tags || []).length}
 							{@const siapiSuppTags = steaminputdbInfo?.steaminputapi_support?.support_tags}
 							<div>

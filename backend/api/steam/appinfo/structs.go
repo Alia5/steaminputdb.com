@@ -54,9 +54,10 @@ type GlyphControllerSupport struct {
 type SteamInputAPISupport struct {
 	Glyphs []models.AppGlyphTagType `json:"glyphs,omitempty,omitzero"`
 
-	CameraSupport models.SteamInputCameraSupport    `json:"camera_support"`
-	PixelsPer360  *string                           `json:"pixels_per_360,omitempty,omitzero" nullable:"true"`
-	SupportTags   []models.SteamInputAPISupportType `json:"support_tags,omitempty"`
+	CameraSupport  models.SteamInputCameraSupport    `json:"camera_support"`
+	PixelsPer360   *string                           `json:"pixels_per_360,omitempty,omitzero" nullable:"true"`
+	SupportTags    []models.SteamInputAPISupportType `json:"support_tags,omitempty"`
+	SteamInputType *models.SteamInputType            `json:"steam_input_type,omitempty,omitzero" nullable:"true"`
 
 	Notes string `json:"notes,omitempty,omitzero"`
 }

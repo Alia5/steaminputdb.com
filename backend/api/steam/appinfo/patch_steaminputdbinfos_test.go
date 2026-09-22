@@ -61,6 +61,7 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			"glyphs": [1, 2],
 			"camera_support": 3,
 			"pixels_per_360": "1234",
+			"steam_input_type": 3,
 			"support_tags": [2, 3],
 			"notes": "siapi notes"
 		},
@@ -152,6 +153,7 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 						"glyphs": [1, 2],
 						"camera_support": 3,
 						"pixels_per_360": "1234",
+						"steam_input_type": 3,
 						"support_tags": [2, 3],
 						"notes": "siapi notes"
 					},
@@ -225,6 +227,7 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 						"glyphs": [1, 2],
 						"camera_support": 3,
 						"pixels_per_360": "1234",
+						"steam_input_type": 3,
 						"support_tags": [2, 3],
 						"notes": "siapi notes"
 					},
@@ -246,13 +249,43 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			},
 		},
 		{
+			name: "ONLY_STEAM_INPUT_TYPE_CREATES_SECTION",
+			path: path,
+			body: `{
+				"controller_support_rating": 0,
+				"steaminputapi_support": {"camera_support": 0, "steam_input_type": 3}
+			}`,
+			expectedStatus: http.StatusOK,
+			expectedBody: `{
+				"app_id": 999999,
+				"name": "Test App",
+				"store_url_path": "",
+				"type": "",
+				"steaminputdb_info": {
+					"controller_support_rating": 0,
+					"steaminputapi_support": {
+						"camera_support": 0,
+						"steam_input_type": 3
+					}
+				}
+			}`,
+			setup: func(t *testing.T, api humatest.TestAPI, dal db.DAL) {
+				err := dal.SteamUser().Insert(context.Background(), &models.SteamUser{
+					SteamID:     76561197997352479,
+					PersonaName: "TestUser",
+					IsAdmin:     true,
+				})
+				require.NoError(t, err)
+			},
+		},
+		{
 			name: "EMPTY_SECTIONS_DO_NOT_CREATE_SECTIONS",
 			path: path,
 			body: `{
 				"controller_support_rating": 4,
 				"mixed_input": {"type": 0, "glyph_flicker": null, "notes": "", "mixed_input_mod_urls": []},
 				"glyphs": {"autodetect": null, "manual_select": null, "notes": "", "controllers": []},
-				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": null, "notes": "", "support_tags": []},
+				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": null, "steam_input_type": null, "notes": "", "support_tags": []},
 				"hw_features": []
 			}`,
 			expectedStatus: http.StatusOK,

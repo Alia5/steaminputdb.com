@@ -24,6 +24,15 @@ const (
 	SteamInputCameraSupportFull    SteamInputCameraSupport = 3
 )
 
+type SteamInputType int
+
+const (
+	SteamInputTypeUnknown        SteamInputType = 0
+	SteamInputTypeNone           SteamInputType = 1
+	SteamInputTypeVirtualGamepad SteamInputType = 2
+	SteamInputTypeNativeAPI      SteamInputType = 3
+)
+
 type AppSteamInputAPISupport struct {
 	AppID     uint32 `gorm:"primaryKey;autoIncrement:false"`
 	CreatedAt time.Time
@@ -33,6 +42,7 @@ type AppSteamInputAPISupport struct {
 	SIAPICameraSupport SteamInputCameraSupport
 	SIAPIPixelsPer360  *string
 	SIAPICameraNotes   string
+	SIAPIType          *SteamInputType
 
 	Notes string
 }

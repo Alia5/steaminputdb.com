@@ -67,3 +67,11 @@ export const HWFeatureControllerType = {
     Nintendo: 4
 } as const;
 export type HWFeatureControllerTypeValue = (typeof HWFeatureControllerType)[keyof typeof HWFeatureControllerType];
+
+export const SteamInputType = {
+    Unknown: 0,
+    None: 1,
+    VirtualGamepad: 2,
+    NativeAPI: 3
+} as const;
+export type SteamInputTypeValue = (typeof SteamInputType)[keyof typeof SteamInputType];

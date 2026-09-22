@@ -1604,6 +1604,11 @@ components:
           type:
             - string
             - "null"
+        steam_input_type:
+          format: int64
+          type:
+            - integer
+            - "null"
         support_tags:
           items:
             format: int64

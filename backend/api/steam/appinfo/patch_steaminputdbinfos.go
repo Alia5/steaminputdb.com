@@ -209,6 +209,7 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 		createsEmptySIAPISupport = createsEmptySIAPISupport && dbInfo.Glyphs == nil
 		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.CameraSupport == models.SteamInputCameraSupportUnknown
 		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.PixelsPer360 == nil
+		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.SteamInputType == nil
 		createsEmptySIAPISupport = createsEmptySIAPISupport && siapi.Notes == ""
 		createsEmptySIAPISupport = createsEmptySIAPISupport && len(siapi.SupportTags) == 0
 		createsEmptySIAPISupport = createsEmptySIAPISupport && len(siapi.Glyphs) == 0
@@ -220,6 +221,7 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 		appInfo.SteamInputAPISupport = &models.AppSteamInputAPISupport{
 			SIAPICameraSupport: siapi.CameraSupport,
 			SIAPIPixelsPer360:  siapi.PixelsPer360,
+			SIAPIType:          siapi.SteamInputType,
 			Notes:              siapi.Notes,
 		}
 		if dbInfo.SteamInputAPISupport != nil {

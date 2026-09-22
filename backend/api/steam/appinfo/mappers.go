@@ -154,9 +154,10 @@ func mapSteamInputDBInfo(appInfo *models.AppInfo) *SIDBControllerSupport {
 		var siapisupport *SteamInputAPISupport
 		if appInfo.SteamInputAPISupport != nil {
 			siapisupport = &SteamInputAPISupport{
-				CameraSupport: appInfo.SteamInputAPISupport.SIAPICameraSupport,
-				PixelsPer360:  appInfo.SteamInputAPISupport.SIAPIPixelsPer360,
-				Notes:         appInfo.SteamInputAPISupport.Notes,
+				CameraSupport:  appInfo.SteamInputAPISupport.SIAPICameraSupport,
+				PixelsPer360:   appInfo.SteamInputAPISupport.SIAPIPixelsPer360,
+				SteamInputType: appInfo.SteamInputAPISupport.SIAPIType,
+				Notes:          appInfo.SteamInputAPISupport.Notes,
 			}
 			lenSupportTags := len(appInfo.SteamInputAPISupport.SIAPITypes)
 			if lenSupportTags > 0 {
