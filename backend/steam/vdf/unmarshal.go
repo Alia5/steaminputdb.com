@@ -168,6 +168,9 @@ func decodeLeaf(val string, rv reflect.Value) error {
 		rv.Set(reflect.ValueOf(val))
 		return nil
 	default:
+		if val == "" {
+			return nil
+		}
 		return &UnmarshalTypeError{Value: "string", Type: rv.Type()}
 	}
 }
