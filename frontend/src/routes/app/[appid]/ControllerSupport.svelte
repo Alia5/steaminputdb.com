@@ -365,6 +365,9 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 									{:else if steaminputapi?.steam_input_type === SteamInputType.NativeAPI}
 										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
 										<span>Native Steam Input API</span>
+									{:else if steaminputapi?.steam_input_type === SteamInputType.Required}
+										<IconMDIChecked style="width: 1.6em; height: 1.6em; color: orange" />
+										<span>Steam Input Required</span>
 									{/if}
 								</div>
 							</div>

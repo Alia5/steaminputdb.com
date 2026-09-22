@@ -31,6 +31,7 @@ const (
 	SteamInputTypeNone           SteamInputType = 1
 	SteamInputTypeVirtualGamepad SteamInputType = 2
 	SteamInputTypeNativeAPI      SteamInputType = 3
+	SteamInputTypeRequired       SteamInputType = 4
 )
 
 type AppSteamInputAPISupport struct {

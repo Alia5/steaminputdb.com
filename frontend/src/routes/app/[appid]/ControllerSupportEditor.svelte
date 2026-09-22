@@ -648,6 +648,7 @@ let previewAppInfo = $derived({
 								<option value={1}>Steam Input unaware</option>
 								<option value={2}>Steam Virtual Gamepad</option>
 								<option value={3}>Native Steam Input API</option>
+								<option value={4}>Steam Input Required</option>
 							</select>
 							<IcoDropdown />
 						</label>

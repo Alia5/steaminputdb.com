@@ -72,6 +72,7 @@ export const SteamInputType = {
     Unknown: 0,
     None: 1,
     VirtualGamepad: 2,
-    NativeAPI: 3
+    NativeAPI: 3,
+    Required: 4
 } as const;
 export type SteamInputTypeValue = (typeof SteamInputType)[keyof typeof SteamInputType];
