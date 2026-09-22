@@ -5,6 +5,7 @@ import {
 	AppGlyphTagType,
 	HWFeature,
 	HWFeatureControllerType,
+	HWFeaturesForFamily,
 	SteamInputAPISupportType
 } from '$lib/api/steaminputdbEnums';
 import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
@@ -104,6 +105,7 @@ let previewAppInfo = $derived({
 				});
 			} else {
 				editControllerSupport = false;
+				window.scrollTo(0, 0);
 				toast({
 					message: 'Successfully saved controller support info',
 					color: 'green'
@@ -556,17 +558,9 @@ let previewAppInfo = $derived({
 								<span>Common</span>
 							</div>
 							<div>
-								<!-- eslint-disable prettier/prettier -->
-								{#each Object.values(HWFeature).filter((f) => {
-									return f === HWFeature.MotionInputs
-										|| f === HWFeature.NativeGyroCamera
-										|| f === HWFeature.Rumble
-										|| f === HWFeature.HDHaptics
-										;
-								}) as feature (feature)}
+								{#each HWFeaturesForFamily[family_tag] ?? [] as feature (feature)}
 									{@render hwFeature(feature, family_tag)}
 								{/each}
-								<!-- eslint-enable prettier/prettier -->
 							</div>
 						{:else if family_tag == HWFeatureControllerType.Steam}
 							<div class="feature-group-header">
@@ -574,18 +568,9 @@ let previewAppInfo = $derived({
 								<span>Steam</span>
 							</div>
 							<div>
-								<!-- eslint-disable prettier/prettier -->
-								{#each Object.values(HWFeature).filter((f) => {
-									return f === HWFeature.MotionInputs
-										|| f === HWFeature.NativeGyroCamera
-										|| f === HWFeature.Rumble
-										|| f === HWFeature.HDHaptics
-										|| f === HWFeature.Touchpads
-										;
-								}) as feature (feature)}
+								{#each HWFeaturesForFamily[family_tag] ?? [] as feature (feature)}
 									{@render hwFeature(feature, family_tag)}
 								{/each}
-								<!-- eslint-enable prettier/prettier -->
 							</div>
 						{:else if family_tag == HWFeatureControllerType.PlayStation}
 							<div class="feature-group-header">
@@ -593,9 +578,7 @@ let previewAppInfo = $derived({
 								<span>PlayStation</span>
 							</div>
 							<div>
-								{#each Object.values(HWFeature).filter((f) => {
-									return f !== HWFeature.ImpulseTriggers;
-								}) as feature (feature)}
+								{#each HWFeaturesForFamily[family_tag] ?? [] as feature (feature)}
 									{@render hwFeature(feature, family_tag)}
 								{/each}
 							</div>
@@ -605,9 +588,7 @@ let previewAppInfo = $derived({
 								<span>Xbox</span>
 							</div>
 							<div>
-								{#each Object.values(HWFeature).filter((f) => {
-									return f === HWFeature.ImpulseTriggers;
-								}) as feature (feature)}
+								{#each HWFeaturesForFamily[family_tag] ?? [] as feature (feature)}
 									{@render hwFeature(feature, family_tag)}
 								{/each}
 							</div>
@@ -617,17 +598,9 @@ let previewAppInfo = $derived({
 								<span>Nintendo</span>
 							</div>
 							<div>
-								<!-- eslint-disable prettier/prettier -->
-								{#each Object.values(HWFeature).filter((f) => {
-									return f === HWFeature.MotionInputs
-										|| f === HWFeature.NativeGyroCamera
-										|| f === HWFeature.Rumble
-										|| f === HWFeature.HDHaptics
-										;
-								}) as feature (feature)}
+								{#each HWFeaturesForFamily[family_tag] ?? [] as feature (feature)}
 									{@render hwFeature(feature, family_tag)}
 								{/each}
-								<!-- eslint-enable prettier/prettier -->
 							</div>
 						{/if}
 					{/each}
@@ -648,7 +621,7 @@ let previewAppInfo = $derived({
 								<option value={1}>Steam Input unaware</option>
 								<option value={2}>Steam Virtual Gamepad</option>
 								<option value={3}>Native Steam Input API</option>
-								<option value={4}>Steam Input Required</option>
+								<option value={4}>Requires Steam Input</option>
 							</select>
 							<IcoDropdown />
 						</label>

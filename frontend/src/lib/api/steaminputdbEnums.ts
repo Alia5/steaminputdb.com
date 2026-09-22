@@ -76,3 +76,31 @@ export const SteamInputType = {
     Required: 4
 } as const;
 export type SteamInputTypeValue = (typeof SteamInputType)[keyof typeof SteamInputType];
+
+
+export const HWFeaturesForFamily: Record<number, readonly number[]> = {
+    [HWFeatureControllerType.Common]: [
+        HWFeature.MotionInputs,
+        HWFeature.NativeGyroCamera,
+        HWFeature.Rumble,
+        HWFeature.HDHaptics
+    ],
+    [HWFeatureControllerType.Steam]: [
+        HWFeature.MotionInputs,
+        HWFeature.NativeGyroCamera,
+        HWFeature.HDHaptics,
+        HWFeature.Touchpads
+    ],
+    [HWFeatureControllerType.PlayStation]: Object.values(HWFeature).filter(
+        (f) => f !== HWFeature.ImpulseTriggers && f !== HWFeature.Rumble && f !== HWFeature.HDHaptics
+    ),
+    [HWFeatureControllerType.Xbox]: [HWFeature.ImpulseTriggers],
+    [HWFeatureControllerType.Nintendo]: [
+        HWFeature.MotionInputs,
+        HWFeature.NativeGyroCamera,
+        HWFeature.HDHaptics
+    ]
+};
+
+export const isHWFeatureForFamily = (family: number | string | undefined, feature: number) =>
+    (HWFeaturesForFamily[Number(family)] ?? []).includes(feature);

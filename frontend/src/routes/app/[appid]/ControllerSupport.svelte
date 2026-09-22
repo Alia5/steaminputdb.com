@@ -5,6 +5,7 @@ import {
 	AppGlyphTagType,
 	HWFeature,
 	HWFeatureControllerType,
+	isHWFeatureForFamily,
 	MixedInputSupportType,
 	SteamInputAPISupportType,
 	SteamInputCameraSupport,
@@ -291,61 +292,65 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 		{#if steaminputdbInfo?.steaminputapi_support || (steaminputdbInfo?.hw_features || []).length}
 			<div class="horizontal-group">
 				{#if (steaminputdbInfo?.hw_features || []).length}
-					{@const hwFeatures = steaminputdbInfo?.hw_features}
-					<section id="hw-features" class="info-group">
-						<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
-						<div>
-							{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
-										if (!acc[feature.controller_family]) {
-											acc[feature.controller_family] = [];
-										}
-										acc[feature.controller_family]!.push(feature);
-										return acc;
-									}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
-								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
-									<div>
-										<IcoDpad style="width: 1.4em;" />
-										<span>Common</span>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
-									<div>
-										<IcoSteam style="width: 1.4em;" />
-										<span>Steam</span>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
-									<div>
-										<IcoDs5 style="width: 1.2em" />
-										<span>PlayStation</span>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
-									<div>
-										<IcoXbox style="width: 1.2em;" />
-										<span>Xbox</span>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
-									<div>
-										<IcoSwitch style="width:1.2em;" />
-										<span>Nintendo</span>
-										{#each features as f (f.feature)}
-											{@render hwFeature(f.feature, ctrl_family, f.notes)}
-										{/each}
-									</div>
-								{/if}
-							{/each}
-						</div>
-					</section>
+					{@const hwFeatures = (steaminputdbInfo?.hw_features || []).filter((f) =>
+						isHWFeatureForFamily(f.controller_family, f.feature)
+					)}
+					{#if hwFeatures.length}
+						<section id="hw-features" class="info-group">
+							<h3><IconMdiGamepad style="width: 1.6em; height: 1.6em;" /> Hardware Features</h3>
+							<div>
+								{#each Object.entries((hwFeatures || []).reduce((acc, feature) => {
+											if (!acc[feature.controller_family]) {
+												acc[feature.controller_family] = [];
+											}
+											acc[feature.controller_family]!.push(feature);
+											return acc;
+										}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
+									{#if ctrl_family == `${HWFeatureControllerType.Common}`}
+										<div>
+											<IcoDpad style="width: 1.4em;" />
+											<span>Common</span>
+											{#each features as f (f.feature)}
+												{@render hwFeature(f.feature, ctrl_family, f.notes)}
+											{/each}
+										</div>
+									{:else if ctrl_family == `${HWFeatureControllerType.Steam}`}
+										<div>
+											<IcoSteam style="width: 1.4em;" />
+											<span>Steam</span>
+											{#each features as f (f.feature)}
+												{@render hwFeature(f.feature, ctrl_family, f.notes)}
+											{/each}
+										</div>
+									{:else if ctrl_family == `${HWFeatureControllerType.PlayStation}`}
+										<div>
+											<IcoDs5 style="width: 1.2em" />
+											<span>PlayStation</span>
+											{#each features as f (f.feature)}
+												{@render hwFeature(f.feature, ctrl_family, f.notes)}
+											{/each}
+										</div>
+									{:else if ctrl_family == `${HWFeatureControllerType.Xbox}`}
+										<div>
+											<IcoXbox style="width: 1.2em;" />
+											<span>Xbox</span>
+											{#each features as f (f.feature)}
+												{@render hwFeature(f.feature, ctrl_family, f.notes)}
+											{/each}
+										</div>
+									{:else if ctrl_family == `${HWFeatureControllerType.Nintendo}`}
+										<div>
+											<IcoSwitch style="width:1.2em;" />
+											<span>Nintendo</span>
+											{#each features as f (f.feature)}
+												{@render hwFeature(f.feature, ctrl_family, f.notes)}
+											{/each}
+										</div>
+									{/if}
+								{/each}
+							</div>
+						</section>
+					{/if}
 				{/if}
 				<!-- eslint-disable prettier-prettier -->
 				{#if (steaminputdbInfo?.steaminputapi_support?.support_tags || []).length || steaminputdbInfo?.steaminputapi_support?.steam_input_type || steaminputdbInfo?.steaminputapi_support?.camera_support || steaminputdbInfo?.steaminputapi_support?.notes}
