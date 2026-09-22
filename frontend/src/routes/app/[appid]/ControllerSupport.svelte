@@ -265,7 +265,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 									<span>Manual Override / Lock</span>
 								{/if}
 							</div>
-							{#if steaminputdbInfo?.steaminputapi_support?.glyphs}
+							{#if steaminputdbInfo?.steaminputapi_support?.glyphs && (steaminputdbInfo.steaminputapi_support?.steam_input_type ?? 0) > 1}
 								{@const siapiGlphTags = steaminputdbInfo?.steaminputapi_support?.glyphs}
 								<div>
 									{#each siapiGlphTags as tag (tag)}

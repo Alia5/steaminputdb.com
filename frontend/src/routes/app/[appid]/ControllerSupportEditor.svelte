@@ -211,10 +211,10 @@ let previewAppInfo = $derived({
 	{/each}
 {/snippet}
 
-{#snippet steamInputAPIGlyphTag(tag: number)}
+{#snippet steamInputAPIGlyphTag(tag: number, disabled: boolean)}
 	<label
 		for={`siapi-glyph-${tag}`}
-		class="feature"
+		class={disabled ? 'feature disabled' : 'feature '}
 		style="background-color: {tag === AppGlyphTagType.SteamInputAPIButtons
 			? '#00dfff'
 			: tag === AppGlyphTagType.InGameButtons
@@ -225,6 +225,7 @@ let previewAppInfo = $derived({
 			type="checkbox"
 			id={`siapi-glyph-${tag}`}
 			name={`siapi-glyph-${tag}`}
+			disabled={disabled}
 			checked={steaminputdbInfo.steaminputapi_support?.glyphs?.includes(tag)}
 			onchange={() => {
 				steaminputdbInfo.steaminputapi_support = steaminputdbInfo.steaminputapi_support ?? {};
@@ -529,11 +530,20 @@ let previewAppInfo = $derived({
 							</label>
 						</label>
 					</div>
+					{#if (steaminputdbInfo.steaminputapi_support?.steam_input_type ?? 0) <= 1}
+						<em style="margin-top: 1em;"
+							>Requires Steam Input Type to be other than <code>Unknown</code> or
+							<code>Steam Input unaware</code>
+						</em>
+					{/if}
 					<div>
 						{#each Object.values(AppGlyphTagType).filter((t) => {
 							return t !== AppGlyphTagType.Unknown;
 						}) as tag (tag)}
-							{@render steamInputAPIGlyphTag(tag)}
+							{@render steamInputAPIGlyphTag(
+								tag,
+								(steaminputdbInfo.steaminputapi_support?.steam_input_type ?? 0) <= 1
+							)}
 						{/each}
 					</div>
 					<div class="notes">
@@ -845,6 +855,7 @@ h3 {
 	width: 100%;
 	min-width: 100%;
 	justify-content: center;
+	margin-top: 1em;
 }
 
 .feature {
@@ -860,6 +871,11 @@ h3 {
 	white-space: nowrap;
 	& > :global(:first-child) {
 		margin-right: 0.5ch;
+	}
+
+	&:is(.disabled) {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 }
 
