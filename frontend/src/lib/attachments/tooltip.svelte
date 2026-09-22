@@ -460,7 +460,8 @@ let {
 		{#if background || snippet}
 			<div
 				class={(background ? 'bg' : '') + (typeof background === 'boolean' ? ' def' : '')}
-				style={typeof background === 'string' ? `--bg: ${background}` : ''}>
+				style={typeof background === 'string' ? `--bg: ${background}` : ''}
+			>
 				{#if arrow}
 					<div data-tooltip-arrow></div>
 				{/if}
@@ -488,6 +489,7 @@ let {
 
 	& > p {
 		text-align: center;
+		filter: drop-shadow(2px 2px 2px #00000077) drop-shadow(0px 0px 8px #0000003f);
 	}
 	box-shadow: var(--card-shadow);
 	& > .bg {
