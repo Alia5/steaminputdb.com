@@ -32,6 +32,7 @@ import IcoMdiCross from '~icons/mdi/close-circle-outline';
 import IconMdiGamepad from '~icons/mdi/controller';
 import IcoDpad from '~icons/mdi/gamepad';
 import IconMdiGamepadCircle from '~icons/mdi/gamepad-circle';
+import IcoHelp from '~icons/mdi/help-circle-outline';
 import IcoLightbar from '~icons/mdi/lightbulb-on';
 import IcoMdiDash from '~icons/mdi/minus-circle-outline';
 import IcoMdiSetRight from '~icons/mdi/set-right';
@@ -51,29 +52,26 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 	{#each CONTROLLER_LIST.filter((c) => {
 		return c.type === type;
 	}) as controller (controller.type)}
-		{#if type?.includes('xbox')}
-			<IcoXbox
-				style="width: 2.4em; height: 2.4em;"
-				{@attach tooltip({
-					content: glyphNotes ?? '',
-					outDelay: 200,
-					arrow: true,
-					autoPlacement: true,
-					arrowFollowCursor: false
-				})}
-			/>
-		{:else}
-			<controller.icon
-				style="width: 2.4em; height: 2.4em;"
-				{@attach tooltip({
-					content: glyphNotes ?? '',
-					outDelay: 200,
-					arrow: true,
-					autoPlacement: true,
-					arrowFollowCursor: false
-				})}
-			/>
-		{/if}
+		<div
+			style="display: grid; justify-items: center;"
+			{@attach tooltip({
+				content: glyphNotes ?? '',
+				outDelay: 100,
+				arrow: true,
+				autoPlacement: false,
+				placement: 'top',
+				arrowFollowCursor: false
+			})}
+		>
+			{#if glyphNotes}
+				<IcoHelp style="width: 1.3em; height: 1.3em; opacity: 0.7;" />
+			{/if}
+			{#if type?.includes('xbox')}
+				<IcoXbox style="width: 2.4em; height: 2.4em;" />
+			{:else}
+				<controller.icon style="width: 2.4em; height: 2.4em;" />
+			{/if}
+		</div>
 	{/each}
 {/snippet}
 
@@ -98,7 +96,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 		class="feature"
 		{@attach tooltip({
 			content: notes ?? '',
-			outDelay: 200,
+			outDelay: 100,
 			arrow: true,
 			autoPlacement: true,
 			arrowFollowCursor: false
@@ -129,6 +127,9 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 			<IcoTouchpads style="width: 1.2em; height: 1.2em;" /> Touchpads
 		{:else if feature === HWFeature.AudioHaptics}
 			<IcoAudioHaptics style="width: 1.2em; height: 1.2em;" /> Audio-based Haptics
+		{/if}
+		{#if notes}
+			<IcoHelp style="width: 1.2em; height: 1.2em; opacity: 0.7; margin-left: 0.5em;" />
 		{/if}
 	</span>
 {/snippet}
