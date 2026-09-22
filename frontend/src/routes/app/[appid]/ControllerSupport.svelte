@@ -162,10 +162,17 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 
 {#snippet controllerSupportContent()}
 	{@const showsCard =
+		(steaminputdbInfo?.mixed_input &&
+			Object.entries(steaminputdbInfo?.mixed_input ?? {}).filter(([k, v]) => {
+				if (k == 'mixed_input_mods') {
+					console.log('skipped mods');
+					return false;
+				}
+				return !!v;
+			})?.length) ||
 		steaminputdbInfo?.glyphs ||
-		steaminputdbInfo?.mixed_input ||
 		steaminputdbInfo?.hw_features ||
-		steaminputdbInfo?.steaminputapi_support ||
+		Object.values(steaminputdbInfo?.steaminputapi_support ?? {})?.filter(Boolean)?.length ||
 		steaminputdbInfo?.hw_feature_notes ||
 		steaminputdbInfo?.controller_support_notes}
 	<div class={showsCard ? 'card glass' : ''}>
