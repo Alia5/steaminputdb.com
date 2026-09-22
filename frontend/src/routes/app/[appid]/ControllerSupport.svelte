@@ -46,6 +46,22 @@ const {
 	appInfo: components['schemas']['AppInfoItem'];
 } = $props();
 let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
+
+const showsCard = $derived(
+	(steaminputdbInfo?.mixed_input &&
+		Object.entries(steaminputdbInfo?.mixed_input ?? {}).filter(([k, v]) => {
+			if (k == 'mixed_input_mods') {
+				console.log('skipped mods');
+				return false;
+			}
+			return !!v;
+		})?.length) ||
+		steaminputdbInfo?.glyphs ||
+		steaminputdbInfo?.hw_features ||
+		Object.values(steaminputdbInfo?.steaminputapi_support ?? {})?.filter(Boolean)?.length ||
+		steaminputdbInfo?.hw_feature_notes ||
+		steaminputdbInfo?.controller_support_notes
+);
 </script>
 
 {#snippet controllerIcon(type: string | undefined, glyphNotes?: string)}
@@ -158,23 +174,25 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 
 <section id="controller-support">
 	{@render controllerSupportContent()}
+	{#if showsCard || (steaminputdbInfo?.mixed_input?.mixed_input_mods || []).length}
+		<div
+			class="ctrl-support-help"
+			{@attach tooltip({
+				content: `This information is community sourced and may be outdated or incomplete
+                
+A feature where any logged in User will be able to to propose changes will follow soon™`,
+				outDelay: 100,
+				arrow: true,
+				autoPlacement: true,
+				arrowFollowCursor: false
+			})}
+		>
+			<IcoHelp style="width: 1.6em; height: 1.6em; opacity: 0.7;" />
+		</div>
+	{/if}
 </section>
 
 {#snippet controllerSupportContent()}
-	{@const showsCard =
-		(steaminputdbInfo?.mixed_input &&
-			Object.entries(steaminputdbInfo?.mixed_input ?? {}).filter(([k, v]) => {
-				if (k == 'mixed_input_mods') {
-					console.log('skipped mods');
-					return false;
-				}
-				return !!v;
-			})?.length) ||
-		steaminputdbInfo?.glyphs ||
-		steaminputdbInfo?.hw_features ||
-		Object.values(steaminputdbInfo?.steaminputapi_support ?? {})?.filter(Boolean)?.length ||
-		steaminputdbInfo?.hw_feature_notes ||
-		steaminputdbInfo?.controller_support_notes}
 	<div class={showsCard ? 'card glass' : ''}>
 		{#if Object.entries(appInfo?.official_configs ?? {}).length}
 			<section class={showsCard ? 'official-configs' : 'official-configs no-divider'}>
@@ -485,6 +503,7 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 
 <style lang="postcss">
 #controller-support {
+	position: relative;
 	display: flex;
 	flex-flow: row wrap;
 	overflow: clip;
@@ -671,6 +690,13 @@ h3 {
 				drop-shadow(0px 0px 0.5em rgba(0, 0, 0, 0.322));
 		}
 	}
+}
+
+.ctrl-support-help {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+	z-index: 10;
 }
 
 #mixed-input {
