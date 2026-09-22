@@ -654,7 +654,7 @@ let previewAppInfo = $derived({
 						</span>
 						<input
 							type="text"
-							placeholder="Native"
+							placeholder="Enter &quot;Native&quot; or value..."
 							bind:value={steaminputdbInfo.steaminputapi_support.pixels_per_360}
 						/>
 					</div>
