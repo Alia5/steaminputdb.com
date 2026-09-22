@@ -1,5 +1,4 @@
 <script lang="ts">
-import { resolve } from '$app/paths';
 import type { components } from '$lib/api/openapi';
 import {
 	AppGlyphTagType,
@@ -412,25 +411,6 @@ let previewAppInfo = $derived({
 
 {#snippet controllerSupportContent()}
 	<div class="card glass">
-		<section class="official-configs">
-			<h3>Official Configs</h3>
-			{#each Object.entries(appInfo?.official_configs ?? {}) as [controller_type, config_id] (config_id)}
-				{@const controller_list_entry = CONTROLLER_LIST.find(
-					(controller) => controller.type === controller_type
-				)}
-				<a href={resolve(`/config/${config_id}`)} class="button">
-					{#if controller_list_entry}
-						<controller_list_entry.icon width="2em" height="2em" />
-					{:else}
-						<IcoDpad style="width: 2em; height: 2em;" />
-					{/if}
-					<span>
-						{controller_list_entry?.niceName ?? 'Generic'}
-					</span>
-				</a>
-			{/each}
-		</section>
-		<div class="rule-divider"></div>
 		<section class="group">
 			<section id="mixed-input" class="info-group">
 				<h3><IcoMixedInput style="width: 2em; height: 2em;" />Mixed Input</h3>
