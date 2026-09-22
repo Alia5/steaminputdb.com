@@ -1,4 +1,5 @@
 import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
+import IconSD from '$lib/assets/steam_controller_type_svgs/deck.svg?component';
 import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
 import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
@@ -12,7 +13,6 @@ import IconGameIconsSpartanHelmet from '~icons/game-icons/spartan-helmet';
 import IconMdiCellPhone from '~icons/mdi/cellphone';
 import IconMdiGamepad from '~icons/mdi/gamepad';
 import IconSimpleIconsRepublicOfGamers from '~icons/simple-icons/republicofgamers';
-import IconSD from '~icons/simple-icons/steamdeck';
 
 export const CONTROLLER_LIST = [
     {
