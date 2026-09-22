@@ -422,7 +422,6 @@ let previewAppInfo = $derived({
 						<IcoDpad style="width: 2em; height: 2em;" />
 					{/if}
 					<span>
-						Xbox
 						{controller_list_entry?.niceName ?? 'Generic'}
 					</span>
 				</a>
