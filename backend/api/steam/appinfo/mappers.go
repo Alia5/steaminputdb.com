@@ -130,9 +130,12 @@ func mapSteamInputDBInfo(appInfo *models.AppInfo) *SIDBControllerSupport {
 		}
 		mixedInputModLen := len(appInfo.MixedInputInfo.MixedInputModLinks)
 		if mixedInputModLen > 0 {
-			siDBInfo.MixedInputInfo.MixedInputModURLS = make([]string, mixedInputModLen)
+			siDBInfo.MixedInputInfo.MixedInputModURLs = make([]MixedInputMods, mixedInputModLen)
 			for i, modLink := range appInfo.MixedInputInfo.MixedInputModLinks {
-				siDBInfo.MixedInputInfo.MixedInputModURLS[i] = modLink.Mod
+				siDBInfo.MixedInputInfo.MixedInputModURLs[i] = MixedInputMods{
+					URL:  modLink.URI,
+					Name: modLink.Name,
+				}
 			}
 		}
 	}

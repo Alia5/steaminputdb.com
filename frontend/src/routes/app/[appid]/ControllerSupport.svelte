@@ -38,7 +38,7 @@ import IcoMdiDash from '~icons/mdi/minus-circle-outline';
 import IcoMdiSetRight from '~icons/mdi/set-right';
 import IcoSteam from '~icons/mdi/steam';
 import IcoAudioHaptics from '~icons/mdi/volume-vibrate';
-import getModUrlName from './modsUrlNames';
+import { getModHostNameNice, getModUrlName } from './modsUrlNames';
 
 const {
 	appInfo
@@ -411,14 +411,14 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
         || steaminputdbInfo?.glyphs?.notes
         || steaminputdbInfo?.hw_feature_notes
         || steaminputdbInfo?.steaminputapi_support?.notes
-        || (steaminputdbInfo?.mixed_input?.mixed_input_mod_urls || []).length
+        || (steaminputdbInfo?.mixed_input?.mixed_input_mods || []).length
         }
 		{@const generalNotes = steaminputdbInfo?.controller_support_notes}
 		{@const mixedInputNotes = steaminputdbInfo?.mixed_input?.notes}
 		{@const glyphNotes = steaminputdbInfo?.glyphs?.notes}
 		{@const hwFeatureNotes = steaminputdbInfo?.hw_feature_notes}
 		{@const steamInputNotes = steaminputdbInfo?.steaminputapi_support?.notes}
-		{@const mixedInputModUrls = steaminputdbInfo?.mixed_input?.mixed_input_mod_urls ?? []}
+		{@const mixedInputMods = steaminputdbInfo?.mixed_input?.mixed_input_mods ?? []}
 		<aside id="controller-support-notes" class="card glass">
 			<div class="notes-container scrollable">
 				<div>
@@ -455,15 +455,19 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 				</div>
 			</div>
 
-			{#if mixedInputModUrls.length}
+			{#if mixedInputMods.length}
 				<div class="mod-link-list">
 					<h3 style="font-weight: bold; opacity: 0.9;">
-						Mixed Input / Controller support Mod{#if mixedInputModUrls.length > 1}s{/if}
+						Mixed Input / Controller support Mod{#if mixedInputMods.length > 1}s{/if}
 					</h3>
 					<div>
-						{#each mixedInputModUrls as url, idx (idx)}
+						{#each mixedInputMods as mod, idx (idx)}
 							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-							<a href={url} target="_blank" rel="noopener noreferrer">{getModUrlName(url)}</a>
+							<a href={mod.url} target="_blank" rel="noopener noreferrer"
+								>{mod.name
+									? `${mod.name} (${getModHostNameNice(mod.url)})`
+									: getModUrlName(mod.url)}</a
+							>
 						{/each}
 					</div>
 				</div>
@@ -511,6 +515,10 @@ let steaminputdbInfo = $derived(appInfo?.steaminputdb_info);
 				display: grid;
 				gap: 0.5em;
 				margin-left: 1.5em;
+			}
+			& a {
+				width: fit-content;
+				font-weight: bold;
 			}
 		}
 

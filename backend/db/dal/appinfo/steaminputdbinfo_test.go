@@ -26,10 +26,10 @@ func fullInfo(appID uint32) *models.AppInfo {
 			MixedInputNotes:        "mixed notes",
 			MixedInputModLinks: []*models.MixedInputModLinks{
 				{
-					Mod: "https://example.com/a",
+					URI: "https://example.com/a",
 				},
 				{
-					Mod: "https://example.com/b",
+					URI: "https://example.com/b",
 				},
 			},
 		},
@@ -225,10 +225,10 @@ func TestUpdateSteamInputDBInfo(t *testing.T) {
 					MixedInputSupport: models.MixedInputSupported,
 					MixedInputModLinks: []*models.MixedInputModLinks{
 						{
-							Mod: "https://example.com/b",
+							URI: "https://example.com/b",
 						},
 						{
-							Mod: "https://example.com/c",
+							URI: "https://example.com/c",
 						},
 					},
 				}, nil)
@@ -239,10 +239,10 @@ func TestUpdateSteamInputDBInfo(t *testing.T) {
 					MixedInputSupport: models.MixedInputSupported,
 					MixedInputModLinks: []*models.MixedInputModLinks{
 						{
-							Mod: "https://example.com/b",
+							URI: "https://example.com/b",
 						},
 						{
-							Mod: "https://example.com/c",
+							URI: "https://example.com/c",
 						},
 					},
 				}
@@ -414,6 +414,8 @@ func TestUpdateSteamInputDBInfo(t *testing.T) {
 				got.MixedInputInfo.UpdatedAt = time.Time{}
 				for _, link := range got.MixedInputInfo.MixedInputModLinks {
 					link.AppID = 0
+					link.CreatedAt = time.Time{}
+					link.UpdatedAt = time.Time{}
 				}
 				got.SteamInputAPISupport.AppID = 0
 				got.SteamInputAPISupport.CreatedAt = time.Time{}

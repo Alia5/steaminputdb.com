@@ -42,6 +42,7 @@ import IcoEye from '~icons/mdi/eye';
 import IcoFloppy from '~icons/mdi/floppy';
 import IcoPencil from '~icons/mdi/pencil';
 import ControllerSupport from './ControllerSupport.svelte';
+import { getModHostNameNice, getModUrlName } from './modsUrlNames';
 
 let {
 	appInfo = $bindable(),
@@ -687,45 +688,74 @@ let previewAppInfo = $derived({
 
 		<div class="mod-link-list">
 			<strong style="padding-top: 1.5em;">Mixed Input / Controller support Mods </strong>
-			{#each steaminputdbInfo.mixed_input.mixed_input_mod_urls ?? [] as url, idx (idx)}
-				<div style="display: flex; gap: 0.5em; align-items: center;">
+			{#each steaminputdbInfo.mixed_input.mixed_input_mods ?? [] as mod, idx (idx)}
+				<div
+					style="display: flex; gap: 0.5em; width: 100%; align-items: center; overflow: hidden; padding-right: 0.25em;"
+				>
 					<!-- eslint-disable-next-line -->
-					<a href={url}
+					<a href={mod.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						style="flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+						style="min-width: 0; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
 					>
-						{url.replace(/^https?:\/\/(www\.)?/i, '')}
+						{mod.name ? `${mod.name} (${getModHostNameNice(mod.url)})` : getModUrlName(mod.url)}
 					</a>
 					<button
 						type="button"
 						style="padding: 0.75em;"
 						onclick={() => {
-							steaminputdbInfo.mixed_input.mixed_input_mod_urls?.splice(idx, 1);
+							steaminputdbInfo.mixed_input.mixed_input_mods?.splice(idx, 1);
 						}}
 					>
 						<IcoTrash style="width: 1.2em; height: 1.2em;" />
 					</button>
 				</div>
 			{/each}
-			<div style="display: flex; gap: 0.5em; align-items: center;">
-				<input type="url" placeholder="https://..." style="flex: 1 1 auto; min-width: 0;" />
+			<div
+				style="display: flex; gap: 0.5em; align-items: center; width: 100%; overflow: clip; overflow-clip-margin: 2em;"
+			>
+				<div
+					style="display: grid; gap: 0.5em; align-items: center; width: 100%; overflow: clip; overflow-clip-margin: 2em;"
+				>
+					<input type="url" placeholder="https://..." style="min-width: 0;" />
+					<input type="text" placeholder="Name (Optional)" style="min-width: 0;" />
+				</div>
 				<button
 					type="button"
 					style="padding: 0.75em;"
 					onclick={(e) => {
-						const input = e.currentTarget.previousElementSibling as HTMLInputElement;
-						let url = input.value.trim();
+						const urlInput = e.currentTarget.previousElementSibling
+							?.firstChild as HTMLInputElement;
+						const nameInput = e.currentTarget.previousElementSibling
+							?.lastChild as HTMLInputElement;
+						let url = urlInput.value.trim();
+						try {
+							const parsed = new URL(url);
+							const hasHost = !!parsed.host;
+							const hasTLD = !!parsed.hostname.split('.').pop();
+							if (!hasHost || !hasTLD) {
+								throw new Error('Invalid URL');
+							}
+						} catch (_) {
+							// TODO
+							toast({
+								message: 'Invalid URL',
+								color: 'firebrick',
+								duration: 5000
+							});
+							return;
+						}
 						if (!url) {
 							return;
 						}
-						if (!/^https?:\/\//i.test(url)) {
-							url = `https://${url}`;
-						}
-						steaminputdbInfo.mixed_input.mixed_input_mod_urls =
-							steaminputdbInfo.mixed_input.mixed_input_mod_urls ?? [];
-						steaminputdbInfo.mixed_input.mixed_input_mod_urls.push(url);
-						input.value = '';
+						steaminputdbInfo.mixed_input.mixed_input_mods =
+							steaminputdbInfo.mixed_input.mixed_input_mods ?? [];
+						steaminputdbInfo.mixed_input.mixed_input_mods.push({
+							url,
+							name: nameInput.value.trim()
+						});
+						urlInput.value = '';
+						nameInput.value = '';
 					}}
 				>
 					<IcoPlus style="width: 1.2em; height: 1.2em;" />

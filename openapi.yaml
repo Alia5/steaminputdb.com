@@ -1024,9 +1024,9 @@ components:
           type:
             - boolean
             - "null"
-        mixed_input_mod_urls:
+        mixed_input_mods:
           items:
-            type: string
+            $ref: "#/components/schemas/MixedInputMods"
           type:
             - array
             - "null"
@@ -1037,6 +1037,17 @@ components:
           type: integer
       required:
         - type
+      type: object
+    MixedInputMods:
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        url:
+          format: url
+          type: string
+      required:
+        - url
       type: object
     OpenIDBody:
       additionalProperties: false

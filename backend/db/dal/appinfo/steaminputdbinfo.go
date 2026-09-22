@@ -155,14 +155,14 @@ func (d *dal) UpdateMixedInputInfo(
 	mods := make([]string, len(info.MixedInputModLinks))
 	for i, link := range info.MixedInputModLinks {
 		link.AppID = appID
-		mods[i] = link.Mod
+		mods[i] = link.URI
 	}
 	return syncRelations(
 		tx, appID, info.MixedInputModLinks,
 		clause.OnConflict{
 			DoNothing: true,
 		},
-		"mod", mods,
+		"uri", mods,
 	)
 }
 

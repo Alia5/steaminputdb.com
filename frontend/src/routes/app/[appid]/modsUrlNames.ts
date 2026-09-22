@@ -1,4 +1,4 @@
-const getModUrlName = (url: string) => {
+export const getModUrlName = (url: string) => {
     if (url.toLowerCase().includes('steamcommunity.com')) {
         return 'Steam Workshop';
     }
@@ -20,4 +20,14 @@ const getModUrlName = (url: string) => {
     return url.replaceAll(/http(s)?:\/\/(www\.)?/g, '');
 };
 
-export default getModUrlName;
+
+export const getModHostNameNice = (url: string) => {
+    let name = getModUrlName(url);
+    name = name.split('/')?.[0] || name;
+    try {
+        const host = new URL(name).hostname;
+        return host.replaceAll(/http(s)?:\/\/(www\.)?/g, '');
+    } catch {
+        return name;
+    }
+};

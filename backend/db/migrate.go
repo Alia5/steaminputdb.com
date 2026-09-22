@@ -31,11 +31,109 @@ var tables = []any{
 }
 
 func migrate(db *gorm.DB) error {
+	err := renameMixedInputModToURI(db)
+	if err != nil {
+		return err
+	}
+
 	if db.Migrator().HasTable("bun_migrations") {
 		return db.Transaction(rebuildFromBun)
 	}
 
 	return autoMigrate(db)
+}
+
+func renameMixedInputModToURI(db *gorm.DB) error {
+	model := &models.MixedInputModLinks{}
+	name, err := tableName(db, model)
+	if err != nil {
+		return err
+	}
+
+	m := db.Migrator()
+	if !m.HasTable(name) || !m.HasColumn(model, "mod") {
+		return nil
+	}
+
+	if !m.HasColumn(model, "uri") {
+		return db.Transaction(func(tx *gorm.DB) error {
+			return renameMixedInputModColumn(tx, model, name)
+		})
+	}
+
+	return db.Transaction(func(tx *gorm.DB) error {
+		return mergeMixedInputModColumn(tx, model, name)
+	})
+}
+
+func renameMixedInputModColumn(tx *gorm.DB, model any, name string) error {
+	m := tx.Migrator()
+	err := m.RenameColumn(model, "mod", "uri")
+	if err != nil {
+		return err
+	}
+	slog.Info("renamed column", "table", name, "from", "mod", "to", "uri")
+
+	oldIndex := tx.NamingStrategy.IndexName(name, "mod")
+	newIndex := tx.NamingStrategy.IndexName(name, "uri")
+	if m.HasIndex(model, oldIndex) && !m.HasIndex(model, newIndex) {
+		return m.RenameIndex(model, oldIndex, newIndex)
+	}
+	return nil
+}
+
+func mergeMixedInputModColumn(tx *gorm.DB, model any, name string) error {
+	res := tx.Exec(fmt.Sprintf("UPDATE %s SET uri = mod WHERE uri IS NULL AND mod IS NOT NULL", name))
+	if res.Error != nil {
+		return res.Error
+	}
+	slog.Info("backfilled column", "table", name, "from", "mod", "to", "uri", "rows", res.RowsAffected)
+
+	err := tx.Exec(fmt.Sprintf("DELETE FROM %s WHERE uri IS NULL", name)).Error
+	if err != nil {
+		return err
+	}
+
+	dedupe := fmt.Sprintf(
+		"DELETE FROM %s a USING %s b WHERE a.ctid < b.ctid AND a.app_id = b.app_id AND a.uri = b.uri",
+		name, name,
+	)
+	if tx.Name() != "postgres" {
+		dedupe = fmt.Sprintf(
+			"DELETE FROM %s WHERE rowid NOT IN (SELECT MAX(rowid) FROM %s GROUP BY app_id, uri)",
+			name, name,
+		)
+	}
+	err = tx.Exec(dedupe).Error
+	if err != nil {
+		return err
+	}
+
+	err = tx.Migrator().DropColumn(model, "mod")
+	if err != nil {
+		return err
+	}
+	slog.Info("dropped column", "table", name, "column", "mod")
+
+	if tx.Name() != "postgres" {
+		return nil
+	}
+	err = tx.Exec(fmt.Sprintf("ALTER TABLE %s ALTER COLUMN uri SET NOT NULL", name)).Error
+	if err != nil {
+		return err
+	}
+	var hasPrimaryKey bool
+	err = tx.Raw(
+		"SELECT EXISTS (SELECT 1 FROM pg_index WHERE indrelid = ?::regclass AND indisprimary)",
+		name,
+	).Scan(&hasPrimaryKey).Error
+	if err != nil {
+		return err
+	}
+	if hasPrimaryKey {
+		return nil
+	}
+	return tx.Exec(fmt.Sprintf("ALTER TABLE %s ADD PRIMARY KEY (app_id, uri)", name)).Error
 }
 
 func autoMigrate(db *gorm.DB) error {

@@ -45,7 +45,12 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			"type": 3,
 			"glyph_flicker": true,
 			"notes": "mixed notes",
-			"mixed_input_mod_urls": ["https://example.com/a", "", "  ", "https://example.com/b"]
+			"mixed_input_mods": [
+				{"url": "https://example.com/a", "name": "Mod A"},
+				{"url": "", "name": ""},
+				{"url": "  ", "name": "  "},
+				{"url": "https://example.com/b", "name": "Mod B"}
+			]
 		},
 		"glyphs": {
 			"autodetect": true,
@@ -138,7 +143,10 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 						"type": 3,
 						"glyph_flicker": true,
 						"notes": "mixed notes",
-						"mixed_input_mod_urls": ["https://example.com/a", "https://example.com/b"]
+						"mixed_input_mods": [
+							{"url": "https://example.com/a", "name": "Mod A"},
+							{"url": "https://example.com/b", "name": "Mod B"}
+						]
 					},
 					"glyphs": {
 						"autodetect": true,
@@ -212,7 +220,10 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 						"type": 3,
 						"glyph_flicker": true,
 						"notes": "mixed notes",
-						"mixed_input_mod_urls": ["https://example.com/a", "https://example.com/b"]
+						"mixed_input_mods": [
+							{"url": "https://example.com/a", "name": "Mod A"},
+							{"url": "https://example.com/b", "name": "Mod B"}
+						]
 					},
 					"glyphs": {
 						"autodetect": true,
@@ -283,7 +294,7 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			path: path,
 			body: `{
 				"controller_support_rating": 4,
-				"mixed_input": {"type": 0, "glyph_flicker": null, "notes": "", "mixed_input_mod_urls": []},
+				"mixed_input": {"type": 0, "glyph_flicker": null, "notes": "", "mixed_input_mods": []},
 				"glyphs": {"autodetect": null, "manual_select": null, "notes": "", "controllers": []},
 				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": null, "steam_input_type": null, "notes": "", "support_tags": []},
 				"hw_features": []
@@ -327,7 +338,10 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 						"type": 3,
 						"glyph_flicker": true,
 						"notes": "mixed notes",
-						"mixed_input_mod_urls": ["https://example.com/a", "https://example.com/b"]
+						"mixed_input_mods": [
+							{"url": "https://example.com/a", "name": "Mod A"},
+							{"url": "https://example.com/b", "name": "Mod B"}
+						]
 					},
 					"glyphs": {
 						"autodetect": true,
@@ -366,7 +380,7 @@ func TestPatchSteamInputDBInfos(t *testing.T) {
 			body: `{
 				"controller_support_rating": 0,
 				"controller_support_notes": "",
-				"mixed_input": {"type": 0, "glyph_flicker": false, "notes": "", "mixed_input_mod_urls": [""]},
+				"mixed_input": {"type": 0, "glyph_flicker": false, "notes": "", "mixed_input_mods": [{"url": "", "name": ""}]},
 				"glyphs": {"autodetect": false, "manual_select": false, "notes": "", "controllers": []},
 				"steaminputapi_support": {"glyphs": [], "camera_support": 0, "pixels_per_360": "", "notes": "", "support_tags": []},
 				"hw_features": []

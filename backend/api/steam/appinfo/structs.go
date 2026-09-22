@@ -37,7 +37,12 @@ type MixedInputInfo struct {
 	MixedInputType    models.MixedInputSupportType `json:"type"`
 	GlyphFlicker      *bool                        `json:"glyph_flicker,omitempty,omitzero" nullable:"true"`
 	Notes             string                       `json:"notes,omitzero,omitempty"`
-	MixedInputModURLS []string                     `json:"mixed_input_mod_urls,omitempty"`
+	MixedInputModURLs []MixedInputMods             `json:"mixed_input_mods,omitempty"`
+}
+
+type MixedInputMods struct {
+	URL  string `json:"url" format:"url" required:"true"`
+	Name string `json:"name,omitempty,omitzero"`
 }
 
 type GlyphInfo struct {

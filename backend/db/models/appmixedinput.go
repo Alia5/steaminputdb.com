@@ -25,6 +25,9 @@ type AppMixedInputInfo struct {
 }
 
 type MixedInputModLinks struct {
-	AppID uint32 `gorm:"primaryKey;autoIncrement:false"`
-	Mod   string `gorm:"primaryKey;autoIncrement:false;index"`
+	AppID     uint32 `gorm:"primaryKey;autoIncrement:false"`
+	URI       string `gorm:"primaryKey;autoIncrement:false;index"`
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

@@ -125,7 +125,7 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.MixedInputType == models.MixedInputSupportUnknown
 		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.GlyphFlicker == nil
 		createsEmptyMixedInput = createsEmptyMixedInput && mixedInput.Notes == ""
-		createsEmptyMixedInput = createsEmptyMixedInput && len(mixedInput.MixedInputModURLS) == 0
+		createsEmptyMixedInput = createsEmptyMixedInput && len(mixedInput.MixedInputModURLs) == 0
 		if createsEmptyMixedInput {
 			mixedInput = nil
 		}
@@ -136,21 +136,22 @@ func mapSteamInputDBInfoToAppInfo(appID uint32, info *UpdateSteamInputDBInfosBod
 			MixedInputGlyphFlicker: mixedInput.GlyphFlicker,
 			MixedInputNotes:        mixedInput.Notes,
 		}
-		if mixedInput.MixedInputModURLS != nil {
+		if mixedInput.MixedInputModURLs != nil {
 			appInfo.MixedInputInfo.MixedInputModLinks = make(
 				[]*models.MixedInputModLinks,
 				0,
-				len(mixedInput.MixedInputModURLS),
+				len(mixedInput.MixedInputModURLs),
 			)
-			for _, url := range mixedInput.MixedInputModURLS {
-				url = strings.TrimSpace(url)
-				if url == "" {
+			for _, mod := range mixedInput.MixedInputModURLs {
+				uri := strings.TrimSpace(mod.URL)
+				if uri == "" {
 					continue
 				}
 				appInfo.MixedInputInfo.MixedInputModLinks = append(
 					appInfo.MixedInputInfo.MixedInputModLinks,
 					&models.MixedInputModLinks{
-						Mod: url,
+						URI:  uri,
+						Name: strings.TrimSpace(mod.Name),
 					},
 				)
 			}
