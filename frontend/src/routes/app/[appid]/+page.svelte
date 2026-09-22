@@ -21,6 +21,7 @@ import { formatDistance } from 'date-fns';
 import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, fly, slide } from 'svelte/transition';
+import IcoPencil from '~icons/mdi/pencil';
 import type { PageProps } from './$types';
 import AppInfoHeader from './AppInfoHeader.svelte';
 import ControllerSupport from './ControllerSupport.svelte';
@@ -241,6 +242,19 @@ onMount(() => {
 				<ControllerSupport appInfo={appInfo} />
 			{/if}
 		{/if}
+		<div class="mod-edit-info-buttons">
+			{#if isAllowedEditInfo}
+				{#if !editControllerSupport}
+					<button
+						class="edit-info-button"
+						type="button"
+						onclick={() => (editControllerSupport = true)}
+					>
+						<IcoPencil style="width: 1.2em; height: 1.2em; " />Edit
+					</button>
+				{/if}
+			{/if}
+		</div>
 		<search>
 			<SearchForm
 				bind:form={form}
@@ -631,6 +645,24 @@ search {
 .loading {
 	align-self: baseline;
 	z-index: 1;
+}
+
+.mod-edit-info-buttons {
+	display: flex;
+	gap: 0.5em;
+	justify-content: flex-end;
+	width: 100%;
+
+	& .edit-info-button {
+		font-weight: bold;
+		display: flex;
+		gap: 0.5em;
+		padding: 0.5em 1em;
+		&:hover,
+		&:focus-visible {
+			color: var(--text-color);
+		}
+	}
 }
 
 #back-to-top {

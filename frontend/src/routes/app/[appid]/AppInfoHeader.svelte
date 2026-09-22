@@ -34,9 +34,6 @@ import IcoPCGW from '~icons/simple-icons/pcgamingwiki';
 import IcoProtonDB from '~icons/simple-icons/protondb';
 import IcoSteamDB from '~icons/simple-icons/steamdb';
 
-import IcoCross from '~icons/mdi/close';
-import IcoPencil from '~icons/mdi/pencil';
-
 let {
 	appInfo,
 	fallbackName,
@@ -197,26 +194,6 @@ let {
 					{/if}
 				</div>
 			</div>
-
-			{#if isAllowedEditInfo}
-				{#if editControllerSupport}
-					<button
-						class="edit-info-button"
-						type="button"
-						onclick={() => (editControllerSupport = false)}
-					>
-						<IcoCross style="width: 1.2em; height: 1.2em; " />Cancel Edit
-					</button>
-				{:else}
-					<button
-						class="edit-info-button"
-						type="button"
-						onclick={() => (editControllerSupport = true)}
-					>
-						<IcoPencil style="width: 1.2em; height: 1.2em; " />Edit
-					</button>
-				{/if}
-			{/if}
 		</div>
 
 		<div class="rating-container card glass">
@@ -534,20 +511,6 @@ section.app-header {
 				background-color: var(--color-primary);
 			}
 		}
-	}
-}
-
-.edit-info-button {
-	position: absolute;
-	top: 1em;
-	right: 1em;
-	z-index: 10;
-	font-weight: bold;
-	display: flex;
-	gap: 0.5em;
-	&:hover,
-	&:focus-visible {
-		color: var(--text-color);
 	}
 }
 </style>
