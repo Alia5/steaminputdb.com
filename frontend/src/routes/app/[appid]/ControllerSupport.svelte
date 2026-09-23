@@ -252,11 +252,11 @@ A feature where any logged in User will be able to to propose changes will follo
                                         && mixedInputType !== MixedInputSupportType.Unknown 
                                      }
 								{#if mixedinputInfo?.glyph_flicker === false}
-									<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
-									<span>Glyph Flicker</span>
-								{:else if mixedinputInfo?.glyph_flicker === true}
 									<IconMDIChecked style="width: 1.6em; height: 1.6em; color: green" />
 									<span>Without Glyph Flicker</span>
+								{:else if mixedinputInfo?.glyph_flicker === true}
+									<IcoMdiCross style="width: 1.6em; height: 1.6em; color: firebrick" />
+									<span>Glyph Flicker</span>
 								{/if}
 							{/if}
 						</div>
