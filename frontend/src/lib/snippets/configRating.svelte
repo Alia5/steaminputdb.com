@@ -1,5 +1,8 @@
 <script lang="ts" module>
 export { configRating };
+
+const THRESHOLDS = [0.75, 0.6, 0.51, 0.45, 0.33] as const;
+
 const calculateScoreColor = (score: number, up: number, down: number) => {
 	if (up === down && up === 0) {
 		return 'currentColor';
@@ -7,19 +10,19 @@ const calculateScoreColor = (score: number, up: number, down: number) => {
 	if (!score) {
 		return 'currentColor';
 	}
-	if (down > up) {
-		return 'hsl(0deg 100% 60%)';
-	}
-	if (score > 0.8) {
+	if (score > THRESHOLDS[0]) {
 		return 'hsl(125deg 100% 50%)';
 	}
-	if (score > 0.7) {
+	if (score > THRESHOLDS[1]) {
 		return 'hsl(80deg 100% 50%)';
 	}
-	if (score >= 0.51) {
+	if (score >= THRESHOLDS[2]) {
 		return 'hsl(60deg 100% 50%)';
 	}
-	if (score > 0.4) {
+	if (score > THRESHOLDS[3]) {
+		return 'hsl(30deg 100% 50%)';
+	}
+	if (score > THRESHOLDS[4]) {
 		return 'hsl(30deg 100% 50%)';
 	}
 	return 'hsl(0deg 100% 60%)';
@@ -39,6 +42,9 @@ import Icon from '@iconify/svelte';
 			item.votes.up ?? 0,
 			item.votes.down ?? 0
 		)}
+		{@const up = item.votes?.up ?? 0}
+		{@const down = item.votes?.down ?? 0}
+		{@const score = item.votes?.score ?? 0}
 		<div
 			class="rating"
 			style="--rating-color: {scoreColor};"
@@ -52,18 +58,22 @@ import Icon from '@iconify/svelte';
 		>
 			<div>
 				<span>
-					{#if (item.votes?.down || 0) > (item.votes?.up || 0)}
-						😣
-					{:else if (item.votes?.score || 0) > 0.8}
-						😍
-					{:else if (item.votes?.score || 0) > 0.7}
-						🤩
-					{:else if (item.votes?.score || 0) >= 0.51}
-						😎
-					{:else if (item.votes?.score || 0) > 0.4}
-						🙁
-					{:else}
+					{#if (down === 0 && up === 0) || !score}
 						🤔
+					{:else}
+						{#if (item.votes?.score || 0) > THRESHOLDS[0]}
+							😍
+						{:else if (item.votes?.score || 0) > THRESHOLDS[1]}
+							🤩
+						{:else if (item.votes?.score || 0) >= THRESHOLDS[2]}
+							😎
+						{:else if (item.votes?.score || 0) > THRESHOLDS[3]}
+							😐
+						{:else if (item.votes?.score || 0) > THRESHOLDS[4]}
+							🙁
+						{:else}
+							🙁
+						{/if}
 					{/if}
 				</span>
 				<span>
