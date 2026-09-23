@@ -43,14 +43,14 @@ if (browser) {
 </script>
 
 <svelte:head>
-	<title>SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}</title>
+	<title>SteamInputDB - Config: {fileInfo?.title} ({appInfo?.name}) by {creatorInfo?.personaname}</title>
 	<link rel="canonical" href={page.url.href} />
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
 	<meta
 		property="og:title"
-		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}"
+		content="SteamInputDB - Config: {fileInfo?.title} ({appInfo?.name}) by {creatorInfo?.personaname}"
 	/>
 	<meta
 		name="description"
@@ -80,7 +80,7 @@ if (browser) {
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta
 		name="twitter:title"
-		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}"
+		content="SteamInputDB - Config: {fileInfo?.title} ({appInfo?.name}) by {creatorInfo?.personaname}"
 	/>
 	<meta
 		name="twitter:description"
