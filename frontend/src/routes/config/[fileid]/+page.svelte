@@ -3,9 +3,10 @@ import { browser } from '$app/environment';
 import { page } from '$app/state';
 import type { components } from '$lib/api/openapi';
 import LayoutPreview from '$lib/components/layout_preview/LayoutPreview.svelte';
+import MarkdownSSR from '$lib/components/markdown/markdownSSR.svelte';
+import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
 import { assetUrlBase, storePageBackgroundBase } from '$lib/steamapi/const';
-import { sectionHead } from './sectionHead.svelte';
-import { sectionInfo } from './sectionInfo.svelte';
+import ConfigInfoHeader from './configInfoHeader.svelte';
 
 const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.data.fileInfo);
 const appInfo: components['schemas']['AppItem'] = $derived(page.data.appInfo);
@@ -91,8 +92,35 @@ if (browser) {
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
-		{@render sectionHead({ fileInfo, appInfo, isMobileBrowser })}
-		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}
+		<ConfigInfoHeader
+			fileInfo={fileInfo}
+			appInfo={appInfo}
+			isMobileBrowser={isMobileBrowser}
+			creatorInfo={creatorInfo}
+		/>
+
+		<div class="description-container">
+			<div class="card glass">
+				{#if fileInfo.tags}
+					<div>
+						<span>Features</span>
+						<div>
+							<div class="featurelist">
+								{@render configurationFeatureList({ fileInfo })}
+							</div>
+						</div>
+					</div>
+				{/if}
+				{#if fileInfo.description}
+					<div>
+						<span>Creator Description</span>
+						<div style="display: grid; gap: 0.25em; padding: 0 1em;">
+							<MarkdownSSR content={fileInfo.description} />
+						</div>
+					</div>
+				{/if}
+			</div>
+		</div>
 		{#if fileInfo.file_url}
 			<LayoutPreview vdfLink={fileInfo.file_url || undefined} />
 		{:else}
@@ -115,6 +143,19 @@ main {
 	grid-template-rows: min-content;
 	grid-template-columns: minmax(min(100%, auto), 50%);
 	width: 100%;
+	& > div {
+		display: grid;
+		place-self: center;
+		gap: 1em;
+		place-items: center;
+		min-width: 60%;
+		--max-width: 1440px;
+		max-width: min(100%, var(--max-width));
+		/* container: main / inline-size;*/
+		:global(> :first-child) {
+			width: 100%;
+		}
+	}
 
 	&::before {
 		content: '';
@@ -129,17 +170,36 @@ main {
 		z-index: -2;
 	}
 }
-div {
-	display: grid;
-	place-self: center;
+
+.featurelist {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
 	gap: 1em;
-	place-items: center;
-	min-width: 60%;
-	--max-width: 1440px;
-	max-width: min(100%, var(--max-width));
-	/* container: main / inline-size;*/
-	:global(> :first-child) {
-		width: 100%;
+	overflow: clip;
+	overflow-clip-margin: 1em;
+	justify-content: center;
+}
+
+.description-container {
+	padding: 0 1em;
+	width: 100%;
+	& > div {
+		display: flex;
+		flex-flow: row wrap;
+		gap: 1em;
+		align-items: center;
+		justify-content: center;
+		& > div {
+			flex: 1 1 auto;
+			display: grid;
+			gap: 1em;
+			place-items: center;
+		}
+		& > div > :first-child {
+			font-weight: bold;
+			font-size: 1.2em;
+		}
 	}
 }
 

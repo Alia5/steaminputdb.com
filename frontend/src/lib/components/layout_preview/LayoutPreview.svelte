@@ -305,6 +305,7 @@ const findModeShiftTriggers = (source: string): string[] => {
 section {
 	width: 100%;
 	padding: 1em;
+	padding-top: 0;
 
 	@media (orientation: landscape) and (max-width: 1300px) {
 		font-size: 0.78em;
@@ -327,7 +328,7 @@ section {
 	}
 	& > .card {
 		position: absolute;
-		inset: 1em;
+		inset: 0 1em 0 1em;
 		z-index: -1;
 	}
 
