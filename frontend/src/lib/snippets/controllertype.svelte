@@ -5,6 +5,7 @@ export { controllertype };
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
 import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
+import IcoSD from '$lib/assets/steam_controller_type_svgs/deck.svg?component';
 import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
 import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
@@ -18,7 +19,7 @@ import Icon from '@iconify/svelte';
 
 {#snippet controllertype({ item }: { item: components['schemas']['ConfigItem' | 'ConfigDetailResponse'] })}
 	{#if item.controller_type === 'controller_neptune'}
-		<Icon icon="simple-icons:steamdeck" width="1.2em" />
+		<IcoSD width="1.2em" />
 	{:else if item.controller_type === 'controller_triton'}
 		<Triton width="1.2em" />
 	{:else if item.controller_type === 'controller_steamcontroller_gordon'}
@@ -36,9 +37,9 @@ import Icon from '@iconify/svelte';
 	{:else if item.controller_type === 'controller_xbox360'}
 		<XBox width="1.2em" />
 	{:else if item.controller_type === 'controller_xboxone'}
-		<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
+		<XBox width="1.2em" />
 	{:else if item.controller_type === 'controller_xboxelite'}
-		<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
+		<XBox width="1.2em" />
 	{:else if item.controller_type === 'controller_switch_pro'}
 		<SwitchPro width="1.2em" />
 	{:else if item.controller_type === 'controller_switch2_pro'}
