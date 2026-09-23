@@ -22,7 +22,8 @@ let {
 	class={'bpm-select' + (disabled ? ' disabled' : '')}
 	disabled={disabled}
 	type="button"
-	popovertarget={'bpm-select-' + name}>
+	popovertarget={'bpm-select-' + name}
+>
 	{@render children?.({ selected: value })}
 </button>
 <dialog id={'bpm-select-' + name} popover closedby="any">

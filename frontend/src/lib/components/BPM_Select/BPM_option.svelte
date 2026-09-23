@@ -54,7 +54,8 @@ onMount(() => {
 		}}
 		popovertarget={popovertarget}
 		bind:this={buttonEl}
-		popovertargetaction="hide">
+		popovertargetaction="hide"
+	>
 		{@render children?.()}
 	</button>
 {/if}

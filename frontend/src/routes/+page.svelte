@@ -27,20 +27,24 @@ onMount(() => {
 	<title>SteamInputDB | Database of every Steam Input configuration</title>
 	<meta
 		name="description"
-		content="Community-driven database of Steam Input configurations using the Steam API." />
+		content="Community-driven database of Steam Input configurations using the Steam API."
+	/>
 	<meta
 		name="keywords"
-		content="Steam Input DB, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets" />
+		content="Steam Input DB, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets"
+	/>
 	<meta
 		name="robots"
-		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+	/>
 
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="SteamInputDB | Database of every Steam Input configuration" />
 	<meta
 		property="og:description"
-		content="SteamInputDB is a database of every Steam Input configuration using the Steam API." />
+		content="SteamInputDB is a database of every Steam Input configuration using the Steam API."
+	/>
 	<meta property="og:url" content="https://www.steaminputdb.com/" />
 	<meta property="og:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta property="og:image:alt" content="SteamInputDB preview image" />
@@ -49,11 +53,12 @@ onMount(() => {
 	<meta name="twitter:title" content="SteamInputDB | Database of every Steam Input configuration" />
 	<meta
 		name="twitter:description"
-		content="SteamInputDB is a database of every Steam Input configuration using the Steam API." />
+		content="SteamInputDB is a database of every Steam Input configuration using the Steam API."
+	/>
 	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
 
-	<svelte:element this={'script'} type="application/ld+json">{createHomeSchemaJsonLd()}</svelte:element>
+	<svelte:element this={"script"} type="application/ld+json">{createHomeSchemaJsonLd()}</svelte:element>
 </svelte:head>
 
 <svelte:window
@@ -73,7 +78,8 @@ onMount(() => {
 			const translateY = Math.sin(angle) * distance;
 			eye.style.transform = `translate(${translateX}px, ${translateY}px)`;
 		});
-	}} />
+	}}
+/>
 
 <main>
 	<div>
@@ -83,7 +89,8 @@ onMount(() => {
 					height="100%"
 					--eyes-color="black"
 					--eyes-white-color="var(--text-color-dark)"
-					--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
+					--eyes-border-color="light-dark(var(--text-color-light), transparent)"
+				/>
 			</section>
 			<section>
 				<h1>

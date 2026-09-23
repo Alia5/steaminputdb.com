@@ -50,15 +50,18 @@ if (browser) {
 	<meta property="og:url" content={page.url.href} />
 	<meta
 		property="og:title"
-		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}" />
+		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}"
+	/>
 	<meta
 		name="description"
 		content={fileInfo?.description ??
-			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`} />
+			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`}
+	/>
 	<meta
 		property="og:description"
 		content={fileInfo?.description ??
-			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`} />
+			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`}
+	/>
 	{#if appInfo?.assets}
 		{@const assets = appInfo?.assets}
 		{@const assetChosen =
@@ -66,20 +69,24 @@ if (browser) {
 		{#if assetChosen}
 			<meta
 				property="og:image"
-				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`}
+			/>
 			<meta
 				name="twitter:image"
-				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`}
+			/>
 		{/if}
 	{/if}
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta
 		name="twitter:title"
-		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}" />
+		content="SteamInputDB - {appInfo?.name} | Config: {fileInfo?.title} by {creatorInfo?.personaname}"
+	/>
 	<meta
 		name="twitter:description"
 		content={fileInfo?.description ??
-			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`} />
+			`Steam Input configuration ${fileInfo?.title} (${appInfo?.name}) by ${creatorInfo?.personaname}`}
+	/>
 </svelte:head>
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>

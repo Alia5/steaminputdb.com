@@ -66,7 +66,8 @@ let HTMLDialog = $state<HTMLDialogElement>()!;
 		id="modal"
 		bind:this={HTMLDialog}
 		open
-		transition:fade={{ duration: 196 }}>
+		transition:fade={{ duration: 196 }}
+	>
 		<button onclick={close} aria-label="modal-backdrop"></button>
 		{@render children?.()}
 	</dialog>

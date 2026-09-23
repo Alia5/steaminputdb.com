@@ -22,7 +22,8 @@ let {
 		type="search"
 		bind:value={value}
 		{...props}
-		placeholder={placeholder} />
+		placeholder={placeholder}
+	/>
 	{#if inlineButton}
 		<button class="plain" type="submit">
 			<IcOutlineSearch />

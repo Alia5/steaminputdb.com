@@ -37,7 +37,8 @@ onMount(() => {
 			const translateY = Math.sin(angle) * distance * (idx === 0 ? -1 : 1);
 			eye.style.transform = `translate(${translateX}px, ${translateY}px)`;
 		});
-	}} />
+	}}
+/>
 
 <main>
 	<div>
@@ -51,7 +52,8 @@ onMount(() => {
 				height="100%"
 				--eyes-color="black"
 				--eyes-white-color="var(--text-color-dark)"
-				--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
+				--eyes-border-color="light-dark(var(--text-color-light), transparent)"
+			/>
 		</div>
 	</div>
 </main>

@@ -70,7 +70,8 @@ onMount(() => {
 		class="toggle"
 		checked={themeSelection.darkMode}
 		onchange={() => toggleTheme()}
-		aria-label="Theme Toggle" />
+		aria-label="Theme Toggle"
+	/>
 	<div class="icon {themeSelection.darkMode ? 'checked' : ''}">
 		{#if themeSelection.darkMode}
 			<!-- <Icon icon="ph:moon" width="1.2em" height="1.2em" /> -->

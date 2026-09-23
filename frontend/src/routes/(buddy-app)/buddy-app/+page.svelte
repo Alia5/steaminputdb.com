@@ -108,7 +108,8 @@ let installPending = $state(false);
 											href="https://github.com/Alia5/steaminputdb.com/releases/latest"
 											target="_blank"
 											rel="noopener noreferrer">v{latest}</a
-										>)</em>
+										>)</em
+									>
 									<button
 										transition:fade={{ duration: 196 }}
 										type="button"
@@ -135,10 +136,12 @@ let installPending = $state(false);
 														color: 'firebrick'
 													});
 												});
-										}}>Update now</button>
+										}}>Update now</button
+									>
 								{:else}
 									<em transition:fade={{ duration: 196 }}
-										>(You are running the latest version)</em>
+										>(You are running the latest version)</em
+									>
 								{/if}
 							</svelte:boundary>
 						</dd>
@@ -154,7 +157,8 @@ let installPending = $state(false);
 				your browser settings.
 			</p>
 			<a href={resolve('/buddy-app/install')} class="button" style="width: fit-content;"
-				>Install SteamInputDB Buddy</a>
+				>Install SteamInputDB Buddy</a
+			>
 			<h3>Want to get rid of SteamInputDB Buddy?</h3>
 			<button
 				class="disable-buddy"
@@ -166,7 +170,8 @@ let installPending = $state(false);
 					});
 					BuddyState.pingBuddy(fetch);
 					goto(resolve('/?buddy-app=disabled'));
-				}}>Disable SteamInputDB Buddy integration</button>
+				}}>Disable SteamInputDB Buddy integration</button
+			>
 		{/if}
 	</section>
 	{#if BuddyState.reachable}
@@ -202,13 +207,15 @@ let installPending = $state(false);
 									style="background-color: green;"
 									onclick={() => {
 										finishInstallModalOpen = true;
-									}}>Finish | Repair installation</button>
+									}}>Finish | Repair installation</button
+								>
 							</div>
 						{/if}
 						{#if !steamStatus.steamRunning}
 							<div>
 								<strong style="color: firebrick;"
-									>SteamInputDB-Buddy cannot function without Steam running</strong>
+									>SteamInputDB-Buddy cannot function without Steam running</strong
+								>
 							</div>
 						{/if}
 						<dl transition:fade|global={{ duration: 196 }}>
@@ -226,7 +233,8 @@ let installPending = $state(false);
 									{@attach selectAllHandler(
 										`outline: 1px solid transparent;
                                             background: rgb(128 128 128 / 0.10);`
-									)}>{steamStatus.steamPath}</code>
+									)}>{steamStatus.steamPath}</code
+								>
 							</dd>
 							<dt>CEF Remote Debug enabled:</dt>
 							<dd>
@@ -293,13 +301,15 @@ let installPending = $state(false);
 									color: 'firebrick'
 								});
 							}
-						}}>
+						}}
+					>
 						<dl>
 							<strong>System</strong>
 							<dt
 								{@attach tooltip({
 									content: 'Run SteamInputDB-Buddy upon system Startup'
-								})}>
+								})}
+							>
 								<label for="autoStart">Run on system startup</label>
 								<IconHelp style="width: 1.6em; height: 1.6em;" />
 							</dt>
@@ -311,7 +321,8 @@ let installPending = $state(false);
 								{@attach tooltip({
 									snippet: desktopButtonTooltip,
 									snippetInDefaultBackground: true
-								})}>
+								})}
+							>
 								<label for="addDesktopUIEntries">Add Steam Desktop UI Buttons </label>
 								<IconHelp style="width: 1.6em; height: 1.6em;" />
 							</dt>
@@ -319,13 +330,15 @@ let installPending = $state(false);
 								<input
 									type="checkbox"
 									id="addDesktopUIEntries"
-									bind:checked={settings.addDesktopUIEntries} />
+									bind:checked={settings.addDesktopUIEntries}
+								/>
 							</dd>
 							<dt
 								{@attach tooltip({
 									snippet: bpmButtonTooltip,
 									snippetInDefaultBackground: true
-								})}>
+								})}
+							>
 								<label for="addBigPictureUIEntries">Add Steam Big Picture UI Buttons </label>
 								<IconHelp style="width: 1.6em; height: 1.6em;" />
 							</dt>
@@ -333,13 +346,15 @@ let installPending = $state(false);
 								<input
 									type="checkbox"
 									id="addBigPictureUIEntries"
-									bind:checked={settings.addBigPictureUIEntries} />
+									bind:checked={settings.addBigPictureUIEntries}
+								/>
 							</dd>
 							<dt
 								{@attach tooltip({
 									content:
 										"Use Steam's internal browser (as opposed to your default browser) when SteamInputDB is opened from the added Buttons inside Steam"
-								})}>
+								})}
+							>
 								<label for="desktopUseSteamBrowser"
 									>Use Steam's internal browser for Desktop UI
 								</label>
@@ -349,7 +364,8 @@ let installPending = $state(false);
 								<input
 									type="checkbox"
 									id="desktopUseSteamBrowser"
-									bind:checked={settings.desktopUseSteamBrowser} />
+									bind:checked={settings.desktopUseSteamBrowser}
+								/>
 							</dd>
 						</dl>
 						<button type="submit"><IconSave />Save</button>
@@ -379,7 +395,8 @@ let installPending = $state(false);
 							color: 'firebrick'
 						});
 					}
-				}}>Disable and Uninstall</button>
+				}}>Disable and Uninstall</button
+			>
 		</section>
 	{/if}
 </main>
@@ -448,7 +465,8 @@ let installPending = $state(false);
 							goto(resolve('/buddy-app'), { replaceState: true, invalidateAll: true });
 						}, 5000);
 					});
-			}}>
+			}}
+		>
 			<strong>Finish | Repair Installation</strong>
 			<label for="install-autoStart">Run on system startup</label>
 			<input type="checkbox" id="install-autoStart" bind:checked={finishInstallSettigs.autoStart} />
@@ -456,12 +474,14 @@ let installPending = $state(false);
 			<input
 				type="checkbox"
 				id="install-desktopShortcut"
-				bind:checked={finishInstallSettigs.desktopShortcut} />
+				bind:checked={finishInstallSettigs.desktopShortcut}
+			/>
 			<label for="install-startMenuShortcut">Add StartMenu Shortcut</label>
 			<input
 				type="checkbox"
 				id="install-startMenuShortcut"
-				bind:checked={finishInstallSettigs.startMenuShortcut} />
+				bind:checked={finishInstallSettigs.startMenuShortcut}
+			/>
 			<label for="install-copyFiles" style="display: grid;">
 				<span> Copy files to default Installation directory </span>
 				<span style="opacity: 0.75; font-size: 0.9em;">
@@ -475,7 +495,8 @@ let installPending = $state(false);
 			<input
 				type="checkbox"
 				id="install-copyFiles"
-				bind:checked={finishInstallSettigs.defaultInstallDir} />
+				bind:checked={finishInstallSettigs.defaultInstallDir}
+			/>
 			<button type="submit">
 				{#if installPending}
 					<div transition:fade>

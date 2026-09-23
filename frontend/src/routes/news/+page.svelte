@@ -35,7 +35,8 @@ const sortedByDate = Object.entries(articlePages).sort(([, a], [, b]) => {
 			href={resolve(
 				route.replace(/\/src\/routes\/news\/\(post\)/g, '/news').replace(/\/\+page\.svx$/g, '') as '/'
 			)}
-			style={meta.hero ? '--img-w: auto;' : '--img-w: 0;'}>
+			style={meta.hero ? '--img-w: auto;' : '--img-w: 0;'}
+		>
 			{#if meta.hero}
 				<enhanced:img src={meta.hero}></enhanced:img>
 			{/if}
@@ -48,7 +49,8 @@ const sortedByDate = Object.entries(articlePages).sort(([, a], [, b]) => {
 				<div style="scale: 0.9;">
 					<Author date={meta.date} author={meta.author} />
 				</div>
-			</div></a>
+			</div></a
+		>
 	{/each}
 </main>
 

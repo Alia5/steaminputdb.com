@@ -111,14 +111,16 @@ const fetchLivePreview = (search_term = '') => {
 		}
 		focusState.input = true;
 	}}
-	onfocusout={() => (focusState.input = false)}>
+	onfocusout={() => (focusState.input = false)}
+>
 	<!-- TODO: change endpoint -->
 	<form bind:this={form} method="POST" action="/?/search">
 		<Searchbar
 			name="searchtext"
 			placeholder="Search configurations or games..."
 			--box-shadow="inset 0 0.4em 0.4em 0 var(--shadow-color-dark)"
-			bind:value={debounced.input} />
+			bind:value={debounced.input}
+		/>
 	</form>
 	{#if shouldShowWhat}
 		<dialog
@@ -132,7 +134,8 @@ const fetchLivePreview = (search_term = '') => {
 				duration: 196,
 				easing: cubicOut
 			}}
-			out:fly|global={{ y: '-100%', x: 0, delay: 0, duration: 196, easing: cubicIn, opacity: 0 }}>
+			out:fly|global={{ y: '-100%', x: 0, delay: 0, duration: 196, easing: cubicIn, opacity: 0 }}
+		>
 			{#if shouldShowWhat === 'loading'}
 				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 					<Spinner size="min(100dvw, 12em)" thickness="0.3em" />

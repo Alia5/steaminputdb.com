@@ -37,7 +37,9 @@ import IcoSteamDB from '~icons/simple-icons/steamdb';
 let {
 	appInfo,
 	fallbackName,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	isAllowedEditInfo,
+	// eslint-disable-next-line no-useless-assignment
 	editControllerSupport = $bindable<boolean>(false)
 }: {
 	appInfo?: components['schemas']['AppInfoItem'];

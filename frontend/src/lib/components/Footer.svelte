@@ -23,7 +23,8 @@ import IconGithub from '~icons/simple-icons/github';
 		<span class="c"
 			>Copyright © {new Date().getFullYear() > 2026 ? `2026-${new Date().getFullYear()}` : 2026} SteamInputDB
 			-
-			<a href="https://github.com/Alia5" target="_blank" rel="external">Peter Repukat</a></span>
+			<a href="https://github.com/Alia5" target="_blank" rel="external">Peter Repukat</a></span
+		>
 
 		<div class="legal links">
 			<a href={resolve('/privacy')}>Privacy</a>

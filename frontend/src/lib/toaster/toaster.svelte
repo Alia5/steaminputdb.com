@@ -102,7 +102,8 @@ let {
 		role="alert"
 		style="--color: {color}"
 		in:slide|global={{ duration: transitionDuration, delay: inDelay, easing: quadOut }}
-		out:slide|global={{ duration: transitionDuration, easing: quadIn }}>
+		out:slide|global={{ duration: transitionDuration, easing: quadIn }}
+	>
 		<p>{message}</p>
 	</div>
 {/snippet}

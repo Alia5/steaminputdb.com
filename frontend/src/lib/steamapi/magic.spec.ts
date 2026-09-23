@@ -37,13 +37,13 @@ describe('TestMagicRuntime', () => {
             name: 'CtorForTypeString(Request)',
             input: 'CStoreQuerySearchSuggestionsRequest',
             expected: CStoreQuerySearchSuggestionsRequest,
-            func: CtorForTypeString as TestFunc
+            func: CtorForTypeString
         },
         {
             name: 'CtorForTypeString(Response)',
             input: 'CStoreQuerySearchSuggestionsResponse',
             expected: CStoreQuerySearchSuggestionsResponse,
-            func: CtorForTypeString as TestFunc
+            func: CtorForTypeString
         }
     ];
 
