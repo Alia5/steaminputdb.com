@@ -11,6 +11,7 @@ import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
 
 import IcoHaptics from '$lib/assets/icohaptics.svg?component';
 import IcoMixedInput from '$lib/assets/mixedinput.svg?component';
+import IcoCtrlGeneric from '$lib/assets/steam_controller_type_svgs/controller_generic.svg?component';
 import IcoDs5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
 import IcoSIAPI from '$lib/assets/steam_controller_type_svgs/siapi.svg?component';
 import IcoSwitch from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
@@ -24,7 +25,6 @@ import IcoActionSets from '~icons/material-symbols/layers-rounded';
 import IcoDropdown from '~icons/mdi/chevron-down';
 import IcoMdiCross from '~icons/mdi/close-circle-outline';
 import IconMdiGamepad from '~icons/mdi/controller';
-import IcoDpad from '~icons/mdi/gamepad';
 import IconMdiGamepadCircle from '~icons/mdi/gamepad-circle';
 import IcoLightbar from '~icons/mdi/lightbulb-on';
 import IcoMdiDash from '~icons/mdi/minus-circle-outline';
@@ -531,7 +531,7 @@ let previewAppInfo = $derived({
 					{#each Object.values(HWFeatureControllerType) as family_tag (family_tag)}
 						{#if family_tag == HWFeatureControllerType.Common}
 							<div>
-								<IcoDpad style="width: 1.4em;" />
+								<IcoCtrlGeneric style="width: 1.4em;" />
 								<span>Common</span>
 							</div>
 							<div>

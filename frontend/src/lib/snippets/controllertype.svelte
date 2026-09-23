@@ -5,6 +5,7 @@ export { controllertype };
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
 import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
+import IcoCtrlGeneric from '$lib/assets/steam_controller_type_svgs/controller_generic.svg?component';
 import IcoSD from '$lib/assets/steam_controller_type_svgs/deck.svg?component';
 import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
@@ -57,7 +58,7 @@ import Icon from '@iconify/svelte';
 	{:else if item.controller_type === 'controller_android'}
 		<Icon icon="mdi:android" width="1.2em" />
 	{:else}
-		<Icon icon="mdi:gamepad" height="1.2em" />
+		<IcoCtrlGeneric height="1.2em" />
 	{/if}
 
 	{item.controller_type_nice || item.controller_type || 'Generic Controller'}

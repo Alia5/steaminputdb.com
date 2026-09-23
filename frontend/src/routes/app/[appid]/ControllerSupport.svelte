@@ -16,6 +16,7 @@ import { CONTROLLER_LIST } from '$lib/components/search/controllerlist.svelte';
 
 import IcoHaptics from '$lib/assets/icohaptics.svg?component';
 import IcoMixedInput from '$lib/assets/mixedinput.svg?component';
+import IcoCtrlGeneric from '$lib/assets/steam_controller_type_svgs/controller_generic.svg?component';
 import IcoDs5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
 import IcoSIAPI from '$lib/assets/steam_controller_type_svgs/siapi.svg?component';
 import IcoSwitch from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
@@ -30,7 +31,6 @@ import IcoActionSets from '~icons/material-symbols/layers-rounded';
 import IconMDIChecked from '~icons/mdi/check-circle-outline';
 import IcoMdiCross from '~icons/mdi/close-circle-outline';
 import IconMdiGamepad from '~icons/mdi/controller';
-import IcoDpad from '~icons/mdi/gamepad';
 import IconMdiGamepadCircle from '~icons/mdi/gamepad-circle';
 import IcoHelp from '~icons/mdi/help-circle-outline';
 import IcoLightbar from '~icons/mdi/lightbulb-on';
@@ -62,6 +62,11 @@ const showsCard = $derived(
 		steaminputdbInfo?.hw_feature_notes ||
 		steaminputdbInfo?.controller_support_notes
 );
+
+const controllerListOrder = (type?: string) => {
+	const idx = CONTROLLER_LIST.findIndex((c) => c.type === type);
+	return idx < 0 ? CONTROLLER_LIST.length : idx;
+};
 </script>
 
 {#snippet controllerIcon(type: string | undefined, glyphNotes?: string)}
@@ -69,7 +74,7 @@ const showsCard = $derived(
 		return c.type === type;
 	}) as controller (controller.type)}
 		<div
-			style="display: grid; justify-items: center; margin-bottom: 0.5em;"
+			style="display: grid; justify-items: center;"
 			{@attach tooltip({
 				content: glyphNotes ?? '',
 				outDelay: 100,
@@ -79,15 +84,15 @@ const showsCard = $derived(
 				arrowFollowCursor: false
 			})}
 		>
-			{#if type?.includes('xbox')}
-				<IcoXbox style="width: 2.4em; height: 2.4em;" />
-			{:else}
-				<controller.icon style="width: 2.4em; height: 2.4em;" />
-			{/if}
 			{#if glyphNotes}
 				<IcoHelp style="width: 1.3em; height: 1.3em; opacity: 0.7;" />
 			{:else}
 				<div class="spacer" style="width: 1.3em; height: 1.3em;"></div>
+			{/if}
+			{#if type?.includes('xbox')}
+				<IcoXbox style="width: 2.4em; height: 2.4em;" />
+			{:else}
+				<controller.icon style="width: 2.4em; height: 2.4em;" />
 			{/if}
 		</div>
 	{/each}
@@ -205,7 +210,7 @@ A feature where any logged in User will be able to to propose changes will follo
 						{#if controller_list_entry}
 							<controller_list_entry.icon width="2em" height="2em" />
 						{:else}
-							<IcoDpad style="width: 2em; height: 2em;" />
+							<IcoCtrlGeneric style="width: 2em; height: 2em;" />
 						{/if}
 						<span>{controller_list_entry?.niceName ?? 'Generic'}</span>
 					</a>
@@ -269,7 +274,11 @@ A feature where any logged in User will be able to to propose changes will follo
 					{@const glyphsInfo = steaminputdbInfo?.glyphs}
 					<div>
 						<div class="ctrl-glyphs">
-							{#each glyphsInfo.controllers as controller (controller.controller_type)}
+							{#each glyphsInfo.controllers?.sort((a, b) => {
+								// eslint-disable-next-line prettier/prettier
+                                return controllerListOrder(a.controller_type)
+                                    - controllerListOrder(b.controller_type)
+							}) as controller (controller.controller_type)}
 								{@render controllerIcon(controller.controller_type, controller.notes)}
 							{/each}
 						</div>
@@ -383,7 +392,7 @@ A feature where any logged in User will be able to to propose changes will follo
 									}, {} as Record<number, typeof hwFeatures>)) as [ctrl_family, features] (ctrl_family)}
 								{#if ctrl_family == `${HWFeatureControllerType.Common}`}
 									<div>
-										<IcoDpad style="width: 1.4em;" />
+										<IcoCtrlGeneric style="width: 1.4em;" />
 										<span>Common</span>
 										{#each features as f (f.feature)}
 											{@render hwFeature(f.feature, ctrl_family, f.notes)}

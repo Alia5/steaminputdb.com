@@ -1,4 +1,5 @@
 import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
+import IconGeneric from '$lib/assets/steam_controller_type_svgs/controller_generic.svg?component';
 import IconSD from '$lib/assets/steam_controller_type_svgs/deck.svg?component';
 import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
 import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
@@ -10,20 +11,21 @@ import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component'
 import { default as IconXboxOne, default as XBox } from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
 import IconGameIconsSpartanHelmet from '~icons/game-icons/spartan-helmet';
 import IconMdiCellPhone from '~icons/mdi/cellphone';
-import IconMdiGamepad from '~icons/mdi/gamepad';
+import MdiGamepad from '~icons/mdi/gamepad';
 import IconSimpleIconsRepublicOfGamers from '~icons/simple-icons/republicofgamers';
 
 export const CONTROLLER_LIST = [
+    {
+        type: 'controller_generic',
+        icon: IconGeneric,
+        niceName: 'Generic'
+    },
     {
         type: 'controller_triton',
         icon: Triton,
         niceName: 'Steam Controller'
     },
-    {
-        type: 'controller_steamcontroller_gordon',
-        icon: Gordon,
-        niceName: 'Steam Controller (2015)'
-    },
+
     {
         type: 'controller_neptune',
         icon: IconSD,
@@ -35,19 +37,40 @@ export const CONTROLLER_LIST = [
         niceName: 'Steam Frame Controller Pair'
     },
     {
+        type: 'controller_steamcontroller_gordon',
+        icon: Gordon,
+        niceName: 'Steam Controller (2015)'
+    },
+    {
+        type: 'controller_steamcontroller_headcrab',
+        icon: Gordon,
+        niceName: 'Steam Controller (Headcrab)'
+    },
+    {
         type: 'controller_ps5',
         icon: PS5,
         niceName: 'DualSense'
+    },
+    {
+        type: 'controller_ps5_edge',
+        icon: PS5,
+        niceName: 'DualSense Edge'
+    },
+    {
+        type: 'controller_ps3',
+        icon: MdiGamepad,
+        niceName: 'DualShock 3'
     },
     {
         type: 'controller_ps4',
         icon: PS4,
         niceName: 'DualShock 4'
     },
+
     {
-        type: 'controller_xbox360',
-        icon: XBox,
-        niceName: 'Xbox 360'
+        type: 'controller_xboxelite',
+        icon: IconXboxOne,
+        niceName: 'Xbox Elite'
     },
     {
         type: 'controller_xboxone',
@@ -55,10 +78,11 @@ export const CONTROLLER_LIST = [
         niceName: 'Xbox One'
     },
     {
-        type: 'controller_xboxelite',
-        icon: IconXboxOne,
-        niceName: 'Xbox Elite'
+        type: 'controller_xbox360',
+        icon: XBox,
+        niceName: 'Xbox 360'
     },
+
     {
         type: 'controller_switch_pro',
         icon: SwitchPro,
@@ -74,26 +98,8 @@ export const CONTROLLER_LIST = [
         icon: EightBitDo,
         niceName: '8BitDo'
     },
-    {
-        type: 'controller_generic',
-        icon: IconMdiGamepad,
-        niceName: 'Generic'
-    },
-    {
-        type: 'controller_steamcontroller_headcrab',
-        icon: Gordon,
-        niceName: 'Steam Controller (Headcrab)'
-    },
-    {
-        type: 'controller_ps5_edge',
-        icon: PS5,
-        niceName: 'DualSense Edge'
-    },
-    {
-        type: 'controller_ps3',
-        icon: IconMdiGamepad,
-        niceName: 'DualShock 3'
-    },
+
+
     {
         type: 'controller_hori_steam',
         icon: Hori,
