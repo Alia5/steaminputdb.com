@@ -37,6 +37,7 @@ import IcoLightbar from '~icons/mdi/lightbulb-on';
 import IcoMdiDash from '~icons/mdi/minus-circle-outline';
 import IcoMdiSetRight from '~icons/mdi/set-right';
 import IcoSteam from '~icons/mdi/steam';
+import IcoSpeaker from '~icons/mdi/volume';
 import IcoAudioHaptics from '~icons/mdi/volume-vibrate';
 import { getModHostNameNice, getModUrlName } from './modsUrlNames';
 
@@ -150,6 +151,8 @@ const controllerListOrder = (type?: string) => {
 			<IcoTouchpads style="width: 1.2em; height: 1.2em;" /> Touchpads
 		{:else if feature === HWFeature.AudioHaptics}
 			<IcoAudioHaptics style="width: 1.2em; height: 1.2em;" /> Audio-based Haptics
+		{:else if feature === HWFeature.Speaker}
+			<IcoSpeaker style="width: 1.2em; height: 1.2em;" /> Speaker / Audio Output
 		{/if}
 		{#if notes}
 			<IcoHelp style="width: 1.2em; height: 1.2em; opacity: 0.7; margin-left: 0.5em;" />

@@ -25,6 +25,7 @@ const (
 	HWFeatureTouchpads                HWFeature = 7
 	HWFeatureAudioHaptics             HWFeature = 8
 	HWFeatureAdaptiveTriggersWireless HWFeature = 9
+	HWFeatureSpeaker                  HWFeature = 10
 )
 
 type AppHWFeatures struct {

@@ -32,6 +32,7 @@ import IcoPlus from '~icons/mdi/plus';
 import IcoMdiSetRight from '~icons/mdi/set-right';
 import IcoSteam from '~icons/mdi/steam';
 import IcoTrash from '~icons/mdi/trash-can-outline';
+import IcoSpeaker from '~icons/mdi/volume';
 import IcoAudioHaptics from '~icons/mdi/volume-vibrate';
 
 import { enhance } from '$app/forms';
@@ -297,6 +298,8 @@ let previewAppInfo = $derived({
 				<IcoTouchpads style="width: 1.2em; height: 1.2em;" /> Touchpads
 			{:else if feature === HWFeature.AudioHaptics}
 				<IcoAudioHaptics style="width: 1.2em; height: 1.2em;" /> Audio-based Haptics
+			{:else if feature === HWFeature.Speaker}
+				<IcoSpeaker style="width: 1.2em; height: 1.2em;" /> Speaker / Audio Output
 			{/if}
 		</label>
 		{#if entry}
