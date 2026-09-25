@@ -368,7 +368,6 @@ A feature where any logged in User will be able to to propose changes will follo
 								<div>
 									<IcoDotsPer360 style="width: 1.6em; height: 1.6em;" />
 									<span>Pixels Per 360°</span>
-									{typeof steaminputapi?.pixels_per_360}
 									<code>{steaminputapi?.pixels_per_360 ?? ''}</code>
 								</div>
 							{/if}
@@ -569,7 +568,7 @@ A feature where any logged in User will be able to to propose changes will follo
 				max-height: 100%;
 			}
 		}
-		max-height: 46em;
+		max-height: 52em;
 	}
 }
 
